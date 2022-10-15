@@ -7,8 +7,8 @@ public interface IGraphics {
     void setColor();
     void setFont();
     void drawImage();
-    void drawRectangle();
-    void fillRectangle();
-    void drawLine();
+    void drawRectangle(int upperLeftX, int upperLeftY, int lowerRightX, int lowerRightY, int lineWidth);
+    void fillRectangle(int upperLeftX, int upperLeftY, int lowerRightX, int lowerRightY);
+    void drawLine(int fromX, int fromY, int toX, int toY);
     void drawText();
 }
