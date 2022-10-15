@@ -1,6 +1,7 @@
 package com.example.engine;
 
 public interface IState {
-    void update();
+    boolean init();
+    void update(double deltaTime);
     void render();
 }

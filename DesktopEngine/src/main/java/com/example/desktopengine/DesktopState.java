@@ -4,7 +4,12 @@ import com.example.engine.IState;
 
 public class DesktopState implements IState {
     @Override
-    public void update() {
+    public boolean init() {
+        return false;
+    }
+
+    @Override
+    public void update(double deltaTime) {
 
     }
 

@@ -4,19 +4,28 @@ import com.example.engine.IFont;
 import com.example.engine.IGraphics;
 import com.example.engine.IImage;
 
+import java.awt.Graphics2D;
+
 public class DesktopGraphics implements IGraphics {
+
+    Graphics2D graphics2D;
+
+    public DesktopGraphics(Graphics2D graphics2D) {
+        this.graphics2D = graphics2D;
+    }
+
     @Override
-    public IImage newImage() {
+    public IImage newImage(String pathToImage) {
         return null;
     }
 
     @Override
-    public IFont newFont() {
+    public IFont newFont(String pathToFont) {
         return null;
     }
 
     @Override
-    public void setResolution() {
+    public void setLogicSize(int xSize, int ySize) {
 
     }
 
@@ -31,7 +40,7 @@ public class DesktopGraphics implements IGraphics {
     }
 
     @Override
-    public void drawImage() {
+    public void drawImage(IImage image, int x, int y) {
 
     }
 
@@ -51,7 +60,7 @@ public class DesktopGraphics implements IGraphics {
     }
 
     @Override
-    public void drawText() {
+    public void drawText(String text, int x, int y, IFont font) {
 
     }
 }
