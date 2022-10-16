@@ -24,8 +24,8 @@ public class LogicTest implements IState {
     public boolean init() {
 
         try {
-            testImage = engine.getGraphics().newImage("images/eevee.png");
-            testFont = engine.getGraphics().newFont("fonts/Antihero.ttf");
+            testImage = engine.getGraphics().newImage(engine.getAssetsPath() + "images/eevee.png");
+            //testFont = engine.getGraphics().newFont(engine.getAssetsPath() + "fonts/Antihero.ttf");
 
             engine.getGraphics().setLogicSize(LOGIC_WIDTH, LOGIC_HEIGHT);
             return true;
@@ -44,6 +44,6 @@ public class LogicTest implements IState {
     public void render() {
         IGraphics graphics = engine.getGraphics();
         graphics.drawImage(testImage, LOGIC_WIDTH / 2, LOGIC_HEIGHT / 2);
-        graphics.drawText("Eeevee", LOGIC_WIDTH / 2, 100, testFont);
+        //graphics.drawText("Eeevee", LOGIC_WIDTH / 2, 100, testFont);
     }
 }

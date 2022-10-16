@@ -2,14 +2,28 @@ package com.example.desktopengine;
 
 import com.example.engine.IImage;
 
+import java.awt.Image;
+
 public class DesktopImage implements IImage {
+    Image image;
+
+    public DesktopImage(Image img)
+    {
+        this.image = img;
+    }
+
+    Image getImage()
+    {
+        return image;
+    }
+
     @Override
     public int getWidth() {
-        return 0;
+        return image.getWidth(null);
     }
 
     @Override
     public int getHeight() {
-        return 0;
+        return image.getHeight(null);
     }
 }

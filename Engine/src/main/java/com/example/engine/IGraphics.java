@@ -4,8 +4,9 @@ public interface IGraphics {
     IImage newImage(String pathToImage);
     IFont newFont(String pathToFont);
     void setLogicSize(int xSize, int ySize);
-    void setColor();
+    void setColor(int r, int g, int b);
     void setFont();
+    void clear(int r, int g, int b);
     void drawImage(IImage image, int x, int y);
     void drawRectangle(int upperLeftX, int upperLeftY, int lowerRightX, int lowerRightY, int lineWidth);
     void fillRectangle(int upperLeftX, int upperLeftY, int lowerRightX, int lowerRightY);

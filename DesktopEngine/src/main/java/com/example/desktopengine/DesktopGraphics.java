@@ -5,6 +5,11 @@ import com.example.engine.IGraphics;
 import com.example.engine.IImage;
 
 import java.awt.Graphics2D;
+import java.awt.Image;
+import java.io.File;
+import java.io.IOException;
+
+import javax.imageio.ImageIO;
 
 public class DesktopGraphics implements IGraphics {
 
@@ -16,7 +21,14 @@ public class DesktopGraphics implements IGraphics {
 
     @Override
     public IImage newImage(String pathToImage) {
-        return null;
+        IImage image = null;
+        try {
+            image = new DesktopImage(ImageIO.read((new File(pathToImage))));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return image;
     }
 
     @Override
@@ -30,7 +42,7 @@ public class DesktopGraphics implements IGraphics {
     }
 
     @Override
-    public void setColor() {
+    public void setColor(int r, int g, int b) {
 
     }
 
@@ -40,8 +52,13 @@ public class DesktopGraphics implements IGraphics {
     }
 
     @Override
-    public void drawImage(IImage image, int x, int y) {
+    public void clear(int r, int g, int b) {
 
+    }
+
+    @Override
+    public void drawImage(IImage image, int x, int y) {
+        this.graphics2D.drawImage(((DesktopImage)image).getImage(), x - image.getWidth()/2, y - image.getHeight()/2, null);
     }
 
     @Override

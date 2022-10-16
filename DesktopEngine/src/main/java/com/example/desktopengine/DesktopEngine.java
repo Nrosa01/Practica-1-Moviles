@@ -8,7 +8,7 @@ import java.awt.image.BufferStrategy;
 
 import javax.swing.JFrame;
 
-public class DesktopEngine implements IEngine {
+public class DesktopEngine implements IEngine, Runnable {
     DesktopGraphics graphics;
     DesktopAudio audio;
     // DesktopState state;
@@ -16,7 +16,7 @@ public class DesktopEngine implements IEngine {
     BufferStrategy bufferStrategy;
     Thread renderThread;
     IState currentState;
-    boolean isRunning = true;
+    boolean isRunning = false;
 
     public DesktopEngine(int wWidth, int wHeight, String wTittle) {
         mView = new JFrame(wTittle);
@@ -42,6 +42,33 @@ public class DesktopEngine implements IEngine {
 
         this.bufferStrategy = this.mView.getBufferStrategy();
         graphics = new DesktopGraphics((Graphics2D) bufferStrategy.getDrawGraphics());
+    }
+
+    //Métodos sincronización (parar y reiniciar aplicación)
+    public void resume() {
+        if (!this.isRunning) {
+            // Solo hacemos algo si no nos estábamos ejecutando ya
+            // (programación defensiva)
+            this.isRunning = true;
+            // Lanzamos la ejecución de nuestro método run() en un nuevo Thread.
+            this.renderThread = new Thread(this);
+            this.renderThread.start();
+        }
+    }
+
+    public void pause() {
+        if (this.isRunning) {
+            this.isRunning = false;
+            while (true) {
+                try {
+                    this.renderThread.join();
+                    this.renderThread = null;
+                    break;
+                } catch (InterruptedException ie) {
+                    // Esto no debería ocurrir nunca...
+                }
+            }
+        }
     }
 
     public void run() {
@@ -101,7 +128,13 @@ public class DesktopEngine implements IEngine {
     }
 
     @Override
+    public String getAssetsPath() {
+        return "GameLogic/assets/";
+    }
+
+    @Override
     public void render() {
+        graphics.clear(0, 0, 0);
         currentState.render();
     }
 
@@ -111,10 +144,12 @@ public class DesktopEngine implements IEngine {
     }
 
     @Override
-    public void setState(IState state) {
+    public void setState(IState state) throws Exception {
         // Deberiamos esperar al final del bucle lógico antes de cambiar de estado
         // para evitar problemas
-
-        this.currentState = state;
+        if (state.init())
+            this.currentState = state;
+        else
+            throw new Exception("State didn't init correctly");
     }
 }
