@@ -14,9 +14,13 @@ public interface IGraphics {
     void drawText(String text, int x, int y, IFont font);
     int getWidth();
     int getHeight();
-    void translate(float x, float y);
-    void scale(float x, float y);
-    void rotate(float angleDegrees);
+    void translate(double x, double y);
+    void scale(double x, double y);
+    void rotate(double angleDegrees);
+
+    void setTranslation(double x, double y);
+    void setScale(double x, double y);
+    void setRotation(double angleDegrees);
     void save();
     void restore();
 }

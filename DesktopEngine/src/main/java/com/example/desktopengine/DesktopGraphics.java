@@ -22,20 +22,21 @@ public class DesktopGraphics implements IGraphics {
 
     // Para guardar las transformaciones entre buffers
     AffineTransform currentTransform;
+    AffineTransform defaultTransform;
 
     public DesktopGraphics(Graphics2D graphics2D, JFrame jFrame) {
         this.graphics2D = graphics2D;
         this.jFrame = jFrame;
-        currentColor = new Color(0,0,0,0);
-        currentTransform = null;
+        currentColor = new Color(0, 0, 0, 0);
+        currentTransform = graphics2D.getTransform();
+        defaultTransform = new AffineTransform();
 
         // Esto es para tener en cuenta la barra de titulo de la app
         // Intente tambien que se ajustara horizontalmente pero nada, imposible
         translate(jFrame.getInsets().left, jFrame.getInsets().top);
     }
 
-    void setGraphics2D(Graphics2D graphics)
-    {
+    void setGraphics2D(Graphics2D graphics) {
         this.graphics2D = graphics;
     }
 
@@ -65,7 +66,7 @@ public class DesktopGraphics implements IGraphics {
 
     @Override
     public void setColor(int r, int g, int b) {
-        currentColor = new Color(r,g,b);
+        currentColor = new Color(r, g, b);
     }
 
     @Override
@@ -75,13 +76,15 @@ public class DesktopGraphics implements IGraphics {
 
     @Override
     public void clear(int r, int g, int b) {
-        graphics2D.setBackground(new Color(r,g,b, 255));
-        graphics2D.clearRect(0,0, getWidth(), getHeight());
+        graphics2D.setTransform(defaultTransform);
+        graphics2D.setBackground(new Color(r, g, b, 255));
+        graphics2D.clearRect(0, 0, getWidth(), getHeight());
+        graphics2D.setTransform(currentTransform);
     }
 
     @Override
     public void drawImage(IImage image, int x, int y) {
-        this.graphics2D.drawImage(((DesktopImage)image).getImage(), x, y, null);
+        this.graphics2D.drawImage(((DesktopImage) image).getImage(), x, y, null);
         //this.graphics2D.drawImage(((DesktopImage)image).getImage(), x - image.getWidth()/2, y - image.getHeight()/2, null);
     }
 
@@ -116,19 +119,36 @@ public class DesktopGraphics implements IGraphics {
     }
 
     @Override
-    public void translate(float x, float y) {
-        graphics2D.translate(x,y);
+    public void scale(double x, double y) {
+        graphics2D.scale(x, y);
     }
 
     @Override
-    public void rotate(float angleDegrees)
-    {
+    public void translate(double x, double y) {
+        graphics2D.translate(x, y);
+    }
+
+    @Override
+    public void rotate(double angleDegrees) {
         graphics2D.rotate(Math.toRadians(angleDegrees));
     }
 
     @Override
-    public void scale(float x, float y) {
-        graphics2D.scale(x,y);
+    public void setScale(double x, double y) {
+        currentTransform.setToScale(x, y);
+        graphics2D.setTransform(currentTransform);
+    }
+
+    @Override
+    public void setTranslation(double x, double y) {
+        currentTransform.setToTranslation(x, y);
+        graphics2D.setTransform(currentTransform);
+    }
+
+    @Override
+    public void setRotation(double angleDegrees) {
+        currentTransform.setToRotation(Math.toRadians(angleDegrees));
+        graphics2D.setTransform(currentTransform);
     }
 
     @Override
@@ -141,6 +161,6 @@ public class DesktopGraphics implements IGraphics {
         if (currentTransform != null)
             graphics2D.setTransform(currentTransform);
 
-        currentTransform = null;
+        //currentTransform = null;
     }
 }

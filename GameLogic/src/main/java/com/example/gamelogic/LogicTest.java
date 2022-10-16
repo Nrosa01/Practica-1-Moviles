@@ -6,6 +6,8 @@ import com.example.engine.IGraphics;
 import com.example.engine.IImage;
 import com.example.engine.IState;
 
+import java.awt.geom.AffineTransform;
+
 public class LogicTest implements IState {
 
     static final int LOGIC_WIDTH = 640;
@@ -15,6 +17,7 @@ public class LogicTest implements IState {
     IFont testFont;
     // Los estados necesitan acceder al engine
     IEngine engine = null;
+    float t = 0;
 
     public LogicTest(IEngine engine) {
         this.engine = engine;
@@ -27,6 +30,8 @@ public class LogicTest implements IState {
             //testFont = engine.getGraphics().newFont(engine.getAssetsPath() + "fonts/Antihero.ttf");
 
             engine.getGraphics().setLogicSize(LOGIC_WIDTH, LOGIC_HEIGHT);
+            engine.getGraphics().setTranslation(engine.getGraphics().getWidth() / 2.0, engine.getGraphics().getHeight() / 2.0);
+
             return true;
         } catch (Exception e) {
             e.printStackTrace();
@@ -36,7 +41,11 @@ public class LogicTest implements IState {
 
     @Override
     public void update(double deltaTime) {
-
+        IGraphics graphics = engine.getGraphics();
+        t += deltaTime * 1;
+        double ex = Math.abs(Math.sin(t) * 2);
+        graphics.setTranslation(graphics.getWidth() / 2.0, graphics.getHeight() / 2.0);
+        graphics.setScale(ex,ex);
     }
 
     @Override
