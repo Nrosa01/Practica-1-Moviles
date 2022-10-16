@@ -27,7 +27,12 @@ public class DesktopGraphics implements IGraphics {
 
         // Esto es para tener en cuenta la barra de titulo de la app
         // Intente tambien que se ajustara horizontalmente pero nada, imposible
-        translate(-jFrame.getInsets().left, jFrame.getInsets().top);
+        translate(0, jFrame.getInsets().top);
+    }
+
+    void setGraphics2D(Graphics2D graphics)
+    {
+        this.graphics2D = graphics;
     }
 
     @Override

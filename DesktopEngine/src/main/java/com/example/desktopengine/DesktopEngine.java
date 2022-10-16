@@ -134,7 +134,8 @@ public class DesktopEngine implements IEngine, Runnable {
 
     @Override
     public void render() {
-        // graphics.clear(100, 100, 100);
+        graphics.setGraphics2D((Graphics2D) bufferStrategy.getDrawGraphics());
+        graphics.clear(100, 100, 100);
         currentState.render();
     }
 
