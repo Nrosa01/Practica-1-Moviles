@@ -134,7 +134,11 @@ public class DesktopEngine implements IEngine, Runnable {
 
     @Override
     public void render() {
+        // Guardar transformaciones del buffer actual
+        graphics.save();
         graphics.setGraphics2D((Graphics2D) bufferStrategy.getDrawGraphics());
+        graphics.restore(); // Restaurar
+
         graphics.clear(100, 100, 100);
         currentState.render();
     }

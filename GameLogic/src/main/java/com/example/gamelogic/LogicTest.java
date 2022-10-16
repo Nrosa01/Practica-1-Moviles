@@ -43,7 +43,7 @@ public class LogicTest implements IState {
     public void render() {
         IGraphics graphics = engine.getGraphics();
         graphics.drawImage(testImage, 0,0);
-        graphics.drawImage(testImage, 1920 - testImage.getWidth(),0);
+        graphics.drawImage(testImage, 1400 - testImage.getWidth(),0);
         // graphics.drawImage(testImage, LOGIC_WIDTH / 2, LOGIC_HEIGHT / 2);0
         //graphics.drawText("Eeevee", LOGIC_WIDTH / 2, 100, testFont);
     }

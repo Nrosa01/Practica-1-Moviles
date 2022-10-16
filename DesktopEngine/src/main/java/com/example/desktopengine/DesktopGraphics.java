@@ -6,7 +6,7 @@ import com.example.engine.IImage;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
-import java.awt.Image;
+import java.awt.geom.AffineTransform;
 import java.io.File;
 import java.io.IOException;
 
@@ -17,17 +17,21 @@ public class DesktopGraphics implements IGraphics {
 
     Graphics2D graphics2D;
     JFrame jFrame;
-    int logicSizeX, getLogicSizeY;
+    int logicSizeX, logicSizeY;
     Color currentColor;
+
+    // Para guardar las transformaciones entre buffers
+    AffineTransform currentTransform;
 
     public DesktopGraphics(Graphics2D graphics2D, JFrame jFrame) {
         this.graphics2D = graphics2D;
         this.jFrame = jFrame;
         currentColor = new Color(0,0,0,0);
+        currentTransform = null;
 
         // Esto es para tener en cuenta la barra de titulo de la app
         // Intente tambien que se ajustara horizontalmente pero nada, imposible
-        translate(0, jFrame.getInsets().top);
+        translate(jFrame.getInsets().left, jFrame.getInsets().top);
     }
 
     void setGraphics2D(Graphics2D graphics)
@@ -47,6 +51,7 @@ public class DesktopGraphics implements IGraphics {
         return image;
     }
 
+
     @Override
     public IFont newFont(String pathToFont) {
         return null;
@@ -55,7 +60,7 @@ public class DesktopGraphics implements IGraphics {
     @Override
     public void setLogicSize(int xSize, int ySize) {
         this.logicSizeX = xSize;
-        this.getLogicSizeY = ySize;
+        this.logicSizeY = ySize;
     }
 
     @Override
@@ -128,10 +133,14 @@ public class DesktopGraphics implements IGraphics {
 
     @Override
     public void save() {
+        currentTransform = graphics2D.getTransform();
     }
 
     @Override
     public void restore() {
+        if (currentTransform != null)
+            graphics2D.setTransform(currentTransform);
 
+        currentTransform = null;
     }
 }
