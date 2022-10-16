@@ -12,6 +12,7 @@ public class LogicTest implements IState {
     static final int LOGIC_HEIGHT = 480;
 
     IImage testImage;
+    IImage testImage2;
     IFont testFont;
     // Los estados necesitan acceder al engine
     IEngine engine = null;
@@ -22,9 +23,9 @@ public class LogicTest implements IState {
 
     @Override
     public boolean init() {
-
         try {
             testImage = engine.getGraphics().newImage(engine.getAssetsPath() + "images/eevee.png");
+            testImage2 = engine.getGraphics().newImage(engine.getAssetsPath() + "images/eevee.png");
             //testFont = engine.getGraphics().newFont(engine.getAssetsPath() + "fonts/Antihero.ttf");
 
             engine.getGraphics().setLogicSize(LOGIC_WIDTH, LOGIC_HEIGHT);
@@ -43,7 +44,9 @@ public class LogicTest implements IState {
     @Override
     public void render() {
         IGraphics graphics = engine.getGraphics();
-        graphics.drawImage(testImage, LOGIC_WIDTH / 2, LOGIC_HEIGHT / 2);
+        graphics.drawImage(testImage, 0,0);
+        graphics.drawImage(testImage2, 1200 - testImage.getWidth(),0);
+        // graphics.drawImage(testImage, LOGIC_WIDTH / 2, LOGIC_HEIGHT / 2);0
         //graphics.drawText("Eeevee", LOGIC_WIDTH / 2, 100, testFont);
     }
 }

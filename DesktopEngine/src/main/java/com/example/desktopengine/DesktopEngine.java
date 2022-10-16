@@ -41,7 +41,7 @@ public class DesktopEngine implements IEngine, Runnable {
         }
 
         this.bufferStrategy = this.mView.getBufferStrategy();
-        graphics = new DesktopGraphics((Graphics2D) bufferStrategy.getDrawGraphics());
+        graphics = new DesktopGraphics((Graphics2D) bufferStrategy.getDrawGraphics(), mView);
     }
 
     //Métodos sincronización (parar y reiniciar aplicación)
@@ -134,7 +134,7 @@ public class DesktopEngine implements IEngine, Runnable {
 
     @Override
     public void render() {
-        graphics.clear(0, 0, 0);
+        // graphics.clear(100, 100, 100);
         currentState.render();
     }
 

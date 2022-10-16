@@ -12,4 +12,11 @@ public interface IGraphics {
     void fillRectangle(int upperLeftX, int upperLeftY, int lowerRightX, int lowerRightY);
     void drawLine(int fromX, int fromY, int toX, int toY);
     void drawText(String text, int x, int y, IFont font);
+    int getWidth();
+    int getHeight();
+    void translate(float x, float y);
+    void scale(float x, float y);
+    void rotate(float angleDegrees);
+    void save();
+    void restore();
 }
