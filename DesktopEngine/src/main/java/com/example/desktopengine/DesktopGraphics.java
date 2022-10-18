@@ -121,34 +121,70 @@ public class DesktopGraphics implements IGraphics {
     @Override
     public void scale(double x, double y) {
         graphics2D.scale(x, y);
+        save();
     }
 
     @Override
     public void translate(double x, double y) {
         graphics2D.translate(x, y);
+        save();
     }
 
     @Override
     public void rotate(double angleDegrees) {
         graphics2D.rotate(Math.toRadians(angleDegrees));
+        save();
     }
 
     @Override
     public void setScale(double x, double y) {
-        currentTransform.setToScale(x, y);
-        graphics2D.setTransform(currentTransform);
+        currentTransform.setToScale(x/currentTransform.getScaleX(),y/currentTransform.getScaleY());
+        apply();
+        save();
     }
 
     @Override
     public void setTranslation(double x, double y) {
-        currentTransform.setToTranslation(x, y);
-        graphics2D.setTransform(currentTransform);
+
+        currentTransform.setToTranslation(x-currentTransform.getTranslateX(), y-currentTransform.getTranslateY());
+        apply();
+        save();
     }
 
     @Override
     public void setRotation(double angleDegrees) {
         currentTransform.setToRotation(Math.toRadians(angleDegrees));
-        graphics2D.setTransform(currentTransform);
+        apply();
+        save();
+    }
+
+    @Override
+    public void resetScale()
+    {
+        setScale(1,1);
+    }
+
+    @Override
+    public void resetTranslation()
+    {
+        setTranslation(0,0);
+
+        // Volver a trasladar para tener en cuenta la barra
+        translate(jFrame.getInsets().left, jFrame.getInsets().top);
+    }
+
+    @Override
+    public void resetRotation()
+    {
+        setRotation(0);
+    }
+
+    @Override
+    public void resetTransform()
+    {
+        resetTranslation();
+        resetScale();
+        resetRotation();
     }
 
     @Override
@@ -156,11 +192,13 @@ public class DesktopGraphics implements IGraphics {
         currentTransform = graphics2D.getTransform();
     }
 
+    private void apply(){
+        graphics2D.transform(currentTransform);
+    }
+
     @Override
     public void restore() {
         if (currentTransform != null)
             graphics2D.setTransform(currentTransform);
-
-        //currentTransform = null;
     }
 }

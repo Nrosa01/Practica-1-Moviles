@@ -26,11 +26,12 @@ public class LogicTest implements IState {
     @Override
     public boolean init() {
         try {
-            testImage = engine.getGraphics().newImage(engine.getAssetsPath() + "images/eevee.png");
+            IGraphics graphics = engine.getGraphics();
+
+            testImage = graphics.newImage(engine.getAssetsPath() + "images/eevee.png");
             //testFont = engine.getGraphics().newFont(engine.getAssetsPath() + "fonts/Antihero.ttf");
 
-            engine.getGraphics().setLogicSize(LOGIC_WIDTH, LOGIC_HEIGHT);
-            engine.getGraphics().setTranslation(engine.getGraphics().getWidth() / 2.0, engine.getGraphics().getHeight() / 2.0);
+            graphics.setLogicSize(LOGIC_WIDTH, LOGIC_HEIGHT);
 
             return true;
         } catch (Exception e) {
@@ -44,15 +45,22 @@ public class LogicTest implements IState {
         IGraphics graphics = engine.getGraphics();
         t += deltaTime * 1;
         double ex = Math.abs(Math.sin(t) * 2);
-        graphics.setTranslation(graphics.getWidth() / 2.0, graphics.getHeight() / 2.0);
-        graphics.setScale(ex,ex);
+
+        if (t < 2) {
+            graphics.setScale(ex, ex);
+            graphics.setTranslation(graphics.getWidth() / 2.0, graphics.getHeight() / 2.0);
+
+        } else {
+            graphics.resetTransform();
+        }
+
     }
 
     @Override
     public void render() {
         IGraphics graphics = engine.getGraphics();
-        graphics.drawImage(testImage, 0,0);
-        graphics.drawImage(testImage, 1400 - testImage.getWidth(),0);
+        graphics.drawImage(testImage, 0, 0);
+        graphics.drawImage(testImage, 1400 - testImage.getWidth(), 0);
         // graphics.drawImage(testImage, LOGIC_WIDTH / 2, LOGIC_HEIGHT / 2);0
         //graphics.drawText("Eeevee", LOGIC_WIDTH / 2, 100, testFont);
     }
