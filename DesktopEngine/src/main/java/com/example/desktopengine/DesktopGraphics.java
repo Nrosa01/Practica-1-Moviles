@@ -1,5 +1,6 @@
 package com.example.desktopengine;
 
+import com.example.engine.AbstractGraphics;
 import com.example.engine.IFont;
 import com.example.engine.IGraphics;
 import com.example.engine.IImage;
@@ -16,7 +17,7 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 
-public class DesktopGraphics implements IGraphics {
+public class DesktopGraphics extends AbstractGraphics {
 
     Graphics2D graphics2D;
     JFrame jFrame;
@@ -27,11 +28,8 @@ public class DesktopGraphics implements IGraphics {
     AffineTransform defaultTransform;
     BufferStrategy bufferStrategy;
 
-    // Handle logic size, move later to abstract class
-    int logicSizeX, logicSizeY;
-    float scaleFactor;
-    int topInsetOffset, borderInsetOffset;
-    int borderBarkWidth, topBarHeight;
+    // Offsets del jframe
+    protected int topInsetOffset, borderInsetOffset;
 
     public DesktopGraphics(JFrame jFrame, int wWidth, int wHeight) {
         this.jFrame = jFrame;
@@ -40,8 +38,7 @@ public class DesktopGraphics implements IGraphics {
         jFrame.setIgnoreRepaint(false);
         jFrame.setVisible(true);
 
-        logicSizeX = wWidth;
-        logicSizeY = wHeight;
+        setLogicSize(wWidth, wHeight);
 
         int tries = 100;
         while (tries-- > 0) {
@@ -69,54 +66,28 @@ public class DesktopGraphics implements IGraphics {
             }
         });
 
-        calculateScaleFactor();
         calculateBorderOffset();
         resizeFrameToAddInsets();
+        calculateScaleFactor();
     }
 
     void handleWindowsResize() {
         calculateScaleFactor();
-        calculateBorderOffset();
+        //calculateBorderOffset();
     }
 
-
     void calculateScaleFactor() {
-        // getWidth y getHeight son el tamaño lógico de la pantalla (setLogicSize)
-        int width = getWidth();
-        int height = getHeight() - topInsetOffset;
+        int canvasWidth = getWidth() - jFrame.getInsets().left - jFrame.getInsets().right;
+        int canvasHeight = getHeight() - jFrame.getInsets().top - jFrame.getInsets().bottom;
 
-        float wFactor = width / (float) logicSizeX;
-        float hFactor = height / (float) logicSizeY;
-
-        int sizeScreenX, sizeScreenY;
-
-        if (wFactor < hFactor) {
-            scaleFactor = wFactor;
-
-            sizeScreenX = width;
-            sizeScreenY = (width * logicSizeY) / logicSizeX;
-        }
-        else {
-            scaleFactor = hFactor;
-
-            sizeScreenX = (height * logicSizeX) / logicSizeY;
-            sizeScreenY = height;
-        }
-
-        borderBarkWidth = (width - sizeScreenX) / 2;
-        topBarHeight = (height - sizeScreenY) / 2;
+        super.calculateScaleFactor(canvasWidth, canvasHeight);
+        setScale(1, 1);
     }
 
     void calculateBorderOffset() {
-        // Restart offsets
-        borderInsetOffset = 0;
-        topInsetOffset = 0;
-
-        // Calculate borders due to logicSize adaptation
-
         // Taking in account screen insets
-        topInsetOffset += jFrame.getInsets().top;
-        borderInsetOffset += jFrame.getInsets().left;
+        topInsetOffset = jFrame.getInsets().top;
+        borderInsetOffset = jFrame.getInsets().left;
     }
 
     void resizeFrameToAddInsets() {
@@ -209,8 +180,8 @@ public class DesktopGraphics implements IGraphics {
 
     @Override
     public void drawImage(IImage image, int x, int y) {
-        int processedX = logicXPositionToWindowsXPosition(x - (image.getWidth() / 2)) + borderInsetOffset;
-        int processedY = logicYPositionToWindowsYPosition(y - (image.getHeight() / 2)) + topInsetOffset;
+        int processedX = logicXPositionToWindowsXPosition(x - (image.getWidth() / 2));
+        int processedY = logicYPositionToWindowsYPosition(y - (image.getHeight() / 2));
         this.graphics2D.drawImage(((DesktopImage) image).getImage(), processedX, processedY, null);
     }
 
@@ -264,12 +235,12 @@ public class DesktopGraphics implements IGraphics {
 
     @Override
     public int logicXPositionToWindowsXPosition(int x) {
-        return x + borderBarkWidth;
+        return x + (int) (borderBarkWidth / scaleFactor) + (int) (borderInsetOffset / scaleFactor);
     }
 
     @Override
     public int logicYPositionToWindowsYPosition(int y) {
-        return y + topBarHeight;
+        return y + (int) (topBarHeight / scaleFactor) + (int) (topInsetOffset / scaleFactor);
     }
 
     @Override
@@ -284,7 +255,7 @@ public class DesktopGraphics implements IGraphics {
 
     @Override
     public void setScale(double x, double y) {
-        currentTransform.setToScale(x / currentTransform.getScaleX(), y / currentTransform.getScaleY());
+        currentTransform.setToScale((x * scaleFactor) / currentTransform.getScaleX(), (y * scaleFactor) / currentTransform.getScaleY());
         apply();
         save();
     }
