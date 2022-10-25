@@ -17,4 +17,9 @@ public class DesktopState implements IState {
     public void render() {
 
     }
+
+    @Override
+    public void handleInput() {
+
+    }
 }

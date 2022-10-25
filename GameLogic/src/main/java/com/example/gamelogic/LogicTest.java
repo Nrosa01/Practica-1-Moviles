@@ -26,12 +26,12 @@ public class LogicTest implements IState {
     public boolean init() {
         try {
             IGraphics graphics = engine.getGraphics();
+            graphics.setLogicSize(LOGIC_WIDTH, LOGIC_HEIGHT);
 
             testWidth = graphics.newImage(engine.getAssetsPath() + "images/fWidth.png");
             testHeight = graphics.newImage(engine.getAssetsPath() + "images/fHeight.png");
             //testFont = engine.getGraphics().newFont(engine.getAssetsPath() + "fonts/Antihero.ttf");
 
-            graphics.setLogicSize(LOGIC_WIDTH, LOGIC_HEIGHT);
 
             return true;
         } catch (Exception e) {
@@ -57,5 +57,10 @@ public class LogicTest implements IState {
 
         graphics.drawImage(testWidth, LOGIC_WIDTH / 2, 10);
         graphics.drawImage(testWidth, LOGIC_WIDTH / 2, LOGIC_HEIGHT - 10);
+    }
+
+    @Override
+    public void handleInput() {
+
     }
 }

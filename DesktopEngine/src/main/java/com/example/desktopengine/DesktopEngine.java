@@ -13,35 +13,13 @@ public class DesktopEngine implements IEngine, Runnable {
     DesktopAudio audio;
     // DesktopState state;
     JFrame mView;
-    BufferStrategy bufferStrategy;
     Thread renderThread;
     IState currentState;
     boolean isRunning = false;
 
     public DesktopEngine(int wWidth, int wHeight, String wTittle) {
         mView = new JFrame(wTittle);
-
-        mView.setSize(wWidth, wHeight);
-        mView.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        mView.setIgnoreRepaint(false);
-
-        mView.setVisible(true);
-
-        int tries = 100;
-        while (tries-- > 0) {
-            try {
-                this.mView.createBufferStrategy(2);
-                break;
-            } catch (Exception e) {
-            }
-        } // while pidiendo la creación de la buffeStrategy
-        if (tries == 0) {
-            System.err.println("No pude crear la BufferStrategy");
-            return;
-        }
-
-        this.bufferStrategy = this.mView.getBufferStrategy();
-        graphics = new DesktopGraphics((Graphics2D) bufferStrategy.getDrawGraphics(), mView);
+        graphics = new DesktopGraphics(mView, wWidth, wHeight);
     }
 
     //Métodos sincronización (parar y reiniciar aplicación)
@@ -81,11 +59,9 @@ public class DesktopEngine implements IEngine, Runnable {
         }
         // Si el Thread se pone en marcha
         // muy rápido, la vista podría todavía no estar inicializada.
-        while (this.isRunning && this.mView.getWidth() == 0) ;
+        while (this.isRunning && this.graphics.getWidth() == 0) ;
         // Espera activa. Sería más elegante al menos dormir un poco.
         long lastFrameTime = System.nanoTime();
-        long informePrevio = lastFrameTime; // Informes de FPS
-        int frames = 0;
 
         // Bucle de juego principal.
         while (isRunning) {
@@ -94,21 +70,15 @@ public class DesktopEngine implements IEngine, Runnable {
             lastFrameTime = currentTime;
 
             // Actualizamos
-            double elapsedTime = (double) nanoElapsedTime / 1.0E9;
-            this.update(elapsedTime);
+            double deltaTime = (double) nanoElapsedTime / 1.0E9;
+            this.update(deltaTime);
+            this.currentState.handleInput();
 
-            // Pintamos el frame
             do {
-                do {
-                    Graphics graphics = this.bufferStrategy.getDrawGraphics();
-                    try {
-                        this.render();
-                    } finally {
-                        graphics.dispose(); //Elimina el contexto gráfico y libera recursos del sistema realacionado
-                    }
-                } while (this.bufferStrategy.contentsRestored());
-                this.bufferStrategy.show();
-            } while (this.bufferStrategy.contentsLost());
+                this.graphics.prepareFrame();;
+                this.render();
+                this.graphics.finishFrame();
+            } while(graphics.swapBuffer());
         }
     }
 
@@ -134,12 +104,6 @@ public class DesktopEngine implements IEngine, Runnable {
 
     @Override
     public void render() {
-        // Guardar transformaciones del buffer actual
-        graphics.save();
-        graphics.setGraphics2D((Graphics2D) bufferStrategy.getDrawGraphics());
-        graphics.restore(); // Restaurar
-
-        graphics.clear(100, 100, 100);
         currentState.render();
     }
 

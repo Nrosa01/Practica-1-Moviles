@@ -7,6 +7,7 @@ import com.example.engine.IImage;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
+import java.awt.image.BufferStrategy;
 import java.io.File;
 import java.io.IOException;
 
@@ -23,10 +24,34 @@ public class DesktopGraphics implements IGraphics {
     // Para guardar las transformaciones entre buffers
     AffineTransform currentTransform;
     AffineTransform defaultTransform;
+    BufferStrategy bufferStrategy;
 
-    public DesktopGraphics(Graphics2D graphics2D, JFrame jFrame) {
-        this.graphics2D = graphics2D;
+
+    public DesktopGraphics(JFrame jFrame, int wWidth, int wHeight) {
         this.jFrame = jFrame;
+
+        jFrame.setSize(wWidth, wHeight);
+        jFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        jFrame.setIgnoreRepaint(false);
+
+        jFrame.setVisible(true);
+
+        int tries = 100;
+        while (tries-- > 0) {
+            try {
+                this.jFrame.createBufferStrategy(2);
+                break;
+            } catch (Exception e) {
+            }
+        } // while pidiendo la creación de la buffeStrategy
+        if (tries == 0) {
+            System.err.println("No pude crear la BufferStrategy");
+            return;
+        }
+
+        this.bufferStrategy = jFrame.getBufferStrategy();
+
+        this.graphics2D = ((Graphics2D) bufferStrategy.getDrawGraphics());
         currentColor = new Color(0, 0, 0, 0);
         currentTransform = graphics2D.getTransform();
         defaultTransform = new AffineTransform();
@@ -38,6 +63,39 @@ public class DesktopGraphics implements IGraphics {
 
     void setGraphics2D(Graphics2D graphics) {
         this.graphics2D = graphics;
+    }
+
+    void updateGraphics()
+    {
+        this.graphics2D = (Graphics2D) bufferStrategy.getDrawGraphics();
+    }
+
+    public BufferStrategy getBufferStrategy() {
+        return bufferStrategy;
+    }
+
+    void prepareFrame()
+    {
+        save();
+        updateGraphics();
+        restore(); // Restaurar
+        clear(100, 100, 100);
+    }
+
+    void finishFrame()
+    {
+        bufferStrategy.getDrawGraphics().dispose();
+    }
+
+    boolean swapBuffer()
+    {
+        while(bufferStrategy.contentsRestored()) {
+            return false; //ha ido mal
+        }
+        //Display Buffer
+        this.bufferStrategy.show();
+
+        return !this.bufferStrategy.contentsLost(); //ha ido bien?
     }
 
     @Override
@@ -134,6 +192,26 @@ public class DesktopGraphics implements IGraphics {
     public void rotate(double angleDegrees) {
         graphics2D.rotate(Math.toRadians(angleDegrees));
         save();
+    }
+
+    @Override
+    public int logicXPositionToWindowsXPosition(int x) {
+        return 0;
+    }
+
+    @Override
+    public int logicYPositionToWindowsYPosition(int x) {
+        return 0;
+    }
+
+    @Override
+    public int windowsXPositionToLogicXPosition(int x) {
+        return 0;
+    }
+
+    @Override
+    public int windowsYPositionToLogicYPosition(int x) {
+        return 0;
     }
 
     @Override

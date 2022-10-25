@@ -19,6 +19,12 @@ public interface IGraphics {
     void scale(double x, double y);
     void rotate(double angleDegrees);
 
+    int logicXPositionToWindowsXPosition(int x);
+    int logicYPositionToWindowsYPosition(int x);
+
+    int windowsXPositionToLogicXPosition(int x);
+    int windowsYPositionToLogicYPosition(int x);
+
     void setTranslation(double x, double y);
     void setScale(double x, double y);
     void setRotation(double angleDegrees);
