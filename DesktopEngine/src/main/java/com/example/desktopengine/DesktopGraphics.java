@@ -84,8 +84,8 @@ public class DesktopGraphics implements IGraphics {
 
     @Override
     public void drawImage(IImage image, int x, int y) {
-        this.graphics2D.drawImage(((DesktopImage) image).getImage(), x, y, null);
-        //this.graphics2D.drawImage(((DesktopImage)image).getImage(), x - image.getWidth()/2, y - image.getHeight()/2, null);
+        //this.graphics2D.drawImage(((DesktopImage) image).getImage(), x, y, null);
+        this.graphics2D.drawImage(((DesktopImage)image).getImage(), x - image.getWidth()/2, y - image.getHeight()/2, null);
     }
 
     @Override
