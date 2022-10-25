@@ -30,7 +30,8 @@ public class DesktopGraphics implements IGraphics {
     // Handle logic size, move later to abstract class
     int logicSizeX, logicSizeY;
     float scaleFactor;
-    int topOffset, borderOffset;
+    int topInsetOffset, borderInsetOffset;
+    int borderBarkWidth, topBarHeight;
 
     public DesktopGraphics(JFrame jFrame, int wWidth, int wHeight) {
         this.jFrame = jFrame;
@@ -64,44 +65,68 @@ public class DesktopGraphics implements IGraphics {
 
         jFrame.addComponentListener(new ComponentAdapter() {
             public void componentResized(ComponentEvent evt) {
-                //handleWindowsResize();
+                handleWindowsResize();
             }
         });
 
-        handleWindowsResize();
-    }
-
-    void handleWindowsResize() {
         calculateScaleFactor();
         calculateBorderOffset();
         resizeFrameToAddInsets();
     }
 
-    void calculateScaleFactor() {
+    void handleWindowsResize() {
+        calculateScaleFactor();
+        calculateBorderOffset();
+    }
 
+
+    void calculateScaleFactor() {
+        // getWidth y getHeight son el tamaño lógico de la pantalla (setLogicSize)
+        int width = getWidth();
+        int height = getHeight() - topInsetOffset;
+
+        float wFactor = width / (float) logicSizeX;
+        float hFactor = height / (float) logicSizeY;
+
+        int sizeScreenX, sizeScreenY;
+
+        if (wFactor < hFactor) {
+            scaleFactor = wFactor;
+
+            sizeScreenX = width;
+            sizeScreenY = (width * logicSizeY) / logicSizeX;
+        }
+        else {
+            scaleFactor = hFactor;
+
+            sizeScreenX = (height * logicSizeX) / logicSizeY;
+            sizeScreenY = height;
+        }
+
+        borderBarkWidth = (width - sizeScreenX) / 2;
+        topBarHeight = (height - sizeScreenY) / 2;
     }
 
     void calculateBorderOffset() {
         // Restart offsets
-        borderOffset = 0;
-        topOffset = 0;
+        borderInsetOffset = 0;
+        topInsetOffset = 0;
 
         // Calculate borders due to logicSize adaptation
 
         // Taking in account screen insets
-        topOffset += jFrame.getInsets().top;
-        borderOffset += jFrame.getInsets().left;
+        topInsetOffset += jFrame.getInsets().top;
+        borderInsetOffset += jFrame.getInsets().left;
     }
 
-    void resizeFrameToAddInsets()
-    {
+    void resizeFrameToAddInsets() {
         int width = getWidth();
         int newWidth = width + jFrame.getInsets().left + jFrame.getInsets().right;
 
         int height = getHeight();
         int newHeight = height + jFrame.getInsets().top + jFrame.getInsets().bottom;
 
-        if(width == 0 || height == 0)
+        if (width == 0 || height == 0)
             return;
 
         jFrame.setSize(newWidth, newHeight);
@@ -184,8 +209,8 @@ public class DesktopGraphics implements IGraphics {
 
     @Override
     public void drawImage(IImage image, int x, int y) {
-        int processedX = x - (image.getWidth() / 2) + borderOffset;
-        int processedY = (y - image.getHeight() / 2) + topOffset;
+        int processedX = logicXPositionToWindowsXPosition(x - (image.getWidth() / 2)) + borderInsetOffset;
+        int processedY = logicYPositionToWindowsYPosition(y - (image.getHeight() / 2)) + topInsetOffset;
         this.graphics2D.drawImage(((DesktopImage) image).getImage(), processedX, processedY, null);
     }
 
@@ -239,22 +264,22 @@ public class DesktopGraphics implements IGraphics {
 
     @Override
     public int logicXPositionToWindowsXPosition(int x) {
-        return 0;
+        return x + borderBarkWidth;
     }
 
     @Override
-    public int logicYPositionToWindowsYPosition(int x) {
-        return 0;
+    public int logicYPositionToWindowsYPosition(int y) {
+        return y + topBarHeight;
     }
 
     @Override
     public int windowsXPositionToLogicXPosition(int x) {
-        return 0;
+        return x;
     }
 
     @Override
-    public int windowsYPositionToLogicYPosition(int x) {
-        return 0;
+    public int windowsYPositionToLogicYPosition(int y) {
+        return y;
     }
 
     @Override
