@@ -52,11 +52,11 @@ public class LogicTest implements IState {
         graphics.drawImage(testWidth, LOGIC_WIDTH / 2, LOGIC_HEIGHT / 2);
         graphics.drawImage(testHeight, LOGIC_WIDTH / 2, LOGIC_HEIGHT / 2);
 
-        graphics.drawImage(testHeight, 10,               LOGIC_HEIGHT / 2);
-        graphics.drawImage(testHeight, LOGIC_WIDTH - 10, LOGIC_HEIGHT / 2);
+        graphics.drawImage(testHeight, testHeight.getWidth() / 2,               LOGIC_HEIGHT / 2);
+        graphics.drawImage(testHeight, LOGIC_WIDTH - (testHeight.getWidth() / 2), LOGIC_HEIGHT / 2);
 
-        graphics.drawImage(testWidth, LOGIC_WIDTH / 2, 10);
-        graphics.drawImage(testWidth, LOGIC_WIDTH / 2, LOGIC_HEIGHT - 10);
+        graphics.drawImage(testWidth, LOGIC_WIDTH / 2, testWidth.getHeight() / 2);
+        graphics.drawImage(testWidth, LOGIC_WIDTH / 2, LOGIC_HEIGHT - (testWidth.getHeight() / 2));
     }
 
     @Override

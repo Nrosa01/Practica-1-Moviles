@@ -34,7 +34,6 @@ public class DesktopGraphics implements IGraphics {
 
     public DesktopGraphics(JFrame jFrame, int wWidth, int wHeight) {
         this.jFrame = jFrame;
-
         jFrame.setSize(wWidth, wHeight);
         jFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         jFrame.setIgnoreRepaint(false);
@@ -63,20 +62,19 @@ public class DesktopGraphics implements IGraphics {
         currentTransform = graphics2D.getTransform();
         defaultTransform = new AffineTransform();
 
-        // Esto es para tener en cuenta la barra de titulo de la app
-        // Intente tambien que se ajustara horizontalmente pero nada, imposible
-        topOffset = jFrame.getInsets().top;
-
         jFrame.addComponentListener(new ComponentAdapter() {
             public void componentResized(ComponentEvent evt) {
-                handleWindowsResize();
+                //handleWindowsResize();
             }
         });
+
+        handleWindowsResize();
     }
 
     void handleWindowsResize() {
         calculateScaleFactor();
         calculateBorderOffset();
+        resizeFrameToAddInsets();
     }
 
     void calculateScaleFactor() {
@@ -91,8 +89,22 @@ public class DesktopGraphics implements IGraphics {
         // Calculate borders due to logicSize adaptation
 
         // Taking in account screen insets
-        topOffset = jFrame.getInsets().top;
+        topOffset += jFrame.getInsets().top;
         borderOffset += jFrame.getInsets().left;
+    }
+
+    void resizeFrameToAddInsets()
+    {
+        int width = getWidth();
+        int newWidth = width + jFrame.getInsets().left + jFrame.getInsets().right;
+
+        int height = getHeight();
+        int newHeight = height + jFrame.getInsets().top + jFrame.getInsets().bottom;
+
+        if(width == 0 || height == 0)
+            return;
+
+        jFrame.setSize(newWidth, newHeight);
     }
 
     void setGraphics2D(Graphics2D graphics) {
