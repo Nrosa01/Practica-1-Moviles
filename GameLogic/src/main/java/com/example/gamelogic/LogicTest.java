@@ -16,16 +16,17 @@ public class LogicTest implements IState {
     IFont testFont;
     // Los estados necesitan acceder al engine
     IEngine engine = null;
+    IGraphics graphics = null;
     float t = 0;
 
     public LogicTest(IEngine engine) {
         this.engine = engine;
+        graphics = engine.getGraphics();
     }
 
     @Override
     public boolean init() {
         try {
-            IGraphics graphics = engine.getGraphics();
             graphics.setLogicSize(LOGIC_WIDTH, LOGIC_HEIGHT);
 
             testWidth = graphics.newImage(engine.getAssetsPath() + "images/fWidth.png");
@@ -47,7 +48,6 @@ public class LogicTest implements IState {
 
     @Override
     public void render() {
-        IGraphics graphics = engine.getGraphics();
         //graphics.drawImage(testWidth, 0, 0);
         graphics.drawImage(testWidth, LOGIC_WIDTH / 2, LOGIC_HEIGHT / 2);
         graphics.drawImage(testHeight, LOGIC_WIDTH / 2, LOGIC_HEIGHT / 2);

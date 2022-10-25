@@ -6,6 +6,8 @@ import com.example.engine.IImage;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferStrategy;
 import java.io.File;
@@ -18,7 +20,6 @@ public class DesktopGraphics implements IGraphics {
 
     Graphics2D graphics2D;
     JFrame jFrame;
-    int logicSizeX, logicSizeY;
     Color currentColor;
 
     // Para guardar las transformaciones entre buffers
@@ -26,6 +27,10 @@ public class DesktopGraphics implements IGraphics {
     AffineTransform defaultTransform;
     BufferStrategy bufferStrategy;
 
+    // Handle logic size, move later to abstract class
+    int logicSizeX, logicSizeY;
+    float scaleFactor;
+    int topOffset, borderOffset;
 
     public DesktopGraphics(JFrame jFrame, int wWidth, int wHeight) {
         this.jFrame = jFrame;
@@ -33,8 +38,10 @@ public class DesktopGraphics implements IGraphics {
         jFrame.setSize(wWidth, wHeight);
         jFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         jFrame.setIgnoreRepaint(false);
-
         jFrame.setVisible(true);
+
+        logicSizeX = wWidth;
+        logicSizeY = wHeight;
 
         int tries = 100;
         while (tries-- > 0) {
@@ -58,15 +65,41 @@ public class DesktopGraphics implements IGraphics {
 
         // Esto es para tener en cuenta la barra de titulo de la app
         // Intente tambien que se ajustara horizontalmente pero nada, imposible
-        translate(jFrame.getInsets().left, jFrame.getInsets().top);
+        topOffset = jFrame.getInsets().top;
+
+        jFrame.addComponentListener(new ComponentAdapter() {
+            public void componentResized(ComponentEvent evt) {
+                handleWindowsResize();
+            }
+        });
+    }
+
+    void handleWindowsResize() {
+        calculateScaleFactor();
+        calculateBorderOffset();
+    }
+
+    void calculateScaleFactor() {
+
+    }
+
+    void calculateBorderOffset() {
+        // Restart offsets
+        borderOffset = 0;
+        topOffset = 0;
+
+        // Calculate borders due to logicSize adaptation
+
+        // Taking in account screen insets
+        topOffset = jFrame.getInsets().top;
+        borderOffset += jFrame.getInsets().left;
     }
 
     void setGraphics2D(Graphics2D graphics) {
         this.graphics2D = graphics;
     }
 
-    void updateGraphics()
-    {
+    void updateGraphics() {
         this.graphics2D = (Graphics2D) bufferStrategy.getDrawGraphics();
     }
 
@@ -74,22 +107,19 @@ public class DesktopGraphics implements IGraphics {
         return bufferStrategy;
     }
 
-    void prepareFrame()
-    {
+    void prepareFrame() {
         save();
         updateGraphics();
         restore(); // Restaurar
         clear(100, 100, 100);
     }
 
-    void finishFrame()
-    {
+    void finishFrame() {
         bufferStrategy.getDrawGraphics().dispose();
     }
 
-    boolean swapBuffer()
-    {
-        while(bufferStrategy.contentsRestored()) {
+    boolean swapBuffer() {
+        while (bufferStrategy.contentsRestored()) {
             return false; //ha ido mal
         }
         //Display Buffer
@@ -142,8 +172,9 @@ public class DesktopGraphics implements IGraphics {
 
     @Override
     public void drawImage(IImage image, int x, int y) {
-        //this.graphics2D.drawImage(((DesktopImage) image).getImage(), x, y, null);
-        this.graphics2D.drawImage(((DesktopImage)image).getImage(), x - image.getWidth()/2, y - image.getHeight()/2, null);
+        int processedX = x - (image.getWidth() / 2) + borderOffset;
+        int processedY = (y - image.getHeight() / 2) + topOffset;
+        this.graphics2D.drawImage(((DesktopImage) image).getImage(), processedX, processedY, null);
     }
 
     @Override
@@ -216,7 +247,7 @@ public class DesktopGraphics implements IGraphics {
 
     @Override
     public void setScale(double x, double y) {
-        currentTransform.setToScale(x/currentTransform.getScaleX(),y/currentTransform.getScaleY());
+        currentTransform.setToScale(x / currentTransform.getScaleX(), y / currentTransform.getScaleY());
         apply();
         save();
     }
@@ -224,7 +255,7 @@ public class DesktopGraphics implements IGraphics {
     @Override
     public void setTranslation(double x, double y) {
 
-        currentTransform.setToTranslation(x-currentTransform.getTranslateX(), y-currentTransform.getTranslateY());
+        currentTransform.setToTranslation(x - currentTransform.getTranslateX(), y - currentTransform.getTranslateY());
         apply();
         save();
     }
@@ -237,29 +268,25 @@ public class DesktopGraphics implements IGraphics {
     }
 
     @Override
-    public void resetScale()
-    {
-        setScale(1,1);
+    public void resetScale() {
+        setScale(1, 1);
     }
 
     @Override
-    public void resetTranslation()
-    {
-        setTranslation(0,0);
+    public void resetTranslation() {
+        setTranslation(0, 0);
 
         // Volver a trasladar para tener en cuenta la barra
         translate(jFrame.getInsets().left, jFrame.getInsets().top);
     }
 
     @Override
-    public void resetRotation()
-    {
+    public void resetRotation() {
         setRotation(0);
     }
 
     @Override
-    public void resetTransform()
-    {
+    public void resetTransform() {
         resetTranslation();
         resetScale();
         resetRotation();
@@ -270,7 +297,7 @@ public class DesktopGraphics implements IGraphics {
         currentTransform = graphics2D.getTransform();
     }
 
-    private void apply(){
+    private void apply() {
         graphics2D.transform(currentTransform);
     }
 

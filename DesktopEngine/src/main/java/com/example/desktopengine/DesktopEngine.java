@@ -71,8 +71,8 @@ public class DesktopEngine implements IEngine, Runnable {
 
             // Actualizamos
             double deltaTime = (double) nanoElapsedTime / 1.0E9;
-            this.update(deltaTime);
             this.currentState.handleInput();
+            this.update(deltaTime);
 
             do {
                 this.graphics.prepareFrame();;
