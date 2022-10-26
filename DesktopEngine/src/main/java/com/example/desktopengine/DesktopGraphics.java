@@ -115,7 +115,7 @@ public class DesktopGraphics extends AbstractGraphics {
 
     void finishFrame() {
         Color current = currentColor;
-        setColor(255,0,0);
+        setColor(0,0,0);
         renderBorders();
         currentColor = current;
 

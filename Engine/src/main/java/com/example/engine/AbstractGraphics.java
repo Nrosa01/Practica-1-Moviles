@@ -32,12 +32,16 @@ public abstract class AbstractGraphics implements IGraphics{
 
     protected void renderBorders()
     {
+        // Tener en cuenta scale factor para el ancho
+        int scaledBarWidth = (int)(borderBarWidth / scaleFactor);
+        int scaledTopHeight = (int)(topBarHeight / scaleFactor);
+
         // Barra izquierda y derecha
-        fillRectangle(-borderBarWidth/2, logicSizeY/2, borderBarWidth, logicSizeY);
-        fillRectangle(borderBarWidth/2 + logicSizeX, logicSizeY/2, borderBarWidth, logicSizeY);
+        fillRectangle(-scaledBarWidth/2, logicSizeY/2, scaledBarWidth, logicSizeY);
+        fillRectangle(scaledBarWidth/2 + logicSizeX, logicSizeY/2, scaledBarWidth, logicSizeY);
 
         // Barras arriba y abajo
-        fillRectangle(logicSizeX/2, -topBarHeight/2, logicSizeX, topBarHeight);
-        fillRectangle(logicSizeX/2, topBarHeight/2 + logicSizeY, logicSizeX, topBarHeight);
+        fillRectangle(logicSizeX/2, -scaledTopHeight/2, logicSizeX, scaledTopHeight);
+        fillRectangle(logicSizeX/2, scaledTopHeight/2 + logicSizeY, logicSizeX, scaledTopHeight);
     }
 }
