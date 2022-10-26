@@ -2,9 +2,9 @@ package com.example.desktopengine;
 
 import com.example.engine.AbstractGraphics;
 import com.example.engine.IFont;
-import com.example.engine.IGraphics;
 import com.example.engine.IImage;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.event.ComponentAdapter;
@@ -73,7 +73,6 @@ public class DesktopGraphics extends AbstractGraphics {
 
     void handleWindowsResize() {
         calculateScaleFactor();
-        //calculateBorderOffset();
     }
 
     void calculateScaleFactor() {
@@ -103,16 +102,8 @@ public class DesktopGraphics extends AbstractGraphics {
         jFrame.setSize(newWidth, newHeight);
     }
 
-    void setGraphics2D(Graphics2D graphics) {
-        this.graphics2D = graphics;
-    }
-
     void updateGraphics() {
         this.graphics2D = (Graphics2D) bufferStrategy.getDrawGraphics();
-    }
-
-    public BufferStrategy getBufferStrategy() {
-        return bufferStrategy;
     }
 
     void prepareFrame() {
@@ -123,6 +114,11 @@ public class DesktopGraphics extends AbstractGraphics {
     }
 
     void finishFrame() {
+        Color current = currentColor;
+        setColor(255,0,0);
+        renderBorders();
+        currentColor = current;
+
         bufferStrategy.getDrawGraphics().dispose();
     }
 
@@ -163,6 +159,7 @@ public class DesktopGraphics extends AbstractGraphics {
     @Override
     public void setColor(int r, int g, int b) {
         currentColor = new Color(r, g, b);
+        graphics2D.setColor(currentColor);
     }
 
     @Override
@@ -186,13 +183,18 @@ public class DesktopGraphics extends AbstractGraphics {
     }
 
     @Override
-    public void drawRectangle(int upperLeftX, int upperLeftY, int lowerRightX, int lowerRightY, int lineWidth) {
-
+    public void drawRectangle(int x, int y, int width, int height, int lineWidth) {
+        int processedX = logicXPositionToWindowsXPosition(x - (width / 2));
+        int processedY = logicYPositionToWindowsYPosition(y - (height / 2));
+        graphics2D.setStroke(new BasicStroke(lineWidth));
+        graphics2D.drawRect(processedX, processedY, width, height);
     }
 
     @Override
-    public void fillRectangle(int upperLeftX, int upperLeftY, int lowerRightX, int lowerRightY) {
-
+    public void fillRectangle(int x, int y, int width, int height) {
+        int processedX = logicXPositionToWindowsXPosition(x - (width / 2));
+        int processedY = logicYPositionToWindowsYPosition(y - (height / 2));
+        graphics2D.fillRect(processedX, processedY, width, height);
     }
 
     @Override
@@ -235,7 +237,7 @@ public class DesktopGraphics extends AbstractGraphics {
 
     @Override
     public int logicXPositionToWindowsXPosition(int x) {
-        return x + (int) (borderBarkWidth / scaleFactor) + (int) (borderInsetOffset / scaleFactor);
+        return x + (int) (borderBarWidth / scaleFactor) + (int) (borderInsetOffset / scaleFactor);
     }
 
     @Override
