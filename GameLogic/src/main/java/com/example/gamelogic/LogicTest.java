@@ -4,6 +4,7 @@ import com.example.engine.IEngine;
 import com.example.engine.IFont;
 import com.example.engine.IGraphics;
 import com.example.engine.IImage;
+import com.example.engine.IInput;
 import com.example.engine.IState;
 import com.example.engine.InputEvent;
 
@@ -11,8 +12,8 @@ import java.util.List;
 
 public class LogicTest implements IState {
 
-    static final int LOGIC_WIDTH = 640;
-    static final int LOGIC_HEIGHT = 480;
+    static final int LOGIC_WIDTH = 600;
+    static final int LOGIC_HEIGHT = 400;
 
     IImage testWidth;
     IImage testHeight;
@@ -22,8 +23,8 @@ public class LogicTest implements IState {
     IEngine engine = null;
     IGraphics graphics = null;
     float t = 0;
-    int circlePosX = 120;
-    int circlePosY = 120;
+    float circlePosX = 120;
+    float circlePosY = 120;
 
     public LogicTest(IEngine engine) {
         this.engine = engine;
@@ -39,8 +40,6 @@ public class LogicTest implements IState {
             testHeight = graphics.newImage(engine.getAssetsPath() + "images/fHeight.png");
             circle = graphics.newImage(engine.getAssetsPath() + "images/circle.png");
             //testFont = engine.getGraphics().newFont(engine.getAssetsPath() + "fonts/Antihero.ttf");
-
-
             return true;
         } catch (Exception e) {
             e.printStackTrace();
@@ -50,7 +49,6 @@ public class LogicTest implements IState {
 
     @Override
     public void update(double deltaTime) {
-
     }
 
     @Override
@@ -65,11 +63,18 @@ public class LogicTest implements IState {
         graphics.drawImage(testWidth, LOGIC_WIDTH / 2, testWidth.getHeight() / 2);
         graphics.drawImage(testWidth, LOGIC_WIDTH / 2, LOGIC_HEIGHT - (testWidth.getHeight() / 2));
 
-        graphics.drawImage(circle, circlePosX, circlePosY);
+        graphics.drawImage(circle, (int)circlePosX, (int)circlePosY);
     }
 
     @Override
     public void handleInput(List<InputEvent> events) {
-
+        for (InputEvent inputEvent: events)
+        {
+            if(inputEvent.type == IInput.InputTouchType.TOUCH_MOVE)
+            {
+                circlePosX = graphics.windowsXPositionToLogicXPosition(inputEvent.x);
+                circlePosY = graphics.windowsYPositionToLogicYPosition(inputEvent.y);
+            }
+        }
     }
 }

@@ -73,6 +73,7 @@ public class DesktopGraphics extends AbstractGraphics {
 
     void handleWindowsResize() {
         calculateScaleFactor();
+        System.out.println("Factor de escala: " + scaleFactor);
     }
 
     void calculateScaleFactor() {
@@ -90,10 +91,12 @@ public class DesktopGraphics extends AbstractGraphics {
     }
 
     void resizeFrameToAddInsets() {
-        int width = getWidth();
+        int width = 1400;
+        //int width = getWidth();
         int newWidth = width + jFrame.getInsets().left + jFrame.getInsets().right;
 
-        int height = getHeight();
+        int height = 800;
+        //int height = getHeight();
         int newHeight = height + jFrame.getInsets().top + jFrame.getInsets().bottom;
 
         if (width == 0 || height == 0)
@@ -115,7 +118,7 @@ public class DesktopGraphics extends AbstractGraphics {
 
     void finishFrame() {
         Color current = currentColor;
-        setColor(0,0,0);
+        setColor(255, 0, 0);
         renderBorders();
         currentColor = current;
 
@@ -123,7 +126,7 @@ public class DesktopGraphics extends AbstractGraphics {
     }
 
     boolean swapBuffer() {
-        while (bufferStrategy.contentsRestored()) {
+        if (bufferStrategy.contentsRestored()) {
             return false; //ha ido mal
         }
         //Display Buffer
@@ -247,12 +250,12 @@ public class DesktopGraphics extends AbstractGraphics {
 
     @Override
     public int windowsXPositionToLogicXPosition(int x) {
-        return x;
+        return (int) ((x - borderBarWidth - borderInsetOffset) / scaleFactor);
     }
 
     @Override
     public int windowsYPositionToLogicYPosition(int y) {
-        return y;
+        return (int) ((y - topBarHeight - topInsetOffset) / scaleFactor);
     }
 
     @Override
@@ -288,6 +291,14 @@ public class DesktopGraphics extends AbstractGraphics {
 
         // Volver a trasladar para tener en cuenta la barra
         translate(jFrame.getInsets().left, jFrame.getInsets().top);
+    }
+
+    public boolean isInsideLogicCanvas(int windowsX, int windowsY) {
+
+        int logicX = windowsXPositionToLogicXPosition(windowsX);
+        int logicY = windowsYPositionToLogicYPosition(windowsY);
+        return !(logicX < 0 || logicX > logicSizeX ||
+                 logicY < 0 || logicY > logicSizeY);
     }
 
     @Override

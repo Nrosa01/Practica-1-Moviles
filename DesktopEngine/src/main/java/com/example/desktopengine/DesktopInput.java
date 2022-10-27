@@ -8,14 +8,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DesktopInput implements IInput {
-    private List<InputEvent> eventos = new ArrayList<InputEvent>();
+    private List<InputEvent> eventos = new ArrayList<>();
 
     public void addEvent(MouseEvent event){
         InputTouchType tipo = null;
-        if (event.getID() == MouseEvent.BUTTON1_DOWN_MASK){
+
+        if (event.getID() == MouseEvent.MOUSE_CLICKED)
             tipo = InputTouchType.TOUCH_DOWN;
-        }
-        eventos.add(new InputEvent(0, 0, 0, tipo));
+        else if(event.getID() == MouseEvent.MOUSE_RELEASED)
+            tipo = InputTouchType.TOUCH_UP;
+        else if(event.getID() == MouseEvent.MOUSE_MOVED)
+            tipo = InputTouchType.TOUCH_MOVE;
+
+        eventos.add(new InputEvent(event.getX(), event.getY(), 0, tipo));
     }
 
     public List<InputEvent> getEventList(){

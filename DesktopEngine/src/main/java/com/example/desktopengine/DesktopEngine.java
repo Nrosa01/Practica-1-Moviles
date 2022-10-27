@@ -2,9 +2,13 @@ package com.example.desktopengine;
 
 import com.example.engine.*;
 
-import javax.swing.JFrame;
+import java.awt.event.MouseEvent;
+import java.util.List;
 
-public class DesktopEngine implements IEngine, Runnable {
+import javax.swing.JFrame;
+import javax.swing.event.MouseInputListener;
+
+public class DesktopEngine implements IEngine, Runnable, MouseInputListener {
     DesktopGraphics graphics;
     DesktopAudio audio;
     DesktopInput inputManager;
@@ -12,11 +16,15 @@ public class DesktopEngine implements IEngine, Runnable {
     JFrame mView;
     Thread renderThread;
     IState currentState;
+
     boolean isRunning = false;
 
     public DesktopEngine(int wWidth, int wHeight, String wTittle) {
         mView = new JFrame(wTittle);
         graphics = new DesktopGraphics(mView, wWidth, wHeight);
+        inputManager = new DesktopInput();
+        mView.addMouseListener(this);
+        mView.addMouseMotionListener(this);
     }
 
     //Métodos sincronización (parar y reiniciar aplicación)
@@ -73,10 +81,9 @@ public class DesktopEngine implements IEngine, Runnable {
 
             do {
                 this.graphics.prepareFrame();
-                ;
                 this.render();
                 this.graphics.finishFrame();
-            } while (graphics.swapBuffer());
+            } while (!graphics.swapBuffer());
         }
     }
 
@@ -124,5 +131,43 @@ public class DesktopEngine implements IEngine, Runnable {
             this.currentState = state;
         else
             throw new Exception("State didn't init correctly");
+    }
+
+    @Override
+    public void mouseClicked(MouseEvent mouseEvent) {
+        if (graphics.isInsideLogicCanvas(mouseEvent.getX(), mouseEvent.getY()))
+            inputManager.addEvent(mouseEvent);
+    }
+
+    @Override
+    public void mousePressed(MouseEvent mouseEvent) {
+
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent mouseEvent) {
+        if (graphics.isInsideLogicCanvas(mouseEvent.getX(), mouseEvent.getY()))
+            inputManager.addEvent(mouseEvent);
+    }
+
+    @Override
+    public void mouseEntered(MouseEvent mouseEvent) {
+
+    }
+
+    @Override
+    public void mouseExited(MouseEvent mouseEvent) {
+
+    }
+
+    @Override
+    public void mouseDragged(MouseEvent mouseEvent) {
+
+    }
+
+    @Override
+    public void mouseMoved(MouseEvent mouseEvent) {
+        if (graphics.isInsideLogicCanvas(mouseEvent.getX(), mouseEvent.getY()))
+            inputManager.addEvent(mouseEvent);
     }
 }
