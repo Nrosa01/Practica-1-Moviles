@@ -8,6 +8,7 @@ public interface IEngine {
 
     void render();
     void update(double elapsedTime);
+    void handleInput();
 
     // Esto podria estar definido en una clase abstracta, pero de esta forma
     // podemos hacer el efecto de fade, que en desktop será distinto que en android

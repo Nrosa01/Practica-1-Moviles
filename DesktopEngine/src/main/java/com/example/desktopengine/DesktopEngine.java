@@ -2,15 +2,12 @@ package com.example.desktopengine;
 
 import com.example.engine.*;
 
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.image.BufferStrategy;
-
 import javax.swing.JFrame;
 
 public class DesktopEngine implements IEngine, Runnable {
     DesktopGraphics graphics;
     DesktopAudio audio;
+    DesktopInput inputManager;
     // DesktopState state;
     JFrame mView;
     Thread renderThread;
@@ -71,14 +68,15 @@ public class DesktopEngine implements IEngine, Runnable {
 
             // Actualizamos
             double deltaTime = (double) nanoElapsedTime / 1.0E9;
-            this.currentState.handleInput();
+            this.handleInput();
             this.update(deltaTime);
 
             do {
-                this.graphics.prepareFrame();;
+                this.graphics.prepareFrame();
+                ;
                 this.render();
                 this.graphics.finishFrame();
-            } while(graphics.swapBuffer());
+            } while (graphics.swapBuffer());
         }
     }
 
@@ -110,6 +108,12 @@ public class DesktopEngine implements IEngine, Runnable {
     @Override
     public void update(double deltaTime) {
         currentState.update(deltaTime);
+    }
+
+    @Override
+    public void handleInput() {
+        this.currentState.handleInput(inputManager.getEventList());
+        inputManager.clear();
     }
 
     @Override

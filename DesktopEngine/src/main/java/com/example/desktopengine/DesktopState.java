@@ -1,6 +1,9 @@
 package com.example.desktopengine;
 
 import com.example.engine.IState;
+import com.example.engine.InputEvent;
+
+import java.util.List;
 
 public class DesktopState implements IState {
     @Override
@@ -19,7 +22,7 @@ public class DesktopState implements IState {
     }
 
     @Override
-    public void handleInput() {
+    public void handleInput(List<InputEvent> events) {
 
     }
 }

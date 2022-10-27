@@ -5,6 +5,9 @@ import com.example.engine.IFont;
 import com.example.engine.IGraphics;
 import com.example.engine.IImage;
 import com.example.engine.IState;
+import com.example.engine.InputEvent;
+
+import java.util.List;
 
 public class LogicTest implements IState {
 
@@ -13,11 +16,14 @@ public class LogicTest implements IState {
 
     IImage testWidth;
     IImage testHeight;
+    IImage circle;
     IFont testFont;
     // Los estados necesitan acceder al engine
     IEngine engine = null;
     IGraphics graphics = null;
     float t = 0;
+    int circlePosX = 120;
+    int circlePosY = 120;
 
     public LogicTest(IEngine engine) {
         this.engine = engine;
@@ -31,6 +37,7 @@ public class LogicTest implements IState {
 
             testWidth = graphics.newImage(engine.getAssetsPath() + "images/fWidth.png");
             testHeight = graphics.newImage(engine.getAssetsPath() + "images/fHeight.png");
+            circle = graphics.newImage(engine.getAssetsPath() + "images/circle.png");
             //testFont = engine.getGraphics().newFont(engine.getAssetsPath() + "fonts/Antihero.ttf");
 
 
@@ -57,10 +64,12 @@ public class LogicTest implements IState {
 
         graphics.drawImage(testWidth, LOGIC_WIDTH / 2, testWidth.getHeight() / 2);
         graphics.drawImage(testWidth, LOGIC_WIDTH / 2, LOGIC_HEIGHT - (testWidth.getHeight() / 2));
+
+        graphics.drawImage(circle, circlePosX, circlePosY);
     }
 
     @Override
-    public void handleInput() {
+    public void handleInput(List<InputEvent> events) {
 
     }
 }
