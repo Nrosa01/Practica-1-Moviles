@@ -243,7 +243,7 @@ public class DesktopGraphics extends AbstractGraphics {
         FontMetrics fm = graphics2D.getFontMetrics();
 
         int processedX = logicXPositionToWindowsXPosition(x -  ((int)(fm.stringWidth(text) * scaleX) / 2));
-        int processedY = logicYPositionToWindowsYPosition(y - ((int)(fm.getHeight() * scaleY) / 2) + fm.getAscent());
+        int processedY = logicYPositionToWindowsYPosition(y - ((int)(fm.getHeight() * scaleY) / 2) + (int)(fm.getAscent() * scaleY));
 
         graphics2D.drawString(text, processedX, processedY);
     }

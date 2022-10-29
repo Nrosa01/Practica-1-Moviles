@@ -11,8 +11,8 @@ import com.example.engine.InputEvent;
 import java.util.List;
 
 public class UITest implements IState {
-    static final int LOGIC_WIDTH = 600;
-    static final int LOGIC_HEIGHT = 400;
+    static final int LOGIC_WIDTH = 400;
+    static final int LOGIC_HEIGHT = 600;
 
     IFont testFont;
     Button button;
@@ -33,8 +33,14 @@ public class UITest implements IState {
         try {
             graphics.setLogicSize(LOGIC_WIDTH, LOGIC_HEIGHT);
 
-            button = new Button(LOGIC_WIDTH / 2, LOGIC_HEIGHT / 2, 200, 150, engine);
-            testFont = engine.getGraphics().newFont(engine.getAssetsPath() + "fonts/Antihero.ttf", 12, false);
+            testFont = engine.getGraphics().newFont(engine.getAssetsPath() + "fonts/Antihero.ttf", 24, false);
+            button = new Button(LOGIC_WIDTH / 2, LOGIC_HEIGHT / 2, 100, 35, "Jugar", testFont,  engine);
+            button.setCallback(new IInteractableCallback() {
+                @Override
+                public void onInteractionOccur() {
+                    System.out.println("Callback");
+                }
+            });
             return true;
         } catch (Exception e) {
             e.printStackTrace();
@@ -50,7 +56,7 @@ public class UITest implements IState {
     @Override
     public void render() {
         graphics.setColor(255,255,255);
-        graphics.drawTextCentered("Button pos x: " + button.getPosX() + " y: " + button.getPosY() + " width: " + button.getWidth() + " height: " + button.getHeight(), LOGIC_WIDTH / 2, 90, testFont);
+        graphics.drawTextCentered("Nonogramas", LOGIC_WIDTH / 2, 90, testFont);
 
         button.render();
         graphics.setColor(0,0,0, 120);
