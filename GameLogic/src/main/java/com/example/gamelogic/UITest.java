@@ -39,6 +39,11 @@ public class UITest implements IState {
                 @Override
                 public void onInteractionOccur() {
                     System.out.println("Callback");
+                    try {
+                        engine.setState(new LogicTest(engine));
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
             });
             return true;

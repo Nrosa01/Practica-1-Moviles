@@ -12,8 +12,8 @@ import java.util.List;
 
 public class LogicTest implements IState {
 
-    static final int LOGIC_WIDTH = 600;
-    static final int LOGIC_HEIGHT = 400;
+    static final int LOGIC_WIDTH = 400;
+    static final int LOGIC_HEIGHT = 600;
 
     IImage testWidth;
     IImage testHeight;
@@ -65,7 +65,7 @@ public class LogicTest implements IState {
 
         graphics.drawImage(circle, (int)circlePosX, (int)circlePosY);
         graphics.setColor(255,255,255);
-        graphics.drawText("Eevee is a great pokemon", LOGIC_WIDTH / 2, LOGIC_HEIGHT / 2, testFont);
+        graphics.drawTextCentered("Eevee is a great pokemon", LOGIC_WIDTH / 2, LOGIC_HEIGHT / 2, testFont);
         graphics.drawText("Eevee", 0,15, testFont);
     }
 
