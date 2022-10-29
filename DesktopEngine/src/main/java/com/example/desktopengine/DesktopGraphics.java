@@ -6,6 +6,7 @@ import com.example.engine.IImage;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
+import java.awt.FontFormatException;
 import java.awt.Graphics2D;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
@@ -73,7 +74,6 @@ public class DesktopGraphics extends AbstractGraphics {
 
     void handleWindowsResize() {
         calculateScaleFactor();
-        System.out.println("Factor de escala: " + scaleFactor);
     }
 
     void calculateScaleFactor() {
@@ -139,7 +139,7 @@ public class DesktopGraphics extends AbstractGraphics {
     public IImage newImage(String pathToImage) {
         IImage image = null;
         try {
-            image = new DesktopImage(ImageIO.read((new File(pathToImage))));
+            image = new DesktopImage(pathToImage);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -149,8 +149,16 @@ public class DesktopGraphics extends AbstractGraphics {
 
 
     @Override
-    public IFont newFont(String pathToFont) {
-        return null;
+    public IFont newFont(String pathToFont, int size, boolean isBold) {
+        IFont font = null;
+
+        try {
+            font = new DesktopFont(pathToFont, size, isBold);
+        } catch (IOException | FontFormatException e) {
+            e.printStackTrace();
+        }
+
+        return font;
     }
 
     @Override
@@ -162,6 +170,12 @@ public class DesktopGraphics extends AbstractGraphics {
     @Override
     public void setColor(int r, int g, int b) {
         currentColor = new Color(r, g, b);
+        graphics2D.setColor(currentColor);
+    }
+
+    @Override
+    public void setColor(int r, int g, int b, int a) {
+        currentColor = new Color(r, g, b, a);
         graphics2D.setColor(currentColor);
     }
 
@@ -206,8 +220,19 @@ public class DesktopGraphics extends AbstractGraphics {
     }
 
     @Override
-    public void drawText(String text, int x, int y, IFont font) {
+    public void drawCircle(int xPos, int yPos, int radius) {
+        int processedX = logicXPositionToWindowsXPosition(xPos - radius);
+        int processedY = logicYPositionToWindowsYPosition(yPos - radius);
+        graphics2D.fillOval(processedX, processedY, radius*2, radius*2);
+    }
 
+    @Override
+    public void drawText(String text, int x, int y, IFont font) {
+        int processedX = logicXPositionToWindowsXPosition(x);
+        int processedY = logicYPositionToWindowsYPosition(y);
+
+        graphics2D.setFont(((DesktopFont)font).getFont());
+        graphics2D.drawString(text, processedX, processedY);
     }
 
     @Override
@@ -298,7 +323,7 @@ public class DesktopGraphics extends AbstractGraphics {
         int logicX = windowsXPositionToLogicXPosition(windowsX);
         int logicY = windowsYPositionToLogicYPosition(windowsY);
         return !(logicX < 0 || logicX > logicSizeX ||
-                 logicY < 0 || logicY > logicSizeY);
+                logicY < 0 || logicY > logicSizeY);
     }
 
     @Override

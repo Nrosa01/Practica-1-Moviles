@@ -10,23 +10,19 @@ import com.example.engine.InputEvent;
 
 import java.util.List;
 
-public class LogicTest implements IState {
-
+public class UITest implements IState {
     static final int LOGIC_WIDTH = 600;
     static final int LOGIC_HEIGHT = 400;
 
-    IImage testWidth;
-    IImage testHeight;
-    IImage circle;
     IFont testFont;
-    // Los estados necesitan acceder al engine
+
     IEngine engine = null;
     IGraphics graphics = null;
-    float t = 0;
     float circlePosX = 120;
     float circlePosY = 120;
+    float radius = 12;
 
-    public LogicTest(IEngine engine) {
+    public UITest(IEngine engine) {
         this.engine = engine;
         graphics = engine.getGraphics();
     }
@@ -36,9 +32,6 @@ public class LogicTest implements IState {
         try {
             graphics.setLogicSize(LOGIC_WIDTH, LOGIC_HEIGHT);
 
-            testWidth = graphics.newImage(engine.getAssetsPath() + "images/fWidth.png");
-            testHeight = graphics.newImage(engine.getAssetsPath() + "images/fHeight.png");
-            circle = graphics.newImage(engine.getAssetsPath() + "images/circle.png");
             testFont = engine.getGraphics().newFont(engine.getAssetsPath() + "fonts/Antihero.ttf", 12, false);
             return true;
         } catch (Exception e) {
@@ -53,20 +46,12 @@ public class LogicTest implements IState {
 
     @Override
     public void render() {
-        //graphics.drawImage(testWidth, 0, 0);
-        graphics.drawImage(testWidth, LOGIC_WIDTH / 2, LOGIC_HEIGHT / 2);
-        graphics.drawImage(testHeight, LOGIC_WIDTH / 2, LOGIC_HEIGHT / 2);
-
-        graphics.drawImage(testHeight, testHeight.getWidth() / 2,               LOGIC_HEIGHT / 2);
-        graphics.drawImage(testHeight, LOGIC_WIDTH - (testHeight.getWidth() / 2), LOGIC_HEIGHT / 2);
-
-        graphics.drawImage(testWidth, LOGIC_WIDTH / 2, testWidth.getHeight() / 2);
-        graphics.drawImage(testWidth, LOGIC_WIDTH / 2, LOGIC_HEIGHT - (testWidth.getHeight() / 2));
-
-        graphics.drawImage(circle, (int)circlePosX, (int)circlePosY);
         graphics.setColor(255,255,255);
         graphics.drawText("Eevee is a great pokemon", LOGIC_WIDTH / 2, LOGIC_HEIGHT / 2, testFont);
         graphics.drawText("Eevee", 0,15, testFont);
+
+        graphics.setColor(0,0,0, 120);
+        graphics.drawCircle((int)circlePosX, (int)circlePosY, (int)radius);
     }
 
     @Override

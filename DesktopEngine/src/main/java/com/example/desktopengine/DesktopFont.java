@@ -20,7 +20,11 @@ public class DesktopFont implements IFont {
         } catch (FontFormatException | IOException e) {
             e.printStackTrace();
         }
+    }
 
+    Font getFont()
+    {
+        return font;
     }
 
     @Override
