@@ -49,7 +49,7 @@ public class UITest implements IState {
     @Override
     public void render() {
         graphics.setColor(255,255,255);
-        graphics.drawText("Button pos x: " + button.getPosX() + " y: " + button.getPosY() + " width: " + button.getWidth() + " height: " + button.getHeight(), LOGIC_WIDTH / 2 - 200, 90, testFont);
+        graphics.drawTextCentered("Button pos x: " + button.getPosX() + " y: " + button.getPosY() + " width: " + button.getWidth() + " height: " + button.getHeight() + "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaS", LOGIC_WIDTH / 2, 90, testFont);
 
         button.render();
         graphics.setColor(0,0,0, 120);

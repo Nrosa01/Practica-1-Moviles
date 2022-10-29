@@ -7,6 +7,7 @@ import com.example.engine.IImage;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.FontFormatException;
+import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
@@ -223,7 +224,7 @@ public class DesktopGraphics extends AbstractGraphics {
     public void drawCircle(int xPos, int yPos, int radius) {
         int processedX = logicXPositionToWindowsXPosition(xPos - radius);
         int processedY = logicYPositionToWindowsYPosition(yPos - radius);
-        graphics2D.fillOval(processedX, processedY, radius*2, radius*2);
+        graphics2D.fillOval(processedX, processedY, radius * 2, radius * 2);
     }
 
     @Override
@@ -231,7 +232,19 @@ public class DesktopGraphics extends AbstractGraphics {
         int processedX = logicXPositionToWindowsXPosition(x);
         int processedY = logicYPositionToWindowsYPosition(y);
 
-        graphics2D.setFont(((DesktopFont)font).getFont());
+        graphics2D.setFont(((DesktopFont) font).getFont());
+        graphics2D.drawString(text, processedX, processedY);
+    }
+
+    @Override
+    public void drawTextCentered(String text, int x, int y, IFont font) {
+        graphics2D.setFont(((DesktopFont) font).getFont());
+        FontMetrics fm = graphics2D.getFontMetrics();
+
+
+        int processedX = logicXPositionToWindowsXPosition(x - (fm.stringWidth(text) / 2));
+        int processedY = logicYPositionToWindowsYPosition(y - (fm.getHeight() / 2) + fm.getAscent());
+
         graphics2D.drawString(text, processedX, processedY);
     }
 

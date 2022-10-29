@@ -15,6 +15,7 @@ public interface IGraphics {
     void drawLine(int fromX, int fromY, int toX, int toY);
     void drawCircle(int xPos, int yPos, int radius);
     void drawText(String text, int x, int y, IFont font);
+    void drawTextCentered(String text, int x, int y, IFont font);
     int getWidth();
     int getHeight();
 
