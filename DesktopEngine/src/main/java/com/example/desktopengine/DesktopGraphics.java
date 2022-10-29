@@ -13,10 +13,8 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferStrategy;
-import java.io.File;
 import java.io.IOException;
 
-import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 
 public class DesktopGraphics extends AbstractGraphics {
@@ -29,6 +27,9 @@ public class DesktopGraphics extends AbstractGraphics {
     AffineTransform currentTransform;
     AffineTransform defaultTransform;
     BufferStrategy bufferStrategy;
+
+    private double scaleX = 1;
+    private double scaleY = 1;
 
     // Offsets del jframe
     protected int topInsetOffset, borderInsetOffset;
@@ -195,23 +196,23 @@ public class DesktopGraphics extends AbstractGraphics {
 
     @Override
     public void drawImage(IImage image, int x, int y) {
-        int processedX = logicXPositionToWindowsXPosition(x - (image.getWidth() / 2));
-        int processedY = logicYPositionToWindowsYPosition(y - (image.getHeight() / 2));
+        int processedX = logicXPositionToWindowsXPosition(x - ((int)(image.getWidth() * scaleX) / 2));
+        int processedY = logicYPositionToWindowsYPosition(y - ((int)(image.getHeight() * scaleY) / 2));
         this.graphics2D.drawImage(((DesktopImage) image).getImage(), processedX, processedY, null);
     }
 
     @Override
     public void drawRectangle(int x, int y, int width, int height, int lineWidth) {
-        int processedX = logicXPositionToWindowsXPosition(x - (width / 2));
-        int processedY = logicYPositionToWindowsYPosition(y - (height / 2));
+        int processedX = logicXPositionToWindowsXPosition(x - ((int)(width * scaleX) / 2));
+        int processedY = logicYPositionToWindowsYPosition(y - ((int)(height * scaleY) / 2));
         graphics2D.setStroke(new BasicStroke(lineWidth));
         graphics2D.drawRect(processedX, processedY, width, height);
     }
 
     @Override
     public void fillRectangle(int x, int y, int width, int height) {
-        int processedX = logicXPositionToWindowsXPosition(x - (width / 2));
-        int processedY = logicYPositionToWindowsYPosition(y - (height / 2));
+        int processedX = logicXPositionToWindowsXPosition(x - ((int)(width * scaleX) / 2));
+        int processedY = logicYPositionToWindowsYPosition(y - ((int)(height * scaleY) / 2));
         graphics2D.fillRect(processedX, processedY, width, height);
     }
 
@@ -241,9 +242,8 @@ public class DesktopGraphics extends AbstractGraphics {
         graphics2D.setFont(((DesktopFont) font).getFont());
         FontMetrics fm = graphics2D.getFontMetrics();
 
-
-        int processedX = logicXPositionToWindowsXPosition(x - (fm.stringWidth(text) / 2));
-        int processedY = logicYPositionToWindowsYPosition(y - (fm.getHeight() / 2) + fm.getAscent());
+        int processedX = logicXPositionToWindowsXPosition(x -  ((int)(fm.stringWidth(text) * scaleX) / 2));
+        int processedY = logicYPositionToWindowsYPosition(y - ((int)(fm.getHeight() * scaleY) / 2) + fm.getAscent());
 
         graphics2D.drawString(text, processedX, processedY);
     }
@@ -278,12 +278,12 @@ public class DesktopGraphics extends AbstractGraphics {
 
     @Override
     public int logicXPositionToWindowsXPosition(int x) {
-        return x + (int) (borderBarWidth / scaleFactor) + (int) (borderInsetOffset / scaleFactor);
+        return (int) ((x + (int) (borderBarWidth / scaleFactor) + (int) (borderInsetOffset / scaleFactor)) / scaleX);
     }
 
     @Override
     public int logicYPositionToWindowsYPosition(int y) {
-        return y + (int) (topBarHeight / scaleFactor) + (int) (topInsetOffset / scaleFactor);
+        return (int) ((y + (int) (topBarHeight / scaleFactor) + (int) (topInsetOffset / scaleFactor)) / scaleY);
     }
 
     @Override
@@ -298,7 +298,11 @@ public class DesktopGraphics extends AbstractGraphics {
 
     @Override
     public void setScale(double x, double y) {
+        scaleX = x;
+        scaleY = y;
+
         currentTransform.setToScale((x * scaleFactor) / currentTransform.getScaleX(), (y * scaleFactor) / currentTransform.getScaleY());
+
         apply();
         save();
     }

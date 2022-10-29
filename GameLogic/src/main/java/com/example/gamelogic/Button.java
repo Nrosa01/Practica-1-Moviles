@@ -2,12 +2,15 @@ package com.example.gamelogic;
 
 import com.example.engine.IEngine;
 import com.example.engine.IGraphics;
+import com.example.gamelogic.utilities.FloatLerper;
+import com.example.gamelogic.utilities.LerpType;
 
 public class Button extends UIElement{
     int colorR = 255, colorG = 255, colorB = 255;
     float darker = 1;
     int alpha = 255;
     float scale = 1;
+    FloatLerper scaleLerper;
 
     public Button(int x, int y, int width, int height, IEngine engine)
     {
@@ -16,12 +19,14 @@ public class Button extends UIElement{
         this.width = width;
         this.height = height;
         this.graphics = engine.getGraphics();
+        scaleLerper = new FloatLerper(1, 2.0f, 0.25f, LerpType.EaseInOut);
     }
 
 
     @Override
     public void update(float deltaTime) {
-
+        scaleLerper.update(deltaTime);
+        scale = scaleLerper.getValue();
     }
 
     public void setColor(int r, int g, int b)
@@ -42,21 +47,20 @@ public class Button extends UIElement{
     @Override
     public void render() {
 //        graphics.sca
-        graphics.save();
-        graphics.setScale(scale, scale);
+        //graphics.save();
         graphics.setColor((int)(colorR * darker), (int)(colorG * darker), (int)(colorB * darker), alpha);
         graphics.fillRectangle(posX, posY, (int)(width * scale), (int)(height * scale));
-        graphics.restore();
+        //graphics.restore();
     }
 
     @Override
     public void OnHoverEnter() {
-        scale = 1.5f;
+        scaleLerper.setReversed(false);
     }
 
     @Override
     public void OnHoverExit() {
-        scale = 1;
+        scaleLerper.setReversed(true);
     }
 
     @Override

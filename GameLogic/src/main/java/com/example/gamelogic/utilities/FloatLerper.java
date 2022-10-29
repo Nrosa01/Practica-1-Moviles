@@ -49,9 +49,12 @@ public class FloatLerper {
         return startValue + (endValue - startValue) * LerperFuncs.getValue(time, lerpType);
     }
 
-    public void reverse()
-    {
+    public void reverse() {
         this.reversed = !this.reversed;
+    }
+
+    public void setReversed(boolean reversed) {
+        this.reversed = reversed;
     }
 
     public float getValue() {

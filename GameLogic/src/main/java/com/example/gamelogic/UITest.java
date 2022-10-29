@@ -33,7 +33,7 @@ public class UITest implements IState {
         try {
             graphics.setLogicSize(LOGIC_WIDTH, LOGIC_HEIGHT);
 
-            button = new Button(LOGIC_WIDTH / 2, LOGIC_HEIGHT / 2, LOGIC_WIDTH / 2, 200, engine);
+            button = new Button(LOGIC_WIDTH / 2, LOGIC_HEIGHT / 2, 200, 150, engine);
             testFont = engine.getGraphics().newFont(engine.getAssetsPath() + "fonts/Antihero.ttf", 12, false);
             return true;
         } catch (Exception e) {
@@ -44,12 +44,13 @@ public class UITest implements IState {
 
     @Override
     public void update(double deltaTime) {
+        button.update((float)deltaTime);
     }
 
     @Override
     public void render() {
         graphics.setColor(255,255,255);
-        graphics.drawTextCentered("Button pos x: " + button.getPosX() + " y: " + button.getPosY() + " width: " + button.getWidth() + " height: " + button.getHeight() + "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaS", LOGIC_WIDTH / 2, 90, testFont);
+        graphics.drawTextCentered("Button pos x: " + button.getPosX() + " y: " + button.getPosY() + " width: " + button.getWidth() + " height: " + button.getHeight(), LOGIC_WIDTH / 2, 90, testFont);
 
         button.render();
         graphics.setColor(0,0,0, 120);
