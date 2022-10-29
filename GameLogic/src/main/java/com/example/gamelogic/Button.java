@@ -41,14 +41,17 @@ public class Button extends UIElement{
 
     @Override
     public void render() {
-        graphics.sca
+//        graphics.sca
+        graphics.save();
+        graphics.setScale(scale, scale);
         graphics.setColor((int)(colorR * darker), (int)(colorG * darker), (int)(colorB * darker), alpha);
-        graphics.fillRectangle(posX, posY, width, height);
+        graphics.fillRectangle(posX, posY, (int)(width * scale), (int)(height * scale));
+        graphics.restore();
     }
 
     @Override
     public void OnHoverEnter() {
-        scale = 2;
+        scale = 1.5f;
     }
 
     @Override
