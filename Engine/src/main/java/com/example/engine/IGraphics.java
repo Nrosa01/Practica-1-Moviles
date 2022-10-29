@@ -11,7 +11,7 @@ public interface IGraphics {
     void clear(int r, int g, int b);
     void drawImage(IImage image, int x, int y);
     void drawRectangle(int upperLeftX, int upperLeftY, int lowerRightX, int lowerRightY, int lineWidth);
-    void fillRectangle(int upperLeftX, int upperLeftY, int lowerRightX, int lowerRightY);
+    void fillRectangle(int x, int y, int width, int height);
     void drawLine(int fromX, int fromY, int toX, int toY);
     void drawCircle(int xPos, int yPos, int radius);
     void drawText(String text, int x, int y, IFont font);

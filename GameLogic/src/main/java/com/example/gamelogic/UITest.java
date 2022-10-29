@@ -15,6 +15,7 @@ public class UITest implements IState {
     static final int LOGIC_HEIGHT = 400;
 
     IFont testFont;
+    Button button;
 
     IEngine engine = null;
     IGraphics graphics = null;
@@ -32,6 +33,7 @@ public class UITest implements IState {
         try {
             graphics.setLogicSize(LOGIC_WIDTH, LOGIC_HEIGHT);
 
+            button = new Button(LOGIC_WIDTH / 2, LOGIC_HEIGHT / 2, LOGIC_WIDTH / 2, 200, engine);
             testFont = engine.getGraphics().newFont(engine.getAssetsPath() + "fonts/Antihero.ttf", 12, false);
             return true;
         } catch (Exception e) {
@@ -47,9 +49,9 @@ public class UITest implements IState {
     @Override
     public void render() {
         graphics.setColor(255,255,255);
-        graphics.drawText("Eevee is a great pokemon", LOGIC_WIDTH / 2, LOGIC_HEIGHT / 2, testFont);
-        graphics.drawText("Eevee", 0,15, testFont);
+        graphics.drawText("Button pos x: " + button.getPosX() + " y: " + button.getPosY() + " width: " + button.getWidth() + " height: " + button.getHeight(), LOGIC_WIDTH / 2 - 200, 90, testFont);
 
+        button.render();
         graphics.setColor(0,0,0, 120);
         graphics.drawCircle((int)circlePosX, (int)circlePosY, (int)radius);
     }
@@ -58,10 +60,14 @@ public class UITest implements IState {
     public void handleInput(List<InputEvent> events) {
         for (InputEvent inputEvent: events)
         {
+            int proccesedX =  graphics.windowsXPositionToLogicXPosition(inputEvent.x);
+            int proccesedY =  graphics.windowsYPositionToLogicYPosition(inputEvent.y);
+
+            button.HandleInput(proccesedX, proccesedY, inputEvent.type);
             if(inputEvent.type == IInput.InputTouchType.TOUCH_MOVE)
             {
-                circlePosX = graphics.windowsXPositionToLogicXPosition(inputEvent.x);
-                circlePosY = graphics.windowsYPositionToLogicYPosition(inputEvent.y);
+                circlePosX = proccesedX;
+                circlePosY = proccesedY;
             }
         }
     }
