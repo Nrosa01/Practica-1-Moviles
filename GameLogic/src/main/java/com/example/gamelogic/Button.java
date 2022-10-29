@@ -46,23 +46,19 @@ public class Button extends UIElement{
 
     @Override
     public void OnHoverEnter() {
-        System.out.println("Hovering");
-        darker = 0.5f;
     }
 
     @Override
     public void OnHoverExit() {
-        System.out.println("Hover OUT");
-        darker = 1;
     }
 
     @Override
     public void OnTouchDown() {
-        System.out.println("Button click");
+        darker = 0.5f;
     }
 
     @Override
     public void OnTouchUp() {
-        System.out.println("Button release");
+        darker = 1;
     }
 }

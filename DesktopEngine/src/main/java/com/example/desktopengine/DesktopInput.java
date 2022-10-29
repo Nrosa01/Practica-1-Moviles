@@ -13,11 +13,13 @@ public class DesktopInput implements IInput {
     public void addEvent(MouseEvent event){
         InputTouchType tipo = null;
 
-        if (event.getID() == MouseEvent.MOUSE_CLICKED)
+        if (event.getID() == MouseEvent.MOUSE_PRESSED)
             tipo = InputTouchType.TOUCH_DOWN;
         else if(event.getID() == MouseEvent.MOUSE_RELEASED)
             tipo = InputTouchType.TOUCH_UP;
         else if(event.getID() == MouseEvent.MOUSE_MOVED)
+            tipo = InputTouchType.TOUCH_MOVE;
+        else if(event.getID() == MouseEvent.MOUSE_DRAGGED)
             tipo = InputTouchType.TOUCH_MOVE;
 
         eventos.add(new InputEvent(event.getX(), event.getY(), 0, tipo));

@@ -135,13 +135,15 @@ public class DesktopEngine implements IEngine, Runnable, MouseInputListener {
 
     @Override
     public void mouseClicked(MouseEvent mouseEvent) {
-        if (graphics.isInsideLogicCanvas(mouseEvent.getX(), mouseEvent.getY()))
-            inputManager.addEvent(mouseEvent);
+//Por alguna razon esto no va bien, no es intuitivo pero mejor usar el mousePressed
+        //        if (graphics.isInsideLogicCanvas(mouseEvent.getX(), mouseEvent.getY()))
+//            inputManager.addEvent(mouseEvent);
     }
 
     @Override
     public void mousePressed(MouseEvent mouseEvent) {
-
+        if (graphics.isInsideLogicCanvas(mouseEvent.getX(), mouseEvent.getY()))
+            inputManager.addEvent(mouseEvent);
     }
 
     @Override
@@ -162,7 +164,8 @@ public class DesktopEngine implements IEngine, Runnable, MouseInputListener {
 
     @Override
     public void mouseDragged(MouseEvent mouseEvent) {
-
+        if (graphics.isInsideLogicCanvas(mouseEvent.getX(), mouseEvent.getY()))
+            inputManager.addEvent(mouseEvent);
     }
 
     @Override

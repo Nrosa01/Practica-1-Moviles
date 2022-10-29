@@ -5,6 +5,7 @@ import com.example.engine.IInput;
 public abstract class UIElement extends Entity implements IInteractable{
     private boolean alreadyOnHover = false;
     private boolean insideLastFrame = false;
+    private boolean wasPressed = false;
 
     public void HandleInput(int x, int y, IInput.InputTouchType touchType)
     {
@@ -26,11 +27,7 @@ public abstract class UIElement extends Entity implements IInteractable{
             else if(touchType == IInput.InputTouchType.TOUCH_DOWN)
             {
                 OnTouchDown();
-            }
-            
-            if(touchType == IInput.InputTouchType.TOUCH_UP)
-            {
-                OnTouchUp();
+                wasPressed = true;
             }
 
             insideLastFrame = true;
@@ -43,6 +40,12 @@ public abstract class UIElement extends Entity implements IInteractable{
                 alreadyOnHover = false;
             }
             insideLastFrame = false;
+        }
+
+        if(touchType == IInput.InputTouchType.TOUCH_UP && wasPressed)
+        {
+            OnTouchUp();
+            wasPressed = false;
         }
     }
 
