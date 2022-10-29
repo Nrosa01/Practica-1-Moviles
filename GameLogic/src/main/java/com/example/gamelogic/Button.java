@@ -7,6 +7,7 @@ public class Button extends UIElement{
     int colorR = 255, colorG = 255, colorB = 255;
     float darker = 1;
     int alpha = 255;
+    float scale = 1;
 
     public Button(int x, int y, int width, int height, IEngine engine)
     {
@@ -40,16 +41,19 @@ public class Button extends UIElement{
 
     @Override
     public void render() {
+        graphics.sca
         graphics.setColor((int)(colorR * darker), (int)(colorG * darker), (int)(colorB * darker), alpha);
         graphics.fillRectangle(posX, posY, width, height);
     }
 
     @Override
     public void OnHoverEnter() {
+        scale = 2;
     }
 
     @Override
     public void OnHoverExit() {
+        scale = 1;
     }
 
     @Override
