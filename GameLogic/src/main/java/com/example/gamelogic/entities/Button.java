@@ -17,6 +17,8 @@ public class Button extends UIElement {
     IInteractableCallback callback;
 
     public Button(int x, int y, int width, int height, String buttonText, IFont buttonFont, IEngine engine) {
+        super(engine);
+
         this.posX = x;
         this.posY = y;
         this.width = width;
@@ -102,5 +104,10 @@ public class Button extends UIElement {
     @Override
     public void OnTouchUp() {
         darker = 1;
+    }
+
+    @Override
+    public void OnTouchMove(int x, int y) {
+
     }
 }

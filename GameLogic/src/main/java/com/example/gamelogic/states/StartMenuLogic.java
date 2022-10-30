@@ -8,10 +8,11 @@ import com.example.engine.IState;
 import com.example.engine.InputEvent;
 import com.example.gamelogic.entities.Button;
 import com.example.gamelogic.entities.IInteractableCallback;
+import com.example.gamelogic.entities.Pointer;
 
 import java.util.List;
 
-public class UITest implements IState {
+public class StartMenuLogic implements IState {
     static final int LOGIC_WIDTH = 400;
     static final int LOGIC_HEIGHT = 600;
 
@@ -20,11 +21,9 @@ public class UITest implements IState {
 
     IEngine engine = null;
     IGraphics graphics = null;
-    float circlePosX = 120;
-    float circlePosY = 120;
-    float radius = 12;
+    Pointer pointer;
 
-    public UITest(IEngine engine) {
+    public StartMenuLogic(IEngine engine) {
         this.engine = engine;
         graphics = engine.getGraphics();
     }
@@ -34,8 +33,9 @@ public class UITest implements IState {
         try {
             graphics.setLogicSize(LOGIC_WIDTH, LOGIC_HEIGHT);
 
+            pointer = new Pointer(engine);
             testFont = engine.getGraphics().newFont(engine.getAssetsPath() + "fonts/Antihero.ttf", 24, false);
-            button = new Button(LOGIC_WIDTH / 2, LOGIC_HEIGHT / 2, 100, 35, "Jugar", testFont,  engine);
+            button = new Button(LOGIC_WIDTH / 2, LOGIC_HEIGHT / 2, 100, 35, "Jugar", testFont, engine);
             button.setCallback(new IInteractableCallback() {
                 @Override
                 public void onInteractionOccur() {
@@ -56,32 +56,26 @@ public class UITest implements IState {
 
     @Override
     public void update(double deltaTime) {
-        button.update((float)deltaTime);
+        button.update((float) deltaTime);
     }
 
     @Override
     public void render() {
-        graphics.setColor(255,255,255);
+        graphics.setColor(255, 255, 255);
         graphics.drawTextCentered("Nonogramas", LOGIC_WIDTH / 2, 90, testFont);
 
         button.render();
-        graphics.setColor(0,0,0, 120);
-        graphics.drawCircle((int)circlePosX, (int)circlePosY, (int)radius);
+        pointer.render();
     }
 
     @Override
     public void handleInput(List<InputEvent> events) {
-        for (InputEvent inputEvent: events)
-        {
-            int proccesedX =  graphics.windowsXPositionToLogicXPosition(inputEvent.x);
-            int proccesedY =  graphics.windowsYPositionToLogicYPosition(inputEvent.y);
+        for (InputEvent inputEvent : events) {
+            int proccesedX = graphics.windowsXPositionToLogicXPosition(inputEvent.x);
+            int proccesedY = graphics.windowsYPositionToLogicYPosition(inputEvent.y);
 
             button.handleInput(proccesedX, proccesedY, inputEvent.type);
-            if(inputEvent.type == IInput.InputTouchType.TOUCH_MOVE)
-            {
-                circlePosX = proccesedX;
-                circlePosY = proccesedY;
-            }
+            pointer.handleInput(proccesedX, proccesedY, inputEvent.type);
         }
     }
 }

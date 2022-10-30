@@ -1,5 +1,6 @@
 package com.example.gamelogic.entities;
 
+import com.example.engine.IEngine;
 import com.example.engine.IInput;
 import com.example.gamelogic.entities.Entity;
 import com.example.gamelogic.entities.IInteractable;
@@ -8,6 +9,11 @@ public abstract class UIElement extends Entity implements IInteractable {
     private boolean alreadyOnHover = false;
     private boolean insideLastFrame = false;
     private boolean wasPressed = false;
+
+    public UIElement(IEngine engine)
+    {
+        super(engine);
+    }
 
     public void handleInput(int x, int y, IInput.InputTouchType touchType)
     {
@@ -49,6 +55,9 @@ public abstract class UIElement extends Entity implements IInteractable {
             OnTouchUp();
             wasPressed = false;
         }
+
+        if(touchType == IInput.InputTouchType.TOUCH_MOVE)
+            this.OnTouchMove(x,y);
     }
 
     private boolean isInside(int x, int y, int posX, int posY, int width, int height)

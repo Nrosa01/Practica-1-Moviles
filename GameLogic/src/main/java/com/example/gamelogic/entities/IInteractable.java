@@ -5,4 +5,5 @@ public interface IInteractable {
     public void OnHoverExit();
     public void OnTouchDown();
     public void OnTouchUp();
+    public void OnTouchMove(int x, int y);
 }
