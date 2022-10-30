@@ -2,19 +2,26 @@ package com.example.gamelogic.entities;
 
 import com.example.engine.IEngine;
 import com.example.engine.IFont;
+import com.example.engine.IImage;
 import com.example.engine.utilities.FloatLerper;
 import com.example.engine.utilities.LerpType;
+import com.example.gamelogic.utilities.Color;
 
 public class Button extends UIElement {
-    int colorR = 255, colorG = 255, colorB = 255;
-    int borderR = 0, borderG = 0, borderB = 0, boderSize = 10;
-    float darker = 1;
-    int alpha = 255;
+    private Color buttonColor;
+    private Color borderColor;
+    private Color buttonPressedColor;
+    private Color textColor;
+
+    private Color currentButtonColor;
+    private int borderSize = 10;
     float scale = 1;
     FloatLerper scaleLerper;
     String buttonText;
     IFont font;
     IInteractableCallback callback;
+    IImage image;
+    int paddingHorizontal, paddingVertical;
 
     public Button(int x, int y, int width, int height, String buttonText, IFont buttonFont, IEngine engine) {
         super(engine);
@@ -28,6 +35,21 @@ public class Button extends UIElement {
         this.font = buttonFont;
         scaleLerper = new FloatLerper(1, 1.2f, 0.1f, LerpType.EaseInOut);
         scaleLerper.setReversed(true);
+
+        buttonColor = new Color(255, 255, 255, 255);
+        borderColor = new Color(0, 0, 0, 255);
+        buttonPressedColor = new Color(123, 123, 123, 255);
+        textColor = new Color();
+        currentButtonColor = buttonColor;
+    }
+
+    public void setImage(IImage image) {
+        this.image = image;
+    }
+
+    public void setPadding(int paddingHorizontal, int paddingVertical) {
+        this.paddingHorizontal = paddingHorizontal;
+        this.paddingVertical = paddingVertical;
     }
 
     public void setCallback(IInteractableCallback callback) {
@@ -41,46 +63,64 @@ public class Button extends UIElement {
     }
 
     public void setBorderColor(int r, int g, int b) {
-        borderR = r;
-        borderG = g;
-        borderB = b;
+        borderColor.r = r;
+        borderColor.g = g;
+        borderColor.b = b;
     }
 
-    public void setBorderSize(int boderSize)
-    {
-        this.boderSize = boderSize;
+    public void setBorderSize(int boderSize) {
+        this.borderSize = boderSize;
     }
 
-    public void setColor(int r, int g, int b) {
-        colorR = r;
-        colorG = g;
-        colorB = b;
+    public void setBackgroundColor(int r, int g, int b) {
+        buttonColor.r = r;
+        buttonColor.g = g;
+        buttonColor.b = b;
     }
 
-    public void setColor(int r, int g, int b, int a) {
-        colorR = r;
-        colorG = g;
-        colorB = b;
-        alpha = a;
+    public void setBackgroundColor(int r, int g, int b, int a) {
+        buttonColor.r = r;
+        buttonColor.g = g;
+        buttonColor.b = b;
+        buttonColor.a = a;
     }
+
+    public void setPressedColor(int r, int g, int b) {
+        buttonPressedColor.r = r;
+        buttonPressedColor.g = g;
+        buttonPressedColor.b = b;
+    }
+
+    public void setPressedColorColor(int r, int g, int b, int a) {
+        buttonPressedColor.r = r;
+        buttonPressedColor.g = g;
+        buttonPressedColor.b = b;
+        buttonPressedColor.a = a;
+    }
+
+    public void setTextColor(int r, int g, int b) {
+        textColor.r = r;
+        textColor.g = g;
+        textColor.b = b;
+    }
+
+    public void setTextColor(int r, int g, int b, int a) {
+        textColor.r = r;
+        textColor.g = g;
+        textColor.b = b;
+        textColor.a = a;
+    }
+
 
     @Override
     public void render() {
         graphics.setScale(scale, scale);
 
-        // Draw border
-        graphics.setColor((int) (borderB * darker), (int) (borderG * darker), (int) (borderB * darker), alpha);
-        graphics.drawRectangle(posX, posY, (int) (width), (int) (height), boderSize);
+        renderBorders();
+        renderBackground();
+        renderImage();
+        renderText();
 
-        // Draw rectable
-        graphics.setColor((int) (colorR * darker), (int) (colorG * darker), (int) (colorB * darker), alpha);
-        graphics.fillRectangle(posX, posY, (int) (width), (int) (height));
-
-        // Draw text
-        graphics.setColor(0, 0, 0);
-        graphics.drawTextCentered(buttonText, posX, posY, font);
-
-        // Restore scale
         graphics.setScale(1, 1);
     }
 
@@ -96,18 +136,60 @@ public class Button extends UIElement {
 
     @Override
     public void OnTouchDown() {
-        darker = 0.5f;
+        currentButtonColor = this.buttonPressedColor;
         if (callback != null)
             callback.onInteractionOccur();
     }
 
+    public void setText(String text) {
+        this.buttonText = text;
+    }
+
     @Override
     public void OnTouchUp() {
-        darker = 1;
+        currentButtonColor = this.buttonColor;
     }
 
     @Override
     public void OnPointerMove(int x, int y) {
 
+    }
+
+    private void renderBackground() {
+        graphics.setColor(currentButtonColor.r, currentButtonColor.g, currentButtonColor.b, currentButtonColor.a);
+        graphics.fillRectangle(posX, posY, width, height);
+    }
+
+    private void renderBorders() {
+        if (this.borderSize <= 0)
+            return;
+
+        graphics.setColor(borderColor.r, borderColor.g, borderColor.b, borderColor.a);
+        graphics.drawRectangle(posX, posY, (int) (width), (int) (height), borderSize);
+    }
+
+    private void renderText() {
+        graphics.setColor(0, 0, 0);
+        graphics.drawTextCentered(buttonText, posX, posY, font);
+    }
+
+    private void renderImage() {
+        if (image != null)
+        {
+            double imageWidthRatio = ((width-paddingHorizontal) * scale)  / image.getWidth();
+            double imageHeightRatio = ((height - paddingVertical) * scale) / image.getHeight();
+            double scaleFactor = scale;
+
+            if (imageWidthRatio < imageHeightRatio) {
+                scaleFactor = imageWidthRatio;
+            }
+            else {
+                scaleFactor = imageHeightRatio;
+            }
+
+            graphics.setScale(scaleFactor, scaleFactor);
+            graphics.drawImage(image, posX, posY);
+        }
+        graphics.setScale(scale, scale);
     }
 }
