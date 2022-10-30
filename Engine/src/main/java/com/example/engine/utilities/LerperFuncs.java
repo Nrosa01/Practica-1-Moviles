@@ -1,4 +1,4 @@
-package com.example.gamelogic.utilities;
+package com.example.engine.utilities;
 
 public class LerperFuncs {
     private static float Linear(float time)

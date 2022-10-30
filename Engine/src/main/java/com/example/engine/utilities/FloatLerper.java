@@ -1,13 +1,14 @@
-package com.example.gamelogic.utilities;
+package com.example.engine.utilities;
 
 public class FloatLerper {
-    float startValue;
-    float endValue;
-    float duration;
-    float currentTime;
-    LerpType lerpType;
-    boolean reversed = false;
-    float currentValue;
+    private float startValue;
+    private float endValue;
+    private float duration;
+    private float currentTime;
+    private LerpType lerpType;
+    private boolean reversed = false;
+    private float currentValue;
+    private boolean isPaused = false;
 
     public FloatLerper(float startValue, float endValue, float duration) {
         this.startValue = startValue;
@@ -27,7 +28,10 @@ public class FloatLerper {
         this.lerpType = lerpType;
     }
 
-    public void update(float deltaTime) {
+    public void update(double deltaTime) {
+        if (isPaused)
+            return;
+
         if (!reversed)
             currentTime += deltaTime;
         else
@@ -47,6 +51,20 @@ public class FloatLerper {
         }
 
         return startValue + (endValue - startValue) * LerperFuncs.getValue(time, lerpType);
+    }
+
+    public void restart() {
+        currentTime = 0;
+        isPaused = false;
+    }
+
+    public void setPaused(boolean paused) {
+        this.isPaused = paused;
+    }
+
+    public boolean isFinished()
+    {
+        return duration - currentTime < 0.01f;
     }
 
     public void reverse() {

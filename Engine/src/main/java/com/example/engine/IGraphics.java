@@ -19,6 +19,8 @@ public interface IGraphics {
     int getWidth();
     int getHeight();
 
+    void setGraphicsAlpha(int alpha);
+
     void translate(double x, double y);
     void scale(double x, double y);
     void rotate(double angleDegrees);

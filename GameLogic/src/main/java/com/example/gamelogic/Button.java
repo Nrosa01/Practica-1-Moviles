@@ -2,9 +2,8 @@ package com.example.gamelogic;
 
 import com.example.engine.IEngine;
 import com.example.engine.IFont;
-import com.example.engine.IGraphics;
-import com.example.gamelogic.utilities.FloatLerper;
-import com.example.gamelogic.utilities.LerpType;
+import com.example.engine.utilities.FloatLerper;
+import com.example.engine.utilities.LerpType;
 
 public class Button extends UIElement {
     int colorR = 255, colorG = 255, colorB = 255;

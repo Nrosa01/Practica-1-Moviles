@@ -4,6 +4,7 @@ import com.example.engine.AbstractGraphics;
 import com.example.engine.IFont;
 import com.example.engine.IImage;
 
+import java.awt.AlphaComposite;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.FontFormatException;
@@ -256,6 +257,11 @@ public class DesktopGraphics extends AbstractGraphics {
     @Override
     public int getHeight() {
         return jFrame.getHeight();
+    }
+
+    @Override
+    public void setGraphicsAlpha(int alpha) {
+        graphics2D.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alpha/255.0f));
     }
 
     @Override

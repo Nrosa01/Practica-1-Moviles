@@ -1,3 +1,3 @@
-package com.example.gamelogic.utilities;
+package com.example.engine.utilities;
 
 public enum LerpType { Linear, EaseIn, EaseOut, EaseInOut }
