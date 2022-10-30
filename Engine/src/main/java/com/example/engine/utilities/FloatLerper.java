@@ -59,12 +59,19 @@ public class FloatLerper {
         isPaused = false;
     }
 
+    public float getStartValue() {
+        return this.startValue;
+    }
+
+    public float getEndValue() {
+        return this.endValue;
+    }
+
     public void setPaused(boolean paused) {
         this.isPaused = paused;
     }
 
-    public boolean isFinished()
-    {
+    public boolean isFinished() {
         return duration - currentTime < 0.01f;
     }
 

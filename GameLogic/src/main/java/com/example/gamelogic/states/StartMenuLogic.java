@@ -57,6 +57,7 @@ public class StartMenuLogic implements IState {
     @Override
     public void update(double deltaTime) {
         button.update((float) deltaTime);
+        pointer.update((float) deltaTime);
     }
 
     @Override

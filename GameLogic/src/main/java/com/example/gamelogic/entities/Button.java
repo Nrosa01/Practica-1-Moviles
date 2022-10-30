@@ -107,7 +107,7 @@ public class Button extends UIElement {
     }
 
     @Override
-    public void OnTouchMove(int x, int y) {
+    public void OnPointerMove(int x, int y) {
 
     }
 }

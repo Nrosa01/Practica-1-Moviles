@@ -2,13 +2,16 @@ package com.example.gamelogic.entities;
 
 import com.example.engine.IEngine;
 import com.example.engine.IGraphics;
+import com.example.engine.utilities.FloatLerper;
+import com.example.engine.utilities.LerpType;
 
-public class Pointer extends  UIElement {
+public class Pointer extends Entity {
     private int radius;
-    int r = 123, g = 123, b = 123, a = 123;
+    private int r = 123, g = 123, b = 123, a = 123;
+    private FloatLerper lerper;
 
     public Pointer(IEngine engine) {
-        this(12,0 ,0 ,0 ,123, engine);
+        this(12, 0, 0, 0, 123, engine);
     }
 
     public Pointer(int radius, int r, int g, int b, int alpha, IEngine engine) {
@@ -18,41 +21,37 @@ public class Pointer extends  UIElement {
         this.g = g;
         this.b = b;
         this.a = alpha;
+        lerper = new FloatLerper(1, 0.75f, 0.1f, LerpType.EaseInOut);
+        lerper.setReversed(true);
+        lerper.setPaused(false);
     }
 
     @Override
     public void update(double deltaTime) {
+        lerper.update(deltaTime);
 
+        if(lerper.isFinished())
+            lerper.setReversed(true);
     }
 
     @Override
     public void render() {
-        graphics.setColor(r,g,b,a);
-        graphics.drawCircle(posX, posY, radius);
+        graphics.setColor(r, g, b, a);
+        graphics.drawCircle(posX, posY, (int) (radius * lerper.getValue()));
     }
 
     @Override
-    public void OnHoverEnter() {
-
+    public void OnPointerDown(int x, int y) {
+        lerper.setReversed(false);
     }
 
     @Override
-    public void OnHoverExit() {
-
-    }
-
-    @Override
-    public void OnTouchDown() {
+    public void OnPointerUp(int x, int y) {
 
     }
 
     @Override
-    public void OnTouchUp() {
-
-    }
-
-    @Override
-    public void OnTouchMove(int x, int y) {
+    public void OnPointerMove(int x, int y) {
         posX = x;
         posY = y;
     }
