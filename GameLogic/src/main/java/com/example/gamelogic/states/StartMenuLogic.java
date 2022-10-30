@@ -35,11 +35,14 @@ public class StartMenuLogic implements IState {
 
             pointer = new Pointer(engine);
             testFont = engine.getGraphics().newFont(engine.getAssetsPath() + "fonts/Antihero.ttf", 24, false);
-            button = new Button(LOGIC_WIDTH / 2, LOGIC_HEIGHT / 2, 100, 35, "Jugar", testFont, engine);
+            button = new Button(LOGIC_WIDTH / 2, LOGIC_HEIGHT / 2, 100, 35, engine);
+            button.setText("Jugar", testFont);
+            button.setBackgroundColor(0,0,0,0);
+            button.setBorderSize(0);
+            button.setHoverColor(200,200,200);
             button.setCallback(new IInteractableCallback() {
                 @Override
                 public void onInteractionOccur() {
-                    System.out.println("Callback");
                     try {
                         engine.setState(new SelectLevelLogic(engine));
                     } catch (Exception e) {
@@ -62,7 +65,6 @@ public class StartMenuLogic implements IState {
 
     @Override
     public void render() {
-        graphics.setColor(255, 255, 255);
         graphics.drawTextCentered("Nonogramas", LOGIC_WIDTH / 2, 90, testFont);
 
         button.render();

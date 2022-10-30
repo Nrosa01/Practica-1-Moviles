@@ -7,8 +7,13 @@ import com.example.engine.IImage;
 import com.example.engine.IState;
 import com.example.engine.InputEvent;
 import com.example.gamelogic.entities.Button;
+import com.example.gamelogic.entities.Entity;
+import com.example.gamelogic.entities.IInteractableCallback;
 import com.example.gamelogic.entities.Pointer;
 
+import java.util.AbstractList;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class SelectLevelLogic implements IState {
@@ -20,9 +25,11 @@ public class SelectLevelLogic implements IState {
     int LOGIC_WIDTH, LOGIC_HEIGHT;
     IImage arrow;
 
+    Button returnButton;
     Pointer pointer;
-    Button[][] buttons;
+    int rows = 2, cols = 3;
     String[][] texts = {{"4x4", "5x5", "5x10"}, {"8x8", "10x10", "10x15"}};
+    List<Entity> entities;
 
     public SelectLevelLogic(IEngine engine) {
         this.engine = engine;
@@ -30,8 +37,8 @@ public class SelectLevelLogic implements IState {
         LOGIC_WIDTH = graphics.getLogicWidth();
         LOGIC_HEIGHT = graphics.getLogicHeight();
 
-        buttons = new Button[2][3];
         pointer = new Pointer(engine);
+        entities = new ArrayList<>();
     }
 
     @Override
@@ -43,11 +50,33 @@ public class SelectLevelLogic implements IState {
             int buttonSize = LOGIC_WIDTH / 5;
             int gapSize = buttonSize / 2;
 
-            for (int row = 0; row < buttons.length; row++) {
-                for (int col = 0; col < buttons[0].length; col++) {
-                    buttons[row][col] = new Button((gapSize + buttonSize) * (col + 1) - gapSize, 200 + (120 * (row + 1)), buttonSize, buttonSize, texts[row][col], fontBold, engine);
+            for (int row = 0; row < rows; row++) {
+                for (int col = 0; col < cols; col++) {
+                    Button button = new Button((gapSize + buttonSize) * (col + 1) - gapSize, 200 + (120 * (row + 1)), buttonSize, buttonSize, engine);
+                    button.setText(texts[row][col], fontBold);
+                    entities.add(button);
                 }
             }
+
+            returnButton = new Button(25,25, 30, 30, engine);
+            returnButton.setImage(arrow);
+            returnButton.setPadding(10,10);
+            returnButton.setBackgroundColor(0,0,0,0);
+            returnButton.setBorderSize(0);
+            returnButton.setHoverColor(75,75,75,255);
+            returnButton.setCallback(new IInteractableCallback() {
+                @Override
+                public void onInteractionOccur() {
+                    try {
+                        engine.setState(new StartMenuLogic(engine));
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+
+            entities.add(returnButton);
+            entities.add(pointer);
             return true;
         } catch (Exception e) {
             e.printStackTrace();
@@ -57,11 +86,8 @@ public class SelectLevelLogic implements IState {
 
     @Override
     public void update(double deltaTime) {
-        for (Button[] button : buttons)
-            for (Button b : button)
-                b.update(deltaTime);
-
-        pointer.update(deltaTime);
+        for (Entity entity : entities)
+                entity.update(deltaTime);
     }
 
     @Override
@@ -72,11 +98,8 @@ public class SelectLevelLogic implements IState {
         graphics.drawText("Volver", 45, 35, font);
         graphics.drawTextCentered("Selecciona el tamaño del puzzle", LOGIC_WIDTH / 2, 200, font);
 
-        for (Button[] button : buttons)
-            for (Button b : button)
-                b.render();
-
-        pointer.render();
+        for (Entity entity : entities)
+            entity.render();
     }
 
     @Override
@@ -85,11 +108,8 @@ public class SelectLevelLogic implements IState {
             int proccesedX = graphics.windowsXPositionToLogicXPosition(inputEvent.x);
             int proccesedY = graphics.windowsYPositionToLogicYPosition(inputEvent.y);
 
-            pointer.handleInput(proccesedX, proccesedY, inputEvent.type);
-
-            for (Button[] button : buttons)
-                for (Button b : button)
-                    b.handleInput(proccesedX, proccesedY, inputEvent.type);
+            for (Entity entity : entities)
+                entity.handleInput(proccesedX, proccesedY, inputEvent.type);
         }
     }
 }

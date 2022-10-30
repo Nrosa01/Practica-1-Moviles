@@ -11,6 +11,7 @@ public class Button extends UIElement {
     private Color buttonColor;
     private Color borderColor;
     private Color buttonPressedColor;
+    private Color buttonHoverColor;
     private Color textColor;
 
     private Color currentButtonColor;
@@ -23,7 +24,7 @@ public class Button extends UIElement {
     IImage image;
     int paddingHorizontal, paddingVertical;
 
-    public Button(int x, int y, int width, int height, String buttonText, IFont buttonFont, IEngine engine) {
+    public Button(int x, int y, int width, int height, IEngine engine) {
         super(engine);
 
         this.posX = x;
@@ -31,14 +32,15 @@ public class Button extends UIElement {
         this.width = width;
         this.height = height;
         this.graphics = engine.getGraphics();
-        this.buttonText = buttonText;
-        this.font = buttonFont;
+        this.buttonText = "";
+        this.font = null;
         scaleLerper = new FloatLerper(1, 1.2f, 0.1f, LerpType.EaseInOut);
         scaleLerper.setReversed(true);
 
         buttonColor = new Color(255, 255, 255, 255);
         borderColor = new Color(0, 0, 0, 255);
         buttonPressedColor = new Color(123, 123, 123, 255);
+        buttonHoverColor =new Color(255, 255, 255, 255);
         textColor = new Color();
         currentButtonColor = buttonColor;
     }
@@ -66,16 +68,18 @@ public class Button extends UIElement {
         borderColor.r = r;
         borderColor.g = g;
         borderColor.b = b;
+        borderColor.a = 255;
     }
 
-    public void setBorderSize(int boderSize) {
-        this.borderSize = boderSize;
+    public void setBorderSize(int borderSize) {
+        this.borderSize = borderSize;
     }
 
     public void setBackgroundColor(int r, int g, int b) {
         buttonColor.r = r;
         buttonColor.g = g;
         buttonColor.b = b;
+        buttonColor.a = 255;
     }
 
     public void setBackgroundColor(int r, int g, int b, int a) {
@@ -89,6 +93,7 @@ public class Button extends UIElement {
         buttonPressedColor.r = r;
         buttonPressedColor.g = g;
         buttonPressedColor.b = b;
+        buttonHoverColor.a = 255;
     }
 
     public void setPressedColorColor(int r, int g, int b, int a) {
@@ -98,10 +103,25 @@ public class Button extends UIElement {
         buttonPressedColor.a = a;
     }
 
+    public void setHoverColor(int r, int g, int b) {
+        buttonHoverColor.r = r;
+        buttonHoverColor.g = g;
+        buttonHoverColor.b = b;
+        buttonHoverColor.a = 255;
+    }
+
+    public void setHoverColor(int r, int g, int b, int a) {
+        buttonHoverColor.r = r;
+        buttonHoverColor.g = g;
+        buttonHoverColor.b = b;
+        buttonHoverColor.a = a;
+    }
+
     public void setTextColor(int r, int g, int b) {
         textColor.r = r;
         textColor.g = g;
         textColor.b = b;
+        textColor.a = 255;
     }
 
     public void setTextColor(int r, int g, int b, int a) {
@@ -111,6 +131,10 @@ public class Button extends UIElement {
         textColor.a = a;
     }
 
+    public void setText(String text, IFont font) {
+        this.font = font;
+        this.buttonText = text;
+    }
 
     @Override
     public void render() {
@@ -126,11 +150,13 @@ public class Button extends UIElement {
 
     @Override
     public void OnHoverEnter() {
+        currentButtonColor = buttonHoverColor;
         scaleLerper.setReversed(false);
     }
 
     @Override
     public void OnHoverExit() {
+        currentButtonColor = buttonColor;
         scaleLerper.setReversed(true);
     }
 
@@ -139,10 +165,6 @@ public class Button extends UIElement {
         currentButtonColor = this.buttonPressedColor;
         if (callback != null)
             callback.onInteractionOccur();
-    }
-
-    public void setText(String text) {
-        this.buttonText = text;
     }
 
     @Override
@@ -169,6 +191,9 @@ public class Button extends UIElement {
     }
 
     private void renderText() {
+        if(buttonText.isEmpty() || font == null)
+            return;
+
         graphics.setColor(0, 0, 0);
         graphics.drawTextCentered(buttonText, posX, posY, font);
     }

@@ -24,6 +24,8 @@ public class Pointer extends Entity {
         lerper = new FloatLerper(1, 0.75f, 0.1f, LerpType.EaseInOut);
         lerper.setReversed(true);
         lerper.setPaused(false);
+        posX = -100;
+        posY = -100;
     }
 
     @Override

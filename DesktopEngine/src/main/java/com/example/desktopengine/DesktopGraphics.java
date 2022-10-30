@@ -116,12 +116,12 @@ public class DesktopGraphics extends AbstractGraphics {
         save();
         updateGraphics();
         restore(); // Restaurar
-        clear(100, 100, 100);
+        clear(255, 255, 255);
     }
 
     void finishFrame() {
         Color current = currentColor;
-        setColor(0, 0, 0);
+        setColor(255,255,255);
         renderBorders();
         currentColor = current;
 
