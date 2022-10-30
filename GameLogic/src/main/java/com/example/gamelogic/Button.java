@@ -7,6 +7,7 @@ import com.example.engine.utilities.LerpType;
 
 public class Button extends UIElement {
     int colorR = 255, colorG = 255, colorB = 255;
+    int borderR = 0, borderG = 0, borderB = 0, boderSize = 10;
     float darker = 1;
     int alpha = 255;
     float scale = 1;
@@ -36,6 +37,17 @@ public class Button extends UIElement {
         scale = scaleLerper.getValue();
     }
 
+    public void setBorderColor(int r, int g, int b) {
+        borderR = r;
+        borderG = g;
+        borderB = b;
+    }
+
+    public void setBorderSize(int boderSize)
+    {
+        this.boderSize = boderSize;
+    }
+
     public void setColor(int r, int g, int b) {
         colorR = r;
         colorG = g;
@@ -51,15 +63,22 @@ public class Button extends UIElement {
 
     @Override
     public void render() {
-//        graphics.sca
-        //graphics.save();
         graphics.setScale(scale, scale);
+
+        // Draw border
+        graphics.setColor((int) (borderB * darker), (int) (borderG * darker), (int) (borderB * darker), alpha);
+        graphics.drawRectangle(posX, posY, (int) (width), (int) (height), boderSize);
+
+        // Draw rectable
         graphics.setColor((int) (colorR * darker), (int) (colorG * darker), (int) (colorB * darker), alpha);
         graphics.fillRectangle(posX, posY, (int) (width), (int) (height));
+
+        // Draw text
         graphics.setColor(0, 0, 0);
         graphics.drawTextCentered(buttonText, posX, posY, font);
+
+        // Restore scale
         graphics.setScale(1, 1);
-        //graphics.restore();
     }
 
     @Override
