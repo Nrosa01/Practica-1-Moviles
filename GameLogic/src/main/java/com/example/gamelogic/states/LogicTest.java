@@ -1,4 +1,4 @@
-package com.example.gamelogic;
+package com.example.gamelogic.states;
 
 import com.example.engine.IEngine;
 import com.example.engine.IFont;

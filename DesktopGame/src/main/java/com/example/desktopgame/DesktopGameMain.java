@@ -1,7 +1,7 @@
 package com.example.desktopgame;
 
 import com.example.desktopengine.DesktopEngine;
-import com.example.gamelogic.UITest;
+import com.example.gamelogic.states.UITest;
 
 public class DesktopGameMain {
 

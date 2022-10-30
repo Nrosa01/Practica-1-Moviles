@@ -1,4 +1,4 @@
-package com.example.gamelogic;
+package com.example.gamelogic.entities;
 
 import com.example.engine.IEngine;
 import com.example.engine.IFont;
@@ -25,6 +25,7 @@ public class Button extends UIElement {
         this.buttonText = buttonText;
         this.font = buttonFont;
         scaleLerper = new FloatLerper(1, 1.2f, 0.1f, LerpType.EaseInOut);
+        scaleLerper.setReversed(true);
     }
 
     public void setCallback(IInteractableCallback callback) {

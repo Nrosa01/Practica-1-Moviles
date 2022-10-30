@@ -26,6 +26,7 @@ public class FloatLerper {
         this.currentTime = 0;
         this.currentValue = startValue;
         this.lerpType = lerpType;
+        this.reversed = false;
     }
 
     public void update(double deltaTime) {

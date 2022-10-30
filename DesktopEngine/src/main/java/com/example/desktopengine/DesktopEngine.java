@@ -2,7 +2,11 @@ package com.example.desktopengine;
 
 import com.example.engine.*;
 
+import java.awt.Cursor;
+import java.awt.Point;
+import java.awt.Toolkit;
 import java.awt.event.MouseEvent;
+import java.awt.image.BufferedImage;
 
 import javax.swing.JFrame;
 import javax.swing.event.MouseInputListener;
@@ -18,6 +22,9 @@ public class DesktopEngine implements IEngine, Runnable, MouseInputListener {
 
     boolean isRunning = false;
 
+    Cursor blankCursor;
+    Cursor defaultCursor;
+
     public DesktopEngine(int wWidth, int wHeight, String wTittle) {
         mView = new JFrame(wTittle);
         graphics = new DesktopGraphics(mView, wWidth, wHeight);
@@ -25,6 +32,10 @@ public class DesktopEngine implements IEngine, Runnable, MouseInputListener {
         mView.addMouseListener(this);
         mView.addMouseMotionListener(this);
         stateManager = new StateManager(this, 0.5f);
+
+        BufferedImage cursorImg = new BufferedImage(16, 16, BufferedImage.TYPE_INT_ARGB);
+        blankCursor = Toolkit.getDefaultToolkit().createCustomCursor(cursorImg, new Point(0, 0), "blank cursor");
+        defaultCursor = new Cursor(Cursor.DEFAULT_CURSOR);
     }
 
     //Métodos sincronización (parar y reiniciar aplicación)
@@ -165,7 +176,10 @@ public class DesktopEngine implements IEngine, Runnable, MouseInputListener {
 
     @Override
     public void mouseMoved(MouseEvent mouseEvent) {
-        if (graphics.isInsideLogicCanvas(mouseEvent.getX(), mouseEvent.getY()))
+        if (graphics.isInsideLogicCanvas(mouseEvent.getX(), mouseEvent.getY())) {
+            mView.setCursor(blankCursor);
             inputManager.addEvent(mouseEvent);
+        } else
+            mView.setCursor(defaultCursor);
     }
 }

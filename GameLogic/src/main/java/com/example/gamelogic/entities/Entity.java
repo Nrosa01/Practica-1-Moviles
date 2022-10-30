@@ -1,4 +1,4 @@
-package com.example.gamelogic;
+package com.example.gamelogic.entities;
 
 import com.example.engine.IAudio;
 import com.example.engine.IGraphics;

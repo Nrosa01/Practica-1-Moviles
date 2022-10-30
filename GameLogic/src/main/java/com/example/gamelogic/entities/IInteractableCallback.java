@@ -1,4 +1,4 @@
-package com.example.gamelogic;
+package com.example.gamelogic.entities;
 
 public interface IInteractableCallback {
     public void onInteractionOccur();

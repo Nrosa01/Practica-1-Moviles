@@ -1,8 +1,10 @@
-package com.example.gamelogic;
+package com.example.gamelogic.entities;
 
 import com.example.engine.IInput;
+import com.example.gamelogic.entities.Entity;
+import com.example.gamelogic.entities.IInteractable;
 
-public abstract class UIElement extends Entity implements IInteractable{
+public abstract class UIElement extends Entity implements IInteractable {
     private boolean alreadyOnHover = false;
     private boolean insideLastFrame = false;
     private boolean wasPressed = false;

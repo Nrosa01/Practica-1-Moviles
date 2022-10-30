@@ -1,11 +1,11 @@
-package com.example.gamelogic;
+package com.example.gamelogic.states;
 
 import com.example.engine.IEngine;
 import com.example.engine.IFont;
 import com.example.engine.IGraphics;
-import com.example.engine.IInput;
 import com.example.engine.IState;
 import com.example.engine.InputEvent;
+import com.example.gamelogic.entities.Button;
 
 import java.util.List;
 
