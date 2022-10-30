@@ -7,7 +7,7 @@ public abstract class UIElement extends Entity implements IInteractable{
     private boolean insideLastFrame = false;
     private boolean wasPressed = false;
 
-    public void HandleInput(int x, int y, IInput.InputTouchType touchType)
+    public void handleInput(int x, int y, IInput.InputTouchType touchType)
     {
         int posX = getPosX();
         int posY = getPosY();

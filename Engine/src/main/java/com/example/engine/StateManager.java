@@ -26,9 +26,6 @@ public class StateManager implements IState {
     @Override
     public void update(double deltaTime) {
         lerper.update(deltaTime);
-        if (isOnTransition)
-            return;
-
         currentState.update(deltaTime);
     }
 
@@ -55,9 +52,6 @@ public class StateManager implements IState {
 
     @Override
     public void handleInput(List<InputEvent> events) {
-        if (isOnTransition)
-            return;
-
         currentState.handleInput(events);
     }
 

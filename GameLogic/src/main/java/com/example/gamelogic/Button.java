@@ -32,7 +32,7 @@ public class Button extends UIElement {
     }
 
     @Override
-    public void update(float deltaTime) {
+    public void update(double deltaTime) {
         scaleLerper.update(deltaTime);
         scale = scaleLerper.getValue();
     }

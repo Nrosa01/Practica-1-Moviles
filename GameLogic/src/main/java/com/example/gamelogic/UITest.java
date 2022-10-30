@@ -3,7 +3,6 @@ package com.example.gamelogic;
 import com.example.engine.IEngine;
 import com.example.engine.IFont;
 import com.example.engine.IGraphics;
-import com.example.engine.IImage;
 import com.example.engine.IInput;
 import com.example.engine.IState;
 import com.example.engine.InputEvent;
@@ -40,7 +39,7 @@ public class UITest implements IState {
                 public void onInteractionOccur() {
                     System.out.println("Callback");
                     try {
-                        engine.setState(new LogicTest(engine));
+                        engine.setState(new SelectLevelLogic(engine));
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -75,7 +74,7 @@ public class UITest implements IState {
             int proccesedX =  graphics.windowsXPositionToLogicXPosition(inputEvent.x);
             int proccesedY =  graphics.windowsYPositionToLogicYPosition(inputEvent.y);
 
-            button.HandleInput(proccesedX, proccesedY, inputEvent.type);
+            button.handleInput(proccesedX, proccesedY, inputEvent.type);
             if(inputEvent.type == IInput.InputTouchType.TOUCH_MOVE)
             {
                 circlePosX = proccesedX;

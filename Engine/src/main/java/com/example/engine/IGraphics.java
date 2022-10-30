@@ -18,6 +18,8 @@ public interface IGraphics {
     void drawTextCentered(String text, int x, int y, IFont font);
     int getWidth();
     int getHeight();
+    int getLogicWidth();
+    int getLogicHeight();
 
     void setGraphicsAlpha(int alpha);
 

@@ -24,7 +24,7 @@ public abstract class Entity {
         return posY;
     }
 
-    public abstract void update(float deltaTime);
+    public abstract void update(double deltaTime);
 
     public abstract void render();
 }
