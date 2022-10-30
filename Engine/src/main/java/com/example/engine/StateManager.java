@@ -50,6 +50,7 @@ public class StateManager implements IState {
         }
 
         currentState.render();
+        graphics.setGraphicsAlpha(255);
     }
 
     @Override
