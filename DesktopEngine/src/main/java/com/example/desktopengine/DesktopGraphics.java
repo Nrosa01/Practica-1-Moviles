@@ -4,17 +4,18 @@ import com.example.engine.AbstractGraphics;
 import com.example.engine.IFont;
 import com.example.engine.IImage;
 
+import java.awt.AlphaComposite;
 import java.awt.BasicStroke;
 import java.awt.Color;
+import java.awt.FontFormatException;
+import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferStrategy;
-import java.io.File;
 import java.io.IOException;
 
-import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 
 public class DesktopGraphics extends AbstractGraphics {
@@ -27,6 +28,9 @@ public class DesktopGraphics extends AbstractGraphics {
     AffineTransform currentTransform;
     AffineTransform defaultTransform;
     BufferStrategy bufferStrategy;
+
+    private double scaleX = 1;
+    private double scaleY = 1;
 
     // Offsets del jframe
     protected int topInsetOffset, borderInsetOffset;
@@ -73,7 +77,6 @@ public class DesktopGraphics extends AbstractGraphics {
 
     void handleWindowsResize() {
         calculateScaleFactor();
-        System.out.println("Factor de escala: " + scaleFactor);
     }
 
     void calculateScaleFactor() {
@@ -139,7 +142,7 @@ public class DesktopGraphics extends AbstractGraphics {
     public IImage newImage(String pathToImage) {
         IImage image = null;
         try {
-            image = new DesktopImage(ImageIO.read((new File(pathToImage))));
+            image = new DesktopImage(pathToImage);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -149,8 +152,16 @@ public class DesktopGraphics extends AbstractGraphics {
 
 
     @Override
-    public IFont newFont(String pathToFont) {
-        return null;
+    public IFont newFont(String pathToFont, int size, boolean isBold) {
+        IFont font = null;
+
+        try {
+            font = new DesktopFont(pathToFont, size, isBold);
+        } catch (IOException | FontFormatException e) {
+            e.printStackTrace();
+        }
+
+        return font;
     }
 
     @Override
@@ -162,6 +173,12 @@ public class DesktopGraphics extends AbstractGraphics {
     @Override
     public void setColor(int r, int g, int b) {
         currentColor = new Color(r, g, b);
+        graphics2D.setColor(currentColor);
+    }
+
+    @Override
+    public void setColor(int r, int g, int b, int a) {
+        currentColor = new Color(r, g, b, a);
         graphics2D.setColor(currentColor);
     }
 
@@ -180,23 +197,23 @@ public class DesktopGraphics extends AbstractGraphics {
 
     @Override
     public void drawImage(IImage image, int x, int y) {
-        int processedX = logicXPositionToWindowsXPosition(x - (image.getWidth() / 2));
-        int processedY = logicYPositionToWindowsYPosition(y - (image.getHeight() / 2));
+        int processedX = logicXPositionToWindowsXPosition(x - ((int)(image.getWidth() * scaleX) / 2));
+        int processedY = logicYPositionToWindowsYPosition(y - ((int)(image.getHeight() * scaleY) / 2));
         this.graphics2D.drawImage(((DesktopImage) image).getImage(), processedX, processedY, null);
     }
 
     @Override
     public void drawRectangle(int x, int y, int width, int height, int lineWidth) {
-        int processedX = logicXPositionToWindowsXPosition(x - (width / 2));
-        int processedY = logicYPositionToWindowsYPosition(y - (height / 2));
+        int processedX = logicXPositionToWindowsXPosition(x - ((int)(width * scaleX) / 2));
+        int processedY = logicYPositionToWindowsYPosition(y - ((int)(height * scaleY) / 2));
         graphics2D.setStroke(new BasicStroke(lineWidth));
         graphics2D.drawRect(processedX, processedY, width, height);
     }
 
     @Override
     public void fillRectangle(int x, int y, int width, int height) {
-        int processedX = logicXPositionToWindowsXPosition(x - (width / 2));
-        int processedY = logicYPositionToWindowsYPosition(y - (height / 2));
+        int processedX = logicXPositionToWindowsXPosition(x - ((int)(width * scaleX) / 2));
+        int processedY = logicYPositionToWindowsYPosition(y - ((int)(height * scaleY) / 2));
         graphics2D.fillRect(processedX, processedY, width, height);
     }
 
@@ -206,8 +223,30 @@ public class DesktopGraphics extends AbstractGraphics {
     }
 
     @Override
-    public void drawText(String text, int x, int y, IFont font) {
+    public void drawCircle(int xPos, int yPos, int radius) {
+        int processedX = logicXPositionToWindowsXPosition(xPos - radius);
+        int processedY = logicYPositionToWindowsYPosition(yPos - radius);
+        graphics2D.fillOval(processedX, processedY, radius * 2, radius * 2);
+    }
 
+    @Override
+    public void drawText(String text, int x, int y, IFont font) {
+        int processedX = logicXPositionToWindowsXPosition(x);
+        int processedY = logicYPositionToWindowsYPosition(y);
+
+        graphics2D.setFont(((DesktopFont) font).getFont());
+        graphics2D.drawString(text, processedX, processedY);
+    }
+
+    @Override
+    public void drawTextCentered(String text, int x, int y, IFont font) {
+        graphics2D.setFont(((DesktopFont) font).getFont());
+        FontMetrics fm = graphics2D.getFontMetrics();
+
+        int processedX = logicXPositionToWindowsXPosition(x -  ((int)(fm.stringWidth(text) * scaleX) / 2));
+        int processedY = logicYPositionToWindowsYPosition(y - ((int)(fm.getHeight() * scaleY) / 2) + (int)(fm.getAscent() * scaleY));
+
+        graphics2D.drawString(text, processedX, processedY);
     }
 
     @Override
@@ -218,6 +257,11 @@ public class DesktopGraphics extends AbstractGraphics {
     @Override
     public int getHeight() {
         return jFrame.getHeight();
+    }
+
+    @Override
+    public void setGraphicsAlpha(int alpha) {
+        graphics2D.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alpha/255.0f));
     }
 
     @Override
@@ -240,12 +284,12 @@ public class DesktopGraphics extends AbstractGraphics {
 
     @Override
     public int logicXPositionToWindowsXPosition(int x) {
-        return x + (int) (borderBarWidth / scaleFactor) + (int) (borderInsetOffset / scaleFactor);
+        return (int) ((x + (int) (borderBarWidth / scaleFactor) + (int) (borderInsetOffset / scaleFactor)) / scaleX);
     }
 
     @Override
     public int logicYPositionToWindowsYPosition(int y) {
-        return y + (int) (topBarHeight / scaleFactor) + (int) (topInsetOffset / scaleFactor);
+        return (int) ((y + (int) (topBarHeight / scaleFactor) + (int) (topInsetOffset / scaleFactor)) / scaleY);
     }
 
     @Override
@@ -260,7 +304,11 @@ public class DesktopGraphics extends AbstractGraphics {
 
     @Override
     public void setScale(double x, double y) {
+        scaleX = x;
+        scaleY = y;
+
         currentTransform.setToScale((x * scaleFactor) / currentTransform.getScaleX(), (y * scaleFactor) / currentTransform.getScaleY());
+
         apply();
         save();
     }
@@ -298,7 +346,7 @@ public class DesktopGraphics extends AbstractGraphics {
         int logicX = windowsXPositionToLogicXPosition(windowsX);
         int logicY = windowsYPositionToLogicYPosition(windowsY);
         return !(logicX < 0 || logicX > logicSizeX ||
-                 logicY < 0 || logicY > logicSizeY);
+                logicY < 0 || logicY > logicSizeY);
     }
 
     @Override

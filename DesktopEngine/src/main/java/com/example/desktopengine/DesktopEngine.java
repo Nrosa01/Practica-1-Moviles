@@ -3,7 +3,6 @@ package com.example.desktopengine;
 import com.example.engine.*;
 
 import java.awt.event.MouseEvent;
-import java.util.List;
 
 import javax.swing.JFrame;
 import javax.swing.event.MouseInputListener;
@@ -15,7 +14,7 @@ public class DesktopEngine implements IEngine, Runnable, MouseInputListener {
     // DesktopState state;
     JFrame mView;
     Thread renderThread;
-    IState currentState;
+    StateManager stateManager;
 
     boolean isRunning = false;
 
@@ -25,6 +24,7 @@ public class DesktopEngine implements IEngine, Runnable, MouseInputListener {
         inputManager = new DesktopInput();
         mView.addMouseListener(this);
         mView.addMouseMotionListener(this);
+        stateManager = new StateManager(this, 0.5f);
     }
 
     //Métodos sincronización (parar y reiniciar aplicación)
@@ -99,7 +99,7 @@ public class DesktopEngine implements IEngine, Runnable, MouseInputListener {
 
     @Override
     public IState getState() {
-        return currentState;
+        return stateManager;
     }
 
     @Override
@@ -109,39 +109,36 @@ public class DesktopEngine implements IEngine, Runnable, MouseInputListener {
 
     @Override
     public void render() {
-        currentState.render();
+        stateManager.render();
     }
 
     @Override
     public void update(double deltaTime) {
-        currentState.update(deltaTime);
+        stateManager.update(deltaTime);
     }
 
     @Override
     public void handleInput() {
-        this.currentState.handleInput(inputManager.getEventList());
+        this.stateManager.handleInput(inputManager.getEventList());
         inputManager.clear();
     }
 
     @Override
     public void setState(IState state) throws Exception {
-        // Deberiamos esperar al final del bucle lógico antes de cambiar de estado
-        // para evitar problemas
-        if (state.init())
-            this.currentState = state;
-        else
-            throw new Exception("State didn't init correctly");
+        this.stateManager.setState(state);
     }
 
     @Override
     public void mouseClicked(MouseEvent mouseEvent) {
-        if (graphics.isInsideLogicCanvas(mouseEvent.getX(), mouseEvent.getY()))
-            inputManager.addEvent(mouseEvent);
+//Por alguna razon esto no va bien, no es intuitivo pero mejor usar el mousePressed
+        //        if (graphics.isInsideLogicCanvas(mouseEvent.getX(), mouseEvent.getY()))
+//            inputManager.addEvent(mouseEvent);
     }
 
     @Override
     public void mousePressed(MouseEvent mouseEvent) {
-
+        if (graphics.isInsideLogicCanvas(mouseEvent.getX(), mouseEvent.getY()))
+            inputManager.addEvent(mouseEvent);
     }
 
     @Override
@@ -162,7 +159,8 @@ public class DesktopEngine implements IEngine, Runnable, MouseInputListener {
 
     @Override
     public void mouseDragged(MouseEvent mouseEvent) {
-
+        if (graphics.isInsideLogicCanvas(mouseEvent.getX(), mouseEvent.getY()))
+            inputManager.addEvent(mouseEvent);
     }
 
     @Override
