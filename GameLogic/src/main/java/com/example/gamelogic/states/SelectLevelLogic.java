@@ -3,6 +3,7 @@ package com.example.gamelogic.states;
 import com.example.engine.IEngine;
 import com.example.engine.IFont;
 import com.example.engine.IGraphics;
+import com.example.engine.IImage;
 import com.example.engine.IState;
 import com.example.engine.InputEvent;
 import com.example.gamelogic.entities.Button;
@@ -17,6 +18,7 @@ public class SelectLevelLogic implements IState {
     IFont font;
     IFont fontBold;
     int LOGIC_WIDTH, LOGIC_HEIGHT;
+    IImage arrow;
 
     Pointer pointer;
     Button[][] buttons;
@@ -37,6 +39,7 @@ public class SelectLevelLogic implements IState {
         try {
             fontBold = graphics.newFont(engine.getAssetsPath() + "fonts/Roboto-Regular.ttf", 24, true);
             font = graphics.newFont(engine.getAssetsPath() + "fonts/Roboto-Regular.ttf", 24, false);
+            arrow = graphics.newImage(engine.getAssetsPath() + "images/arrow.png");
             int buttonSize = LOGIC_WIDTH / 5;
             int gapSize = buttonSize / 2;
 
@@ -57,10 +60,16 @@ public class SelectLevelLogic implements IState {
         for (Button[] button : buttons)
             for (Button b : button)
                 b.update(deltaTime);
+
+        pointer.update(deltaTime);
     }
 
     @Override
     public void render() {
+        graphics.setScale(0.05,0.05);
+        graphics.drawImage(arrow, 25, 25);
+        graphics.setScale(1,1);
+        graphics.drawText("Volver", 45, 35, font);
         graphics.drawTextCentered("Selecciona el tamaño del puzzle", LOGIC_WIDTH / 2, 200, font);
 
         for (Button[] button : buttons)
