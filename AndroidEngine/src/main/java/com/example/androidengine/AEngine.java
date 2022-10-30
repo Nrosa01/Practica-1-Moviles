@@ -151,4 +151,9 @@ public class AEngine implements IEngine, Runnable {
     public void update(double deltaTime) {
         currentState.update(deltaTime);
     }
+
+    @Override
+    public void handleInput() {
+
+    }
 }
