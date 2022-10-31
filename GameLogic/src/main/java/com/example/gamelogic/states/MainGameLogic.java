@@ -23,6 +23,7 @@ public class MainGameLogic extends AbstractState {
     Board board;
     Button returnButton;
     IFont font;
+    IFont boardFont;
     IImage arrow;
 
     public MainGameLogic(IEngine engine, String level) {
@@ -35,6 +36,7 @@ public class MainGameLogic extends AbstractState {
     public boolean init() {
         try {
             font = graphics.newFont(engine.getAssetsPath() + "fonts/Roboto-Regular.ttf", 24, false);
+            boardFont = graphics.newFont(engine.getAssetsPath() + "fonts/Roboto-Regular.ttf", 12, false);
             arrow = graphics.newImage(engine.getAssetsPath() + "images/arrow.png");
 
             returnButton = new Button(25, 25, 30, 30, engine);
@@ -64,10 +66,10 @@ public class MainGameLogic extends AbstractState {
                             {1, 0, 1, 0},
                             {1, 1, 0, 0}
                     };
-            level = NonogramGenerator.GenerateLevel(rows, cols);
+            //level = NonogramGenerator.GenerateLevel(rows, cols);
 
 
-            board = new NonogramBoard(engine, level, LOGIC_WIDTH - 20, 2, font);
+            board = new NonogramBoard(engine, level, LOGIC_WIDTH - 20, 2, boardFont);
             board.setPosX(LOGIC_WIDTH / 2);
             board.setPosY(LOGIC_HEIGHT / 2);
             return true;
