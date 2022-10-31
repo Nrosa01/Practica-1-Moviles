@@ -19,11 +19,12 @@ public class AEngine implements IEngine, Runnable {
 
     private boolean running;
 
-    private IState currentState;
+    //private IState currentState;
+    private StateManager stateManager;
 
-    AssetManager assetManager;
-    AGraphics graphics;
-    AAudio audio;
+    private AssetManager assetManager;
+    private AGraphics graphics;
+    private AAudio audio;
 
     public AEngine(SurfaceView myView, AssetManager assetManager) {
         // Intentamos crear el buffer strategy con 2 buffers.
@@ -33,7 +34,10 @@ public class AEngine implements IEngine, Runnable {
         this.paint = new Paint();
         this.paint.setColor(0xFF000000);
 
+        this.stateManager = new StateManager(this, 0.5f);
         this.assetManager = assetManager;
+
+        graphics = new AGraphics(holder,paint,assetManager);
     }
 
 
@@ -41,10 +45,10 @@ public class AEngine implements IEngine, Runnable {
     public void setState(IState state) throws Exception {
         // Deberiamos esperar al final del bucle lógico antes de cambiar de estado
         // para evitar problemas
-        if (state.init())
-            this.currentState = state;
-        else
-            throw new Exception("State didn't init correctly");
+
+            this.stateManager.setState(state);
+
+
     }
 
     public void resume() {
@@ -111,7 +115,7 @@ public class AEngine implements IEngine, Runnable {
 
             // Pintamos el frame
             while (!this.holder.getSurface().isValid()) ;
-            this.canvas = this.holder.lockCanvas();
+            canvas = this.holder.lockCanvas();
             this.render();
             this.holder.unlockCanvasAndPost(canvas);
 
@@ -133,23 +137,23 @@ public class AEngine implements IEngine, Runnable {
 
     @Override
     public IState getState() {
-        return currentState;
+        return this.stateManager;
     }
 
     @Override
     public String getAssetsPath() {
-        return "GameLogic/assets/";
+        return "";
     }
 
     public void render() {
         // "Borramos" el fondo.
-        this.canvas.drawColor(0xFF000000); // ARGB
-        currentState.render();
+        canvas.drawColor(0xFF000000); // ARGB
+        //this.stateManager.render();
     }
 
     @Override
     public void update(double deltaTime) {
-        currentState.update(deltaTime);
+        this.stateManager.update(deltaTime);
     }
 
     @Override

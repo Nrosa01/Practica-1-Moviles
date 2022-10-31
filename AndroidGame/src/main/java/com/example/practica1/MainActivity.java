@@ -8,6 +8,9 @@ import android.view.SurfaceView;
 
 import com.example.gamelogic.states.LogicTest;
 import com.example.androidengine.AEngine;
+import com.example.gamelogic.states.StartMenuLogic;
+
+import java.io.IOException;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -21,13 +24,13 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        AssetManager assetManager = getAssets();
-        this.androidEngine = new AEngine(this.renderView,this.assetManager);
-
+        assetManager = getAssets();
         this.renderView = new SurfaceView(this);
         setContentView(this.renderView);
 
-        LogicTest logicTest = new LogicTest(this.androidEngine);
+        this.androidEngine = new AEngine(this.renderView, assetManager);
+        StartMenuLogic logicTest = new StartMenuLogic(this.androidEngine);
+        //LogicTest logicTest = new LogicTest(this.androidEngine);
 
         try {
             this.androidEngine.setState(logicTest);
