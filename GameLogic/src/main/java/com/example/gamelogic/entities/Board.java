@@ -1,12 +1,13 @@
 package com.example.gamelogic.entities;
 
 import com.example.engine.IEngine;
-import com.example.gamelogic.states.MainGameLogic;
+import com.example.gamelogic.utilities.Color;
 
 public abstract class Board extends Entity {
     protected int[][] board;
     protected int rows, cols, gapSize;
     protected int paddingHorizontal, paddingVertical = 0;
+    private Color boardBackgroundColor;
 
     protected int cellWidth, cellHeight, widthArea, heightArea;
 
@@ -17,11 +18,12 @@ public abstract class Board extends Entity {
         this.cols = cols;
         this.width = width;
         this.gapSize = gapSize;
+        boardBackgroundColor = new Color(255,255,255);
         init();
     }
 
     protected void init() {
-        this.height = (int) (width * rows / cols);
+        this.height = (width * rows / cols);
 
         widthArea = width - (gapSize + paddingHorizontal);
         heightArea = height - (gapSize + paddingVertical);
@@ -42,7 +44,7 @@ public abstract class Board extends Entity {
 
     @Override
     public void render() {
-        graphics.setColor(255, 123, 123);
+        graphics.setColor(boardBackgroundColor.r, boardBackgroundColor.r, boardBackgroundColor.b);
         graphics.fillRectangle(posX, posY, width, height);
         graphics.setColor(123, 123, 123);
 
@@ -100,5 +102,12 @@ public abstract class Board extends Entity {
     @Override
     public void OnPointerMove(int x, int y) {
 
+    }
+
+    public void setBoardBackgroundColor(int r, int g, int b) {
+        boardBackgroundColor.r = r;
+        boardBackgroundColor.g = g;
+        boardBackgroundColor.b = b;
+        boardBackgroundColor.a = 255;
     }
 }

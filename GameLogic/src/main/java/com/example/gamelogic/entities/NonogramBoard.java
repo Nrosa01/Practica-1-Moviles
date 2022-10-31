@@ -1,11 +1,14 @@
 package com.example.gamelogic.entities;
 
 import com.example.engine.IEngine;
+import com.example.gamelogic.utilities.Color;
 
 public class NonogramBoard extends Board {
     int[][] nonogramCellStates;
     private final int numOfStates = 3;
     int borderBoardSize;
+    private Color borderColor;
+    private int borderWidth = 2;
 
     public NonogramBoard(IEngine engine, int rows, int cols, int width, int gapSize) {
         // Calculate borderBoardSize, where the numbers of the nonogram will be placed
@@ -15,15 +18,24 @@ public class NonogramBoard extends Board {
         init();
 
         nonogramCellStates = new int[rows][cols];
+        borderColor = new Color();
     }
 
     @Override
     public void render() {
+        // Draw the border board
         super.render();
-        // Render the border board left of the nonogram board and up of the nonogram board
+
+        // Render the board borders (where the text numbers are)
         graphics.setColor(255, 255, 255);
         graphics.fillRectangle(posX - width/2 - borderBoardSize/2, posY, borderBoardSize, height);
         graphics.fillRectangle(posX, posY -height/2 - borderBoardSize/2, width, borderBoardSize);
+
+        // Render borders on top of board
+        graphics.setColor(borderColor.r, borderColor.g, borderColor.b);
+        graphics.drawRectangle(posX, posY, width, height, borderWidth);
+        graphics.drawRectangle(posX - width/2 - borderBoardSize/2, posY, borderBoardSize, height, borderWidth);
+        graphics.drawRectangle(posX, posY -height/2 - borderBoardSize/2, width, borderBoardSize, borderWidth);
         
     }
 
@@ -57,6 +69,13 @@ public class NonogramBoard extends Board {
                 graphics.setColor(23,23,23);
                 break;
         }
+    }
+
+    public void setBorderColor(int r, int g, int b) {
+        borderColor.r = r;
+        borderColor.g = g;
+        borderColor.b = b;
+        borderColor.a = 255;
     }
 
     @Override

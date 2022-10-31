@@ -10,7 +10,7 @@ public interface IGraphics {
     void setFont();
     void clear(int r, int g, int b);
     void drawImage(IImage image, int x, int y);
-    void drawRectangle(int upperLeftX, int upperLeftY, int lowerRightX, int lowerRightY, int lineWidth);
+    void drawRectangle(int x, int y, int width, int height, int lineWidth);
     void fillRectangle(int x, int y, int width, int height);
     void drawLine(int fromX, int fromY, int toX, int toY);
     void drawCircle(int xPos, int yPos, int radius);
