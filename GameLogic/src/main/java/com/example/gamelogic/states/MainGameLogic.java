@@ -37,7 +37,9 @@ public class MainGameLogic extends AbstractState {
             rows = Integer.parseInt(level.split("x")[0]);
             cols = Integer.parseInt(level.split("x")[1]);
 
-            board = new Board(engine, rows, cols);
+            board = new Board(engine, rows, cols, LOGIC_WIDTH, 2);
+            board.setPosX(LOGIC_WIDTH/2);
+            board.setPosY(LOGIC_HEIGHT/2);
 
 
             font = graphics.newFont(engine.getAssetsPath() + "fonts/Roboto-Regular.ttf", 24, false);
