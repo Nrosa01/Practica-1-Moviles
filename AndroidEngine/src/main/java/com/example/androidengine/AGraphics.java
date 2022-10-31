@@ -34,11 +34,18 @@ public class AGraphics implements IGraphics {
     }
 
     @Override
-    public IFont newFont(String pathToFont) {
+    public IFont newFont(String pathToFont, int size, boolean isBold) {
+        IFont font;
+        font = new AFont(pathToFont,assetManager);
+        this.paint.setTextSize(size);
+        return font;
+    }
+
+   /* public IFont newFont(String pathToFont) {
         IFont font;
         font = new AFont(pathToFont,assetManager);
         return font;
-    }
+    }*/
 
     @Override
     public void setLogicSize(int xSize, int ySize) {
@@ -47,6 +54,11 @@ public class AGraphics implements IGraphics {
 
     @Override
     public void setColor(int r, int g, int b) {
+
+    }
+
+    @Override
+    public void setColor(int r, int g, int b, int a) {
 
     }
 
@@ -64,7 +76,7 @@ public class AGraphics implements IGraphics {
     public void drawImage(IImage image, int x, int y) {
         Canvas canvas = holder.lockCanvas();
         Paint paint = new Paint();
-        canvas.drawBitmap(((AImage)image).getBitmap(, x, y, paint);
+        canvas.drawBitmap(((AImage)image).getBitmap(), x, y, paint);
         this.holder.unlockCanvasAndPost(canvas);
     }
 
@@ -82,6 +94,12 @@ public class AGraphics implements IGraphics {
     public void drawLine(int fromX, int fromY, int toX, int toY) {
 
     }
+
+    @Override
+    public void drawCircle(int xPos, int yPos, int radius) {
+
+    }
+
     //implementar size en interfaz
     @Override
     public void drawText(String text, int x, int y, IFont font) {
@@ -94,6 +112,11 @@ public class AGraphics implements IGraphics {
     }
 
     @Override
+    public void drawTextCentered(String text, int x, int y, IFont font) {
+
+    }
+
+    @Override
     public int getWidth() {
         return 0;
     }
@@ -101,6 +124,21 @@ public class AGraphics implements IGraphics {
     @Override
     public int getHeight() {
         return 0;
+    }
+
+    @Override
+    public int getLogicWidth() {
+        return 0;
+    }
+
+    @Override
+    public int getLogicHeight() {
+        return 0;
+    }
+
+    @Override
+    public void setGraphicsAlpha(int alpha) {
+
     }
 
     @Override
@@ -116,6 +154,26 @@ public class AGraphics implements IGraphics {
     @Override
     public void rotate(double angleDegrees) {
 
+    }
+
+    @Override
+    public int logicXPositionToWindowsXPosition(int x) {
+        return 0;
+    }
+
+    @Override
+    public int logicYPositionToWindowsYPosition(int x) {
+        return 0;
+    }
+
+    @Override
+    public int windowsXPositionToLogicXPosition(int x) {
+        return 0;
+    }
+
+    @Override
+    public int windowsYPositionToLogicYPosition(int x) {
+        return 0;
     }
 
     @Override

@@ -12,7 +12,7 @@ public class AFont implements IFont {
         tface = Typeface.createFromAsset(assetManager, pathToFont);
 
     }
-    Typeface getFont(){
+    public Typeface getFont(){
         return tface;
     }
     @Override

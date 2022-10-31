@@ -25,7 +25,7 @@ public class StartMenuLogic extends AbstractState {
     public boolean init() {
         try {
             pointer = new Pointer(engine);
-            testFont = engine.getGraphics().newFont(engine.getAssetsPath() + "fonts/Antihero.ttf", 24, false);
+            testFont = graphics.newFont(engine.getAssetsPath() + "fonts/Antihero.ttf", 24, false);
             button = new Button(LOGIC_WIDTH / 2, LOGIC_HEIGHT / 2, 100, 35, engine);
             button.setText("Jugar", testFont);
             button.setBackgroundColor(0,0,0,0);
