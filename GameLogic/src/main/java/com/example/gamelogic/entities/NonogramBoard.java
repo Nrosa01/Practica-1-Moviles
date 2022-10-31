@@ -1,6 +1,7 @@
 package com.example.gamelogic.entities;
 
 import com.example.engine.IEngine;
+import com.example.engine.IFont;
 import com.example.gamelogic.utilities.Color;
 
 public class NonogramBoard extends Board {
@@ -9,34 +10,119 @@ public class NonogramBoard extends Board {
     int borderBoardSize;
     private Color borderColor;
     private int borderWidth = 2;
+    int[][] solvedPuzzle;
+    String[] rowsText;
+    String[] colsText;
+    IFont font;
 
-    public NonogramBoard(IEngine engine, int rows, int cols, int width, int gapSize) {
-        // Calculate borderBoardSize, where the numbers of the nonogram will be placed
-        super(engine, rows, cols, width, gapSize);
+    public NonogramBoard(IEngine engine, int[][] solvedPuzzle, int width, int gapSize, IFont font) {
+        super(engine, solvedPuzzle.length, solvedPuzzle[0].length, width, gapSize);
+
         borderBoardSize = (int) (width * 0.2);
         this.width = width - borderBoardSize;
+        this.solvedPuzzle = solvedPuzzle;
         init();
 
         nonogramCellStates = new int[rows][cols];
         borderColor = new Color();
+
+        generateRowsText();
+        generateColsText();
+
+        this.font = font;
+    }
+
+    private void generateRowsText()
+    {
+        rowsText = new String[rows];
+
+        for (int row = 0; row < rows; row++) {
+            int count = 0;
+            String text = "";
+            for (int col = 0; col < cols; col++) {
+                if (solvedPuzzle[row][col] == 1) {
+                    count++;
+                } else {
+                    if (count > 0) {
+                        text += count + " ";
+                        count = 0;
+                    }
+                }
+            }
+            if (count > 0) {
+                text += count + " ";
+            }
+            rowsText[row] = text;
+        }
+    }
+
+    private void generateColsText()
+    {   
+        colsText = new String[cols];
+        
+        for (int col = 0; col < cols; col++) {
+            int count = 0;
+            String text = "";
+            for (int row = 0; row < rows; row++) {
+                if (solvedPuzzle[row][col] == 1) {
+                    count++;
+                } else {
+                    if (count > 0) {
+                        text += count + " ";
+                        count = 0;
+                    }
+                }
+            }
+            if (count > 0) {
+                text += count + " ";
+            }
+            colsText[col] = text;
+        }
     }
 
     @Override
     public void render() {
         // Draw the border board
         super.render();
+        RenderTextArea();
+        RenderBordersStroke();
+    }
 
-        // Render the board borders (where the text numbers are)
+    private void RenderTextArea()
+    {
+        // Render text background
         graphics.setColor(255, 255, 255);
         graphics.fillRectangle(posX - width/2 - borderBoardSize/2, posY, borderBoardSize, height);
         graphics.fillRectangle(posX, posY -height/2 - borderBoardSize/2, width, borderBoardSize);
 
+        graphics.setColor(0, 0, 0);
+
+        // Render rows text from right to left
+        for (int row = 0; row < rows; row++) {
+            String text = rowsText[row];
+            int textWidth = graphics.getStringWidth(text, font);
+            int textPosX = posX - width/2 - borderBoardSize/2 + (borderBoardSize - textWidth)/2;
+            int textPosY = getCellPosY(row);
+            graphics.drawTextCentered(text, textPosX, textPosY, font);
+        }
+
+        // Render cols text from bottom to top
+        for (int col = 0; col < cols; col++) {
+            String text = colsText[col];
+            int textWidth = graphics.getStringWidth(text, font);
+            int textPosX = getCellPosX(col);
+            int textPosY = posY - height/2 - borderBoardSize/2 + (borderBoardSize - textWidth)/2;
+            graphics.drawTextCentered(text, textPosX, textPosY, font);
+        }
+    }
+
+    private void RenderBordersStroke()
+    {
         // Render borders on top of board
         graphics.setColor(borderColor.r, borderColor.g, borderColor.b);
         graphics.drawRectangle(posX, posY, width, height, borderWidth);
         graphics.drawRectangle(posX - width/2 - borderBoardSize/2, posY, borderBoardSize, height, borderWidth);
         graphics.drawRectangle(posX, posY -height/2 - borderBoardSize/2, width, borderBoardSize, borderWidth);
-        
     }
 
     @Override

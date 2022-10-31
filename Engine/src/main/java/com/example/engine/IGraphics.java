@@ -8,6 +8,9 @@ public interface IGraphics {
     void setColor(int r, int g, int b);
     void setColor(int r, int g, int b, int a);
     void setFont();
+    int getStringWidth(String text, IFont font);
+    int getFontHeight(IFont font);
+    int getFontAscent(IFont font);
     void clear(int r, int g, int b);
     void drawImage(IImage image, int x, int y);
     void drawRectangle(int x, int y, int width, int height, int lineWidth);

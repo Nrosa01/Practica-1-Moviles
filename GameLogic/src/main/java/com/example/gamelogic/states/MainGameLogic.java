@@ -12,6 +12,7 @@ import com.example.gamelogic.entities.Entity;
 import com.example.gamelogic.entities.IInteractableCallback;
 import com.example.gamelogic.entities.NonogramBoard;
 import com.example.gamelogic.entities.Pointer;
+import com.example.gamelogic.levels.NonogramGenerator;
 
 import java.util.List;
 
@@ -33,25 +34,15 @@ public class MainGameLogic extends AbstractState {
     @Override
     public boolean init() {
         try {
-            int rows, cols;
-
-            rows = Integer.parseInt(level.split("x")[0]);
-            cols = Integer.parseInt(level.split("x")[1]);
-
-            board = new NonogramBoard(engine, rows, cols, LOGIC_WIDTH - 20, 2);
-            board.setPosX(LOGIC_WIDTH/2);
-            board.setPosY(LOGIC_HEIGHT/2);
-
-
             font = graphics.newFont(engine.getAssetsPath() + "fonts/Roboto-Regular.ttf", 24, false);
             arrow = graphics.newImage(engine.getAssetsPath() + "images/arrow.png");
 
-            returnButton = new Button(25,25, 30, 30, engine);
+            returnButton = new Button(25, 25, 30, 30, engine);
             returnButton.setImage(arrow);
-            returnButton.setPadding(10,10);
-            returnButton.setBackgroundColor(0,0,0,0);
+            returnButton.setPadding(10, 10);
+            returnButton.setBackgroundColor(0, 0, 0, 0);
             returnButton.setBorderSize(0);
-            returnButton.setHoverColor(205,205,205);
+            returnButton.setHoverColor(205, 205, 205);
             returnButton.setCallback(new IInteractableCallback() {
                 @Override
                 public void onInteractionOccur() {
@@ -62,6 +53,22 @@ public class MainGameLogic extends AbstractState {
                     }
                 }
             });
+
+            int rows = Integer.parseInt(level.split("x")[0]);
+            int cols = Integer.parseInt(level.split("x")[1]);
+
+            //int[][] level = NonogramGenerator.GenerateLevel(rows, cols);
+            int[][] level = new int[][]
+                    {
+                            {1, 0, 1, 1},
+                            {0, 1, 0, 1},
+                            {1, 0, 1, 0},
+                            {0, 1, 0, 0}
+                    };
+
+            board = new NonogramBoard(engine, level, LOGIC_WIDTH - 20, 2, font);
+            board.setPosX(LOGIC_WIDTH / 2);
+            board.setPosY(LOGIC_HEIGHT / 2);
             return true;
         } catch (Exception e) {
             e.printStackTrace();

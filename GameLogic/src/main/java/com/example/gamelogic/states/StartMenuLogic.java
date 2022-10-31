@@ -13,9 +13,6 @@ import com.example.gamelogic.entities.Pointer;
 import java.util.List;
 
 public class StartMenuLogic extends AbstractState {
-    static final int LOGIC_WIDTH = 400;
-    static final int LOGIC_HEIGHT = 600;
-
     IFont testFont;
     Button button;
     Pointer pointer;
@@ -27,8 +24,6 @@ public class StartMenuLogic extends AbstractState {
     @Override
     public boolean init() {
         try {
-            graphics.setLogicSize(LOGIC_WIDTH, LOGIC_HEIGHT);
-
             pointer = new Pointer(engine);
             testFont = engine.getGraphics().newFont(engine.getAssetsPath() + "fonts/Antihero.ttf", 24, false);
             button = new Button(LOGIC_WIDTH / 2, LOGIC_HEIGHT / 2, 100, 35, engine);

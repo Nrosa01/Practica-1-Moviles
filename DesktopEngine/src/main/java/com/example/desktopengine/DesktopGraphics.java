@@ -241,13 +241,31 @@ public class DesktopGraphics extends AbstractGraphics {
 
     @Override
     public void drawTextCentered(String text, int x, int y, IFont font) {
-        graphics2D.setFont(((DesktopFont) font).getFont());
-        FontMetrics fm = graphics2D.getFontMetrics();
-
-        int processedX = logicXPositionToWindowsXPosition(x -  ((int)(fm.stringWidth(text) * scaleX) / 2));
-        int processedY = logicYPositionToWindowsYPosition(y - ((int)(fm.getHeight() * scaleY) / 2) + (int)(fm.getAscent() * scaleY));
+        int processedX = logicXPositionToWindowsXPosition(x -  ((int)(getStringWidth(text, font) * scaleX) / 2));
+        int processedY = logicYPositionToWindowsYPosition(y - ((int)(getFontHeight(font) * scaleY) / 2) + (int)(getFontAscent(font) * scaleY));
 
         graphics2D.drawString(text, processedX, processedY);
+    }
+
+    @Override
+    public int getStringWidth(String text, IFont font) {
+        graphics2D.setFont(((DesktopFont) font).getFont());
+        FontMetrics fm = graphics2D.getFontMetrics();
+        return fm.stringWidth(text);
+    }
+
+    @Override
+    public int getFontHeight(IFont font) {
+        graphics2D.setFont(((DesktopFont) font).getFont());
+        FontMetrics fm = graphics2D.getFontMetrics();
+        return fm.getHeight();
+    }
+
+    @Override
+    public int getFontAscent(IFont font) {
+        graphics2D.setFont(((DesktopFont) font).getFont());
+        FontMetrics fm = graphics2D.getFontMetrics();
+        return fm.getAscent();
     }
 
     @Override
