@@ -17,6 +17,15 @@ public abstract class Entity implements IInputHandler{
         audio = engine.getAudio();
     }
 
+    public void setWidth(int width){
+        this.width = width;
+    }
+
+    public void setHeight(int height)
+    {
+        this.height = height;
+    }
+
     public int getWidth() {
         return width;
     }

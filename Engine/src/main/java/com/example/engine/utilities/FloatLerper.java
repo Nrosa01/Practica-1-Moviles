@@ -86,4 +86,8 @@ public class FloatLerper {
     public float getValue() {
         return this.currentValue;
     }
+
+    public float getProgress() {
+        return currentTime / duration;
+    }
 }

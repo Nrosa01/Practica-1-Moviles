@@ -38,9 +38,7 @@ public abstract class Board extends Entity {
     }
 
     @Override
-    public void update(double deltaTime) {
-
-    }
+    public abstract void update(double deltaTime);
 
     @Override
     public void render() {

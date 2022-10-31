@@ -20,11 +20,13 @@ public class MainGameLogic extends AbstractState {
 
     String level;
     Pointer pointer;
-    Board board;
+    NonogramBoard board;
     Button returnButton;
+    Button checkButton;
     IFont font;
     IFont boardFont;
     IImage arrow;
+    IImage search;
 
     public MainGameLogic(IEngine engine, String level) {
         super(engine);
@@ -38,6 +40,7 @@ public class MainGameLogic extends AbstractState {
             font = graphics.newFont(engine.getAssetsPath() + "fonts/Roboto-Regular.ttf", 24, false);
             boardFont = graphics.newFont(engine.getAssetsPath() + "fonts/Roboto-Regular.ttf", 12, false);
             arrow = graphics.newImage(engine.getAssetsPath() + "images/arrow.png");
+            search = graphics.newImage(engine.getAssetsPath() + "images/search.png");
 
             returnButton = new Button(25, 25, 30, 30, engine);
             returnButton.setImage(arrow);
@@ -53,6 +56,20 @@ public class MainGameLogic extends AbstractState {
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
+                }
+            });
+
+            checkButton = new Button(LOGIC_WIDTH - 30 - graphics.getStringWidth("Comprobar", font), 25, 30, 30, engine);
+            checkButton.setImage(search);
+            checkButton.setPadding(10, 10);
+            checkButton.setBackgroundColor(0, 0, 0, 0);
+            checkButton.setBorderSize(0);
+            checkButton.setHoverColor(205, 205, 205);
+            checkButton.setPressedColor(150,150,150);
+            checkButton.setCallback(new IInteractableCallback() {
+                @Override
+                public void onInteractionOccur() {
+                   board.checkSolution();
                 }
             });
 
@@ -88,8 +105,11 @@ public class MainGameLogic extends AbstractState {
 
     @Override
     public void render() {
-        graphics.drawText("Rendirse", 45, 35, font);
+        graphics.drawText("Comprobar", LOGIC_WIDTH - graphics.getStringWidth("Comprobar", font) - 10, 33, font);
+        graphics.drawText("Rendirse", 45, 33, font);
+
         returnButton.render();
+        checkButton.render();
 
         board.render();
         pointer.render();
@@ -102,6 +122,7 @@ public class MainGameLogic extends AbstractState {
             int proccesedY = graphics.windowsYPositionToLogicYPosition(inputEvent.y);
 
             board.handleInput(proccesedX, proccesedY, inputEvent.type);
+            checkButton.handleInput(proccesedX, proccesedY, inputEvent.type);
             returnButton.handleInput(proccesedX, proccesedY, inputEvent.type);
             pointer.handleInput(proccesedX, proccesedY, inputEvent.type);
         }
