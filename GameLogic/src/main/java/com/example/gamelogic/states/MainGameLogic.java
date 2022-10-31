@@ -10,6 +10,7 @@ import com.example.gamelogic.entities.Board;
 import com.example.gamelogic.entities.Button;
 import com.example.gamelogic.entities.Entity;
 import com.example.gamelogic.entities.IInteractableCallback;
+import com.example.gamelogic.entities.NonogramBoard;
 import com.example.gamelogic.entities.Pointer;
 
 import java.util.List;
@@ -37,7 +38,7 @@ public class MainGameLogic extends AbstractState {
             rows = Integer.parseInt(level.split("x")[0]);
             cols = Integer.parseInt(level.split("x")[1]);
 
-            board = new Board(engine, rows, cols, LOGIC_WIDTH, 2);
+            board = new NonogramBoard(engine, rows, cols, LOGIC_WIDTH, 2);
             board.setPosX(LOGIC_WIDTH/2);
             board.setPosY(LOGIC_HEIGHT/2);
 
