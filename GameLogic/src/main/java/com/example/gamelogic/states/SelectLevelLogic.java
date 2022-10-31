@@ -11,18 +11,16 @@ import com.example.gamelogic.entities.Entity;
 import com.example.gamelogic.entities.IInteractableCallback;
 import com.example.gamelogic.entities.Pointer;
 
+import org.graalvm.compiler.core.common.type.ArithmeticOpTable;
+
 import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class SelectLevelLogic implements IState {
-    IGraphics graphics;
-    IEngine engine;
-
+public class SelectLevelLogic extends AbstractState {
     IFont font;
     IFont fontBold;
-    int LOGIC_WIDTH, LOGIC_HEIGHT;
     IImage arrow;
 
     Button returnButton;
@@ -32,10 +30,7 @@ public class SelectLevelLogic implements IState {
     List<Entity> entities;
 
     public SelectLevelLogic(IEngine engine) {
-        this.engine = engine;
-        graphics = engine.getGraphics();
-        LOGIC_WIDTH = graphics.getLogicWidth();
-        LOGIC_HEIGHT = graphics.getLogicHeight();
+        super(engine);
 
         pointer = new Pointer(engine);
         entities = new ArrayList<>();
@@ -54,6 +49,20 @@ public class SelectLevelLogic implements IState {
                 for (int col = 0; col < cols; col++) {
                     Button button = new Button((gapSize + buttonSize) * (col + 1) - gapSize, 200 + (120 * (row + 1)), buttonSize, buttonSize, engine);
                     button.setText(texts[row][col], fontBold);
+                    final int finalRow = row;
+                    final int finalCol = col;
+                    button.setCallback(new IInteractableCallback() {
+                        @Override
+                        public void onInteractionOccur() {
+                            try {
+                                engine.setState(new MainGameLogic(engine, texts[finalRow][finalCol]));
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    });
+
+
                     entities.add(button);
                 }
             }
@@ -63,7 +72,7 @@ public class SelectLevelLogic implements IState {
             returnButton.setPadding(10,10);
             returnButton.setBackgroundColor(0,0,0,0);
             returnButton.setBorderSize(0);
-            returnButton.setHoverColor(75,75,75,255);
+            returnButton.setHoverColor(205,205,205);
             returnButton.setCallback(new IInteractableCallback() {
                 @Override
                 public void onInteractionOccur() {

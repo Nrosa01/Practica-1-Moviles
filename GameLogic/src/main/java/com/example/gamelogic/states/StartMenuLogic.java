@@ -12,20 +12,16 @@ import com.example.gamelogic.entities.Pointer;
 
 import java.util.List;
 
-public class StartMenuLogic implements IState {
+public class StartMenuLogic extends AbstractState {
     static final int LOGIC_WIDTH = 400;
     static final int LOGIC_HEIGHT = 600;
 
     IFont testFont;
     Button button;
-
-    IEngine engine = null;
-    IGraphics graphics = null;
     Pointer pointer;
 
     public StartMenuLogic(IEngine engine) {
-        this.engine = engine;
-        graphics = engine.getGraphics();
+        super(engine);
     }
 
     @Override
