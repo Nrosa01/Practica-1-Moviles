@@ -10,8 +10,7 @@ public class DesktopGameMain {
         DesktopEngine desktopEngine = new DesktopEngine(1400, 800, "Nonogramas");
 
         try {
-            desktopEngine.setState(new MainGameLogic(desktopEngine, "10x10"));
-            //desktopEngine.setState(new StartMenuLogic(desktopEngine));
+            desktopEngine.setState(new StartMenuLogic(desktopEngine));
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -23,10 +23,13 @@ public class MainGameLogic extends AbstractState {
     NonogramBoard board;
     Button returnButton;
     Button checkButton;
+    Button winReturnButton;
     IFont font;
     IFont boardFont;
+    IFont congratsFont;
     IImage arrow;
     IImage search;
+    boolean gameWin = false;
 
     public MainGameLogic(IEngine engine, String level) {
         super(engine);
@@ -39,6 +42,7 @@ public class MainGameLogic extends AbstractState {
         try {
             font = graphics.newFont(engine.getAssetsPath() + "fonts/Roboto-Regular.ttf", 24, false);
             boardFont = graphics.newFont(engine.getAssetsPath() + "fonts/Roboto-Regular.ttf", 12, false);
+            congratsFont = graphics.newFont(engine.getAssetsPath() + "fonts/Roboto-Regular.ttf", 36, true);
             arrow = graphics.newImage(engine.getAssetsPath() + "images/arrow.png");
             search = graphics.newImage(engine.getAssetsPath() + "images/search.png");
 
@@ -65,25 +69,42 @@ public class MainGameLogic extends AbstractState {
             checkButton.setBackgroundColor(0, 0, 0, 0);
             checkButton.setBorderSize(0);
             checkButton.setHoverColor(205, 205, 205);
-            checkButton.setPressedColor(150,150,150);
+            checkButton.setPressedColor(150, 150, 150);
             checkButton.setCallback(new IInteractableCallback() {
                 @Override
                 public void onInteractionOccur() {
-                   board.checkSolution();
+                    board.checkSolution();
+                }
+            });
+
+            winReturnButton = new Button(LOGIC_WIDTH / 2, LOGIC_HEIGHT - 50, 100, 50, engine);
+            winReturnButton.setText("Volver", font);
+            winReturnButton.setBackgroundColor(0, 0, 0, 0);
+            winReturnButton.setBorderSize(0);
+            winReturnButton.setHoverColor(205, 205, 205);
+            winReturnButton.setCallback(new IInteractableCallback() {
+                @Override
+                public void onInteractionOccur() {
+                    try {
+                        engine.setState(new SelectLevelLogic(engine));
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
             });
 
             int rows = Integer.parseInt(level.split("x")[0]);
             int cols = Integer.parseInt(level.split("x")[1]);
 
-            int[][] level = new int[][]
+            // Nivel de prueba para tests
+            int[][] level =
                     {
                             {1, 0, 1, 1},
                             {0, 1, 0, 1},
                             {1, 0, 1, 0},
                             {1, 1, 0, 0}
                     };
-            //level = NonogramGenerator.GenerateLevel(rows, cols);
+            level = NonogramGenerator.GenerateLevel(rows, cols);
 
 
             board = new NonogramBoard(engine, level, LOGIC_WIDTH - 20, 2, boardFont);
@@ -99,19 +120,30 @@ public class MainGameLogic extends AbstractState {
     @Override
     public void update(double deltaTime) {
         board.update(deltaTime);
-        returnButton.update(deltaTime);
         pointer.update(deltaTime);
+
+        if (!board.getIsWin()) {
+            returnButton.update(deltaTime);
+        } else
+            winReturnButton.update(deltaTime);
     }
 
     @Override
     public void render() {
-        graphics.drawText("Comprobar", LOGIC_WIDTH - graphics.getStringWidth("Comprobar", font) - 10, 33, font);
-        graphics.drawText("Rendirse", 45, 33, font);
-
-        returnButton.render();
-        checkButton.render();
-
         board.render();
+
+        graphics.setColor(0, 0, 0);
+        if (!board.getIsWin()) {
+            graphics.drawText("Comprobar", LOGIC_WIDTH - graphics.getStringWidth("Comprobar", font) - 10, 33, font);
+            graphics.drawText("Rendirse", 45, 33, font);
+
+            returnButton.render();
+            checkButton.render();
+        } else {
+            graphics.drawTextCentered("¡Enhorabuena!", LOGIC_WIDTH / 2, 50, congratsFont);
+            winReturnButton.render();
+        }
+
         pointer.render();
     }
 
@@ -122,9 +154,15 @@ public class MainGameLogic extends AbstractState {
             int proccesedY = graphics.windowsYPositionToLogicYPosition(inputEvent.y);
 
             board.handleInput(proccesedX, proccesedY, inputEvent.type);
-            checkButton.handleInput(proccesedX, proccesedY, inputEvent.type);
-            returnButton.handleInput(proccesedX, proccesedY, inputEvent.type);
             pointer.handleInput(proccesedX, proccesedY, inputEvent.type);
+
+            if (!board.getIsWin()) {
+                checkButton.handleInput(proccesedX, proccesedY, inputEvent.type);
+
+                returnButton.handleInput(proccesedX, proccesedY, inputEvent.type);
+            } else
+                winReturnButton.handleInput(proccesedX, proccesedY, inputEvent.type);
+
         }
     }
 }

@@ -22,6 +22,7 @@ public class NonogramBoard extends Board {
     private float borderBoardRatio = 0.2f;
     private int initialWidth;
     private Color textColor;
+    private int missingCells, badCellNumber;
 
     public NonogramBoard(IEngine engine, int[][] solvedPuzzle, int width, int gapSize, IFont font) {
         super(engine, solvedPuzzle.length, solvedPuzzle[0].length, width, gapSize);
@@ -39,12 +40,12 @@ public class NonogramBoard extends Board {
 
         this.font = font;
         endTransitionLerper = new FloatLerper(borderBoardRatio, 0, 0.55f, LerpType.EaseOut);
-        wrongTilesTimer =  new FloatLerper(0, 5, 10, LerpType.Linear); // Voy a usar esto como un timer
+        wrongTilesTimer = new FloatLerper(0, 5, 10, LerpType.Linear); // Voy a usar esto como un timer
+        wrongTilesTimer.setPaused(true);
         textColor = new Color();
     }
 
-    public boolean getIsWin()
-    {
+    public boolean getIsWin() {
         return isWin;
     }
 
@@ -112,6 +113,17 @@ public class NonogramBoard extends Board {
 
         this.posX -= borderBoardSize / 2;
         this.posY -= borderBoardSize / 2;
+
+        renderErrorLabels();
+    }
+
+    private void renderErrorLabels() {
+        if (isWin || wrongTilesTimer.getPaused())
+            return;
+
+        graphics.setColor(255, 50, 50);
+        graphics.drawTextCentered("Te faltan " + missingCells + " casillas", posX, posY - height / 2 - borderBoardSize, font);
+        graphics.drawTextCentered("Tienes mal " + badCellNumber + " casillas", posX, posY - height / 2 - borderBoardSize + graphics.getFontHeight(font), font);
     }
 
     private void RenderTextArea() {
@@ -167,7 +179,10 @@ public class NonogramBoard extends Board {
     private void setColorGivenState(int state) {
         switch (state) {
             case 0:
-                graphics.setColor(123, 123, 123);
+                if (!isWin)
+                    graphics.setColor(123, 123, 123);
+                else
+                    graphics.setColor(255, 255, 255);
                 break;
             case 1:
                 graphics.setColor(123, 123, 255);
@@ -176,7 +191,7 @@ public class NonogramBoard extends Board {
                 graphics.setColor(23, 23, 23);
                 break;
             case 3:
-                graphics.setColor(255,123,123);
+                graphics.setColor(255, 123, 123);
         }
     }
 
@@ -192,24 +207,35 @@ public class NonogramBoard extends Board {
         setColorGivenState(nonogramCellStates[row][col]);
     }
 
-    private boolean checkWin() {
+    // Updates board state, update missingCells and badCells, also returns true if win is satisfied
+    private boolean updateBoardState() {
+        boolean win = true;
+        badCellNumber = 0;
+        missingCells = 0;
+
         for (int row = 0; row < rows; row++) {
             for (int col = 0; col < cols; col++) {
-                if (nonogramCellStates[row][col] == 1 && solvedPuzzle[row][col] != 1) {
-                    return false;
+                if (solvedPuzzle[row][col] == 1 && nonogramCellStates[row][col] != 1) {
+                    missingCells++;
+                    win = false;
+                }
+
+                if (solvedPuzzle[row][col] != 1 && nonogramCellStates[row][col] == 1) {
+                    badCellNumber++;
+                    win = false;
                 }
             }
         }
 
-        return true;
+        return win;
     }
 
     public void checkSolution() {
-        if(isWin)
+        if (isWin)
             return;
 
-        isWin = checkWin();
-        
+        isWin = updateBoardState();
+
         if (isWin) {
             for (int row = 0; row < rows; row++) {
                 for (int col = 0; col < cols; col++) {
@@ -218,9 +244,7 @@ public class NonogramBoard extends Board {
                     }
                 }
             }
-        }
-        else
-        {
+        } else {
             for (int row = 0; row < rows; row++) {
                 for (int col = 0; col < cols; col++) {
                     if (solvedPuzzle[row][col] != 1 && nonogramCellStates[row][col] == 1) {
@@ -242,12 +266,10 @@ public class NonogramBoard extends Board {
             textColor.a = (int) (255 * (1.0f - endTransitionLerper.getProgress()));
             borderColor.a = (int) (255 * (1.0f - endTransitionLerper.getProgress()));
             super.init();
-        }
-        else
+        } else
             wrongTilesTimer.update(deltaTime);
 
-        if(wrongTilesTimer.isFinished())
-        {
+        if (wrongTilesTimer.isFinished()) {
             wrongTilesTimer.restart();
             wrongTilesTimer.setPaused(true);
 
@@ -262,8 +284,7 @@ public class NonogramBoard extends Board {
     }
 
     @Override
-    public void OnPointerDown(int x, int y)
-    {
+    public void OnPointerDown(int x, int y) {
         this.posX += borderBoardSize / 2;
         this.posY += borderBoardSize / 2;
 

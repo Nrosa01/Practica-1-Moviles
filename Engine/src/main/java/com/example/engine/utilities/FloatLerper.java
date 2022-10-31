@@ -75,6 +75,11 @@ public class FloatLerper {
         return duration - currentTime < 0.01f;
     }
 
+    public boolean getPaused()
+    {
+        return  isPaused;
+    }
+
     public void reverse() {
         this.reversed = !this.reversed;
     }

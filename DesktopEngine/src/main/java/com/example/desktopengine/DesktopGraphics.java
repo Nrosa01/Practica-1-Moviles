@@ -117,7 +117,7 @@ public class DesktopGraphics extends AbstractGraphics {
         updateGraphics();
         restore(); // Restaurar
         //clear(255, 255, 255);
-        clear(130, 130, 130);
+        clear(255, 255, 255);
     }
 
     void finishFrame() {
