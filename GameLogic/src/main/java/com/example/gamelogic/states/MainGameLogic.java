@@ -38,7 +38,7 @@ public class MainGameLogic extends AbstractState {
             rows = Integer.parseInt(level.split("x")[0]);
             cols = Integer.parseInt(level.split("x")[1]);
 
-            board = new NonogramBoard(engine, rows, cols, LOGIC_WIDTH, 2);
+            board = new NonogramBoard(engine, rows, cols, LOGIC_WIDTH - 20, 2);
             board.setPosX(LOGIC_WIDTH/2);
             board.setPosY(LOGIC_HEIGHT/2);
 

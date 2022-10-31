@@ -16,12 +16,13 @@ public abstract class Board extends Entity {
         this.rows = rows;
         this.cols = cols;
         this.width = width;
-        this.height = (int) (width * rows / cols);
         this.gapSize = gapSize;
         init();
     }
 
-    private void init() {
+    protected void init() {
+        this.height = (int) (width * rows / cols);
+
         widthArea = width - (gapSize + paddingHorizontal);
         heightArea = height - (gapSize + paddingVertical);
 
