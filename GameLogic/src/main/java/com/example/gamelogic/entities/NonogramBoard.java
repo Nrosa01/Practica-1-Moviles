@@ -109,10 +109,17 @@ public class NonogramBoard extends Board {
         // Render cols text from bottom to top
         for (int col = 0; col < cols; col++) {
             String text = colsText[col];
-            int textWidth = graphics.getStringWidth(text, font);
-            int textPosX = getCellPosX(col);
-            int textPosY = posY - height/2 - borderBoardSize/2 + (borderBoardSize - textWidth)/2;
-            graphics.drawTextCentered(text, textPosX, textPosY, font);
+            String[] texts = text.split(" ");
+
+            int numOfTexts = texts.length;
+            for(int i = 0; i < numOfTexts; i++) {
+                String textToRender = texts[(numOfTexts - 1) - i];
+                int textHeight = graphics.getFontHeight(font);
+                int textPosX = getCellPosX(col);
+                int textPosY = posY - height/2 - borderBoardSize/2 + (borderBoardSize - textHeight)/2 - (i * textHeight);
+                graphics.drawTextCentered(textToRender, textPosX, textPosY, font);
+            }
+
         }
     }
 

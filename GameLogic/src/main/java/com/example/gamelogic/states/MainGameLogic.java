@@ -57,14 +57,15 @@ public class MainGameLogic extends AbstractState {
             int rows = Integer.parseInt(level.split("x")[0]);
             int cols = Integer.parseInt(level.split("x")[1]);
 
-            //int[][] level = NonogramGenerator.GenerateLevel(rows, cols);
             int[][] level = new int[][]
                     {
                             {1, 0, 1, 1},
                             {0, 1, 0, 1},
                             {1, 0, 1, 0},
-                            {0, 1, 0, 0}
+                            {1, 1, 0, 0}
                     };
+            level = NonogramGenerator.GenerateLevel(rows, cols);
+
 
             board = new NonogramBoard(engine, level, LOGIC_WIDTH - 20, 2, font);
             board.setPosX(LOGIC_WIDTH / 2);
