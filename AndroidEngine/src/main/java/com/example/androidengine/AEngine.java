@@ -5,6 +5,7 @@ import com.example.engine.*;
 import android.content.res.AssetManager;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
@@ -65,13 +66,13 @@ public class AEngine implements IEngine, Runnable {
     public void pause() {
         if (this.running) {
             this.running = false;
-            while (true) {
+            while (true) { //que ????????????????????????????????????????????????????????
                 try {
                     this.renderThread.join();
                     this.renderThread = null;
                     break;
                 } catch (InterruptedException ie) {
-                    // Esto no debería ocurrir nunca...
+                    ie.printStackTrace(); // Esto no debería ocurrir nunca...
                 }
             }
         }
@@ -158,6 +159,17 @@ public class AEngine implements IEngine, Runnable {
 
     @Override
     public void handleInput() {
+        //MIRA DEBAJO
+    }
+    //@Override //METODO DE SURFACE VIEW ==> HANDLE EVENT SI extends SurfaceView
+    public boolean onTouchEvent(MotionEvent event){
+        switch(event.getAction()){
+            case MotionEvent.ACTION_DOWN: //SE TOCA CON EL DEDO
 
+
+                break;
+
+        }
+        return true; //super.onTouchEvent(event);
     }
 }
