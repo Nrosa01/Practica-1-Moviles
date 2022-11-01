@@ -260,12 +260,20 @@ public class NonogramBoard extends Board {
     @Override
     public void update(double deltaTime) {
         if (isWin) {
-            this.endTransitionLerper.update(deltaTime);
-            borderBoardRatio = endTransitionLerper.getValue();
-            setWidth(initialWidth);
-            textColor.a = (int) (255 * (1.0f - endTransitionLerper.getProgress()));
-            borderColor.a = (int) (255 * (1.0f - endTransitionLerper.getProgress()));
-            super.init();
+            if (!endTransitionLerper.isFinished()) {
+                this.endTransitionLerper.update(deltaTime);
+                borderBoardRatio = endTransitionLerper.getValue();
+                setWidth(initialWidth);
+                textColor.a = (int) (255 * (1.0f - endTransitionLerper.getProgress()));
+                borderColor.a = (int) (255 * (1.0f - endTransitionLerper.getProgress()));
+                super.init();
+            }
+            else
+            {
+                textColor.a = 0;
+                borderColor.a = 0;
+                borderBoardRatio = 0;
+            }
         } else
             wrongTilesTimer.update(deltaTime);
 
