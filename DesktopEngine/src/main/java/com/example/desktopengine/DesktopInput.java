@@ -8,7 +8,24 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DesktopInput implements IInput {
-    private List<InputEvent> eventos = new ArrayList<>();
+    private List<InputEvent>[] eventos = null;
+    private int listBufferCount = 2;
+    private int listBufferIndex = 0;
+
+    public DesktopInput()
+    {
+        eventos = new ArrayList[listBufferCount];
+        for(int i = 0; i < eventos.length; i++)
+            eventos[i] = new ArrayList<>();
+    }
+
+    public DesktopInput(int listBufferCount)
+    {
+        this.listBufferCount = listBufferCount;
+        eventos = new ArrayList[listBufferCount];
+        for(int i = 0; i < eventos.length; i++)
+            eventos[i] = new ArrayList<>();
+    }
 
     public void addEvent(MouseEvent event){
         InputTouchType tipo = null;
@@ -22,15 +39,20 @@ public class DesktopInput implements IInput {
         else if(event.getID() == MouseEvent.MOUSE_DRAGGED)
             tipo = InputTouchType.TOUCH_MOVE;
 
-        eventos.add(new InputEvent(event.getX(), event.getY(), 0, tipo));
+        eventos[listBufferIndex].add(new InputEvent(event.getX(), event.getY(), 0, tipo));
     }
 
     public List<InputEvent> getEventList(){
-        return eventos;
+        return eventos[listBufferIndex];
+    }
+
+    public void swapListBuffer()
+    {
+        listBufferIndex = (listBufferIndex + 1) % listBufferCount;
     }
 
     public void clear()
     {
-        eventos.clear();;
+        eventos[listBufferIndex].clear();
     }
 }

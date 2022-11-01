@@ -7,6 +7,7 @@ import java.awt.Point;
 import java.awt.Toolkit;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
+import java.util.List;
 
 import javax.swing.JFrame;
 import javax.swing.event.MouseInputListener;
@@ -130,8 +131,11 @@ public class DesktopEngine implements IEngine, Runnable, MouseInputListener {
 
     @Override
     public void handleInput() {
-        this.stateManager.handleInput(inputManager.getEventList());
+        List<InputEvent> events = inputManager.getEventList();
+        inputManager.swapListBuffer();
         inputManager.clear();
+
+        this.stateManager.handleInput(events);
     }
 
     @Override
