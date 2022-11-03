@@ -3,6 +3,7 @@ package com.example.androidengine;
 import com.example.engine.*;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.res.AssetManager;
 import android.content.res.Resources;
 import android.graphics.Canvas;
@@ -13,10 +14,12 @@ import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
-public class AEngine implements IEngine, Runnable {
+import java.util.List;
 
-    private SurfaceView myView;
-    private SurfaceHolder holder;
+public class AEngine extends SurfaceView implements IEngine, Runnable {
+
+    //private SurfaceView myView;
+    //private SurfaceHolder holder;
     private Canvas canvas;
     private Paint paint;
 
@@ -29,31 +32,29 @@ public class AEngine implements IEngine, Runnable {
 
     private AssetManager assetManager;
     private AGraphics graphics;
+    private AInput inputManager;
     private AAudio audio;
-
-    public AEngine(SurfaceView myView, AssetManager assetManager) {
+                  //SurfaceView myView
+    public AEngine(Context context, AssetManager assetManager) {
+        super(context); //constructora de SurfaceView
         // Intentamos crear el buffer strategy con 2 buffers.
 
-        this.myView = myView;
-        this.holder = this.myView.getHolder();
+        //this.myView = myView;
+        //this.holder = this.myView.getHolder();
         this.paint = new Paint();
         this.paint.setColor(0xFF000000);
 
         int sWidth = Resources.getSystem().getDisplayMetrics().widthPixels;
         int sHeight = Resources.getSystem().getDisplayMetrics().heightPixels;
-        graphics = new AGraphics(holder,paint,assetManager,this,sWidth,sHeight);
-
+        graphics = new AGraphics(getHolder(),paint,assetManager,this,sWidth,sHeight);
         this.stateManager = new StateManager(this, 0.5f);
+        this.inputManager = new AInput();
         this.assetManager = assetManager;
-
-
-
-
     }
+
     public Canvas getCurrentCanvas(){
         return canvas;
     }
-
 
 /*    void getUsableHeigtWidth(){
         DisplayMetrics displayMetrics = new DisplayMetrics();
@@ -63,16 +64,13 @@ public class AEngine implements IEngine, Runnable {
         int width = displayMetrics.widthPixels;
     }*/
 
-    public SurfaceView getCurrentView(){       return myView;   }
+    public SurfaceView getCurrentView(){       return this;   }
 
     @Override
     public void setState(IState state) throws Exception {
         // Deberiamos esperar al final del bucle lógico antes de cambiar de estado
         // para evitar problemas
-
-            this.stateManager.setState(state);
-
-
+        this.stateManager.setState(state);
     }
 
     public void resume() {
@@ -112,7 +110,7 @@ public class AEngine implements IEngine, Runnable {
 
         // Si el Thread se pone en marcha
         // muy rápido, la vista podría todavía no estar inicializada.
-        while (this.running && this.myView.getWidth() == 0) ;
+        while (this.running && getWidth() == 0) ; //this.myView.getWidth()
         // Espera activa. Sería más elegante al menos dormir un poco.
 
         long lastFrameTime = System.nanoTime();
@@ -138,16 +136,12 @@ public class AEngine implements IEngine, Runnable {
             ++frames;
 
             // Pintamos el frame
-            while (!this.holder.getSurface().isValid()) ;
-            canvas = this.holder.lockCanvas();
+            while (!getHolder().getSurface().isValid()) ;
+            canvas = getHolder().lockCanvas();
             this.render();
-            this.holder.unlockCanvasAndPost(canvas);
-
-
+            getHolder().unlockCanvasAndPost(canvas);
         }
     }
-
-
 
     @Override
     public IGraphics getGraphics() {
@@ -182,18 +176,22 @@ public class AEngine implements IEngine, Runnable {
     }
 
     @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        inputManager.addEvent(event); //actualizamos nuestro registro de eventos
+        return true; //this event has been handled
+        //return super.onTouchEvent(event);
+    }
+
+    @Override
     public void handleInput() {
-        //MIRA DEBAJO
+        //comprobamos nuestro registro de eventos y actualizamos el juego
+        List<InputEvent> events = inputManager.getEventList();
+        inputManager.swapListBuffer();
+        inputManager.clear();
+
+        this.stateManager.handleInput(events);
     }
-    //@Override //METODO DE SURFACE VIEW ==> HANDLE EVENT SI extends SurfaceView
-    public boolean onTouchEvent(MotionEvent event){
-        switch(event.getAction()){
-            case MotionEvent.ACTION_DOWN: //SE TOCA CON EL DEDO
 
 
-                break;
 
-        }
-        return true; //super.onTouchEvent(event);
-    }
 }

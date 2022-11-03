@@ -15,20 +15,21 @@ import java.io.IOException;
 public class MainActivity extends AppCompatActivity {
 
     private AEngine androidEngine;
-
-    private SurfaceView renderView;
-
-    AssetManager assetManager;
+    //private SurfaceView renderView;
+    private AssetManager assetManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         assetManager = getAssets();
-        this.renderView = new SurfaceView(this);
-        setContentView(this.renderView);
 
-        this.androidEngine = new AEngine(this.renderView, assetManager);
+        //this.androidEngine = new AEngine(this.renderView, assetManager);
+        this.androidEngine = new AEngine(this, assetManager);
+
+        //this.renderView = new SurfaceView(this);
+        //setContentView(this.renderView);
+        setContentView(this.androidEngine);
         StartMenuLogic logicTest = new StartMenuLogic(this.androidEngine);
         //LogicTest logicTest = new LogicTest(this.androidEngine);
 
