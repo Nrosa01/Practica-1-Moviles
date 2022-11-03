@@ -7,14 +7,17 @@ import com.example.engine.IFont;
 
 public class AFont implements IFont {
     Typeface tface;
-
-    public AFont(String pathToFont,AssetManager assetManager){
+    int WeightBold = 500;
+    public AFont(String pathToFont,AssetManager assetManager,boolean isBold){
         tface = Typeface.createFromAsset(assetManager, pathToFont);
-
+        /*if(isBold) {
+            tface = Typeface.create(t, WeightBold, false);
+        }*/
     }
     public Typeface getFont(){
         return tface;
     }
+    //lo tiene el paint
     @Override
     public int getSize() {
         return 0;
@@ -22,6 +25,6 @@ public class AFont implements IFont {
 
     @Override
     public boolean isBold() {
-        return false;
+        return tface.isBold();
     }
 }

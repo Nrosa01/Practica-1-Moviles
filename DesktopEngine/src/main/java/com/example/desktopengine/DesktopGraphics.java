@@ -184,7 +184,7 @@ public class DesktopGraphics extends AbstractGraphics {
     }
 
     @Override
-    public void setFont() {
+    public void setFont(IFont font) {
 
     }
 

@@ -6,25 +6,32 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Point;
-import android.view.MotionEvent;
+import android.graphics.Rect;
 import android.view.SurfaceHolder;
 
+import com.example.engine.AbstractGraphics;
 import com.example.engine.IFont;
-import com.example.engine.IGraphics;
 import com.example.engine.IImage;
 
-import java.io.File;
 import java.io.IOException;
 
-public class AGraphics implements IGraphics {
+public class AGraphics extends AbstractGraphics {
     private SurfaceHolder holder;
     private Paint paint;
+    private AEngine engine;
     AssetManager assetManager;
 
-    public AGraphics(SurfaceHolder holder, Paint paint, AssetManager assetManager){
+
+    private double scaleX = 1;
+    private double scaleY = 1;
+
+    public AGraphics(SurfaceHolder holder, Paint paint, AssetManager assetManager, AEngine engine, int sWidth, int sHeight){
         this.holder = holder;
         this.paint = paint;
         this.assetManager = assetManager;
+        this.engine = engine;
+
+        setLogicSize(sWidth,sHeight);
     }
 
     @Override
@@ -42,47 +49,69 @@ public class AGraphics implements IGraphics {
     @Override
     public IFont newFont(String pathToFont, int size, boolean isBold) {
         IFont font;
-        font = new AFont(pathToFont,assetManager);
+        font = new AFont(pathToFont,assetManager,isBold);
         this.paint.setTextSize(size);
         return font;
     }
 
-   /* public IFont newFont(String pathToFont) {
-        IFont font;
-        font = new AFont(pathToFont,assetManager);
-        return font;
-    }*/
-
     @Override
     public void setLogicSize(int xSize, int ySize) {
+        this.logicSizeX = xSize;
+        this.logicSizeY = ySize;
+    }
 
+    void calculateScaleFactor() {
+        /*int canvasWidth = getWidth() - jFrame.getInsets().left - jFrame.getInsets().right;
+        int canvasHeight = getHeight() - jFrame.getInsets().top - jFrame.getInsets().bottom;*/
+        //en android se obtiene ya el valor de la ventana de juego (dos mil ciento y algo(res-topbar) x 1080)
+        super.calculateScaleFactor(this.logicSizeX, this.logicSizeY);
+        setScale(1, 1);
     }
 
     @Override
     public void setColor(int r, int g, int b) {
         //HABRIA QUE HACER LA CONERSION de rgb a HEXADECIMAL
+        /*Canvas canvas = engine.getCurrentCanvas();
+        canvas.drawARGB(255,r,g,b); // ARGB*/
         paint.setColor(Color.parseColor("#FF0000"));
     }
 
     @Override
     public void setColor(int r, int g, int b, int a) {
         //HABRIA QUE HACER LA CONERSION de rgb a HEXADECIMAL
+        /*Canvas canvas = engine.getCurrentCanvas();
+        canvas.drawARGB(a,r,g,b); // ARGB*/
         paint.setColor(Color.parseColor("#FF0000"));
     }
 
     @Override
-    public void setFont() {
-
+    public void setFont(IFont font) {
+        paint.setTypeface(((AFont)font).getFont());
     }
 
     @Override
     public int getStringWidth(String text, IFont font) {
-        return 0;
+
+        Rect bounds = new Rect();
+        setFont(font);
+        paint.getTextBounds(text, 0, text.length(), bounds);
+
+        int width = bounds.width();
+
+        return width;
     }
 
     @Override
     public int getFontHeight(IFont font) {
-        return 0;
+        String ran = "a";
+
+        Rect bounds = new Rect();
+        setFont(font);
+        paint.getTextBounds(ran, 0, ran.length(), bounds);
+
+        int height = bounds.height();
+
+        return height;
     }
 
     @Override
@@ -93,77 +122,66 @@ public class AGraphics implements IGraphics {
     @Override
     public void clear(int r, int g, int b) {
         //SURFACE VIEW IS CORRECTLY INITIALIZED
-        if(holder.getSurface().isValid()){
             //current canvas displayed
-            Canvas canvas = holder.lockCanvas();
+            Canvas canvas = engine.getCurrentCanvas();
             //PINTAR EL FONDO EN BLANCO-----------------
             paint.setStyle(Paint.Style.FILL);
-            paint.setColor(Color.WHITE);
+            paint.setARGB(255,r,g,b);
             canvas.drawPaint(paint);
 
-            //accept canvas qe want to draw
-            holder.unlockCanvasAndPost(canvas);
-        }
+
     }
+
+
 
     @Override
     public void drawImage(IImage image, int x, int y) {
         //SURFACE VIEW IS CORRECTLY INITIALIZED
-        if(holder.getSurface().isValid()){
+
             //current canvas displayed
-            Canvas canvas = holder.lockCanvas();
+            Canvas canvas = engine.getCurrentCanvas();
             // Paint paint = new Paint(); //paint ya se creo en AndroidEngine & lo recibes en la constructora
 
             //draw           //recibe un bitmap
             canvas.drawBitmap(((AImage)image).getBitmap(), x, y, paint);
 
-            //accept canvas qe want to draw
-            holder.unlockCanvasAndPost(canvas);
-        }
     }
 
     @Override
     public void drawRectangle(int upperLeftX, int upperLeftY, int lowerRightX, int lowerRightY, int lineWidth) {
         //SURFACE VIEW IS CORRECTLY INITIALIZED
-        if(holder.getSurface().isValid()){
+
             //current canvas displayed
-            Canvas canvas = holder.lockCanvas();
+            Canvas canvas = engine.getCurrentCanvas();
             //PINTAR EL FONDO EN BLANCO-----------------
             paint.setStyle(Paint.Style.STROKE); //????????????????????????????????????????????????
-            //paint.setColor(Color.WHITE);
-            //canvas.drawPaint(paint);
+
             //draw
             canvas.drawRect(upperLeftX, upperLeftY, lowerRightX, lowerRightY, paint);
 
-            //accept canvas qe want to draw
-            holder.unlockCanvasAndPost(canvas);
-        }
     }
 
     @Override
     public void fillRectangle(int upperLeftX, int upperLeftY, int lowerRightX, int lowerRightY) {
-        //SURFACE VIEW IS CORRECTLY INITIALIZED
-        if(holder.getSurface().isValid()){
+
             //current canvas displayed
-            Canvas canvas = holder.lockCanvas();
+            Canvas canvas = engine.getCurrentCanvas();
+
             //PINTAR EL FONDO EN BLANCO-----------------
             paint.setStyle(Paint.Style.FILL);
-            //paint.setColor(Color.WHITE);
-            //canvas.drawPaint(paint);
+
             //draw
             canvas.drawRect(upperLeftX, upperLeftY, lowerRightX, lowerRightY, paint);
 
-            //accept canvas qe want to draw
-            holder.unlockCanvasAndPost(canvas);
-        }
+
+
     }
 
     @Override
     public void drawLine(int fromX, int fromY, int toX, int toY) {
-        //SURFACE VIEW IS CORRECTLY INITIALIZED
-        if(holder.getSurface().isValid()){
+
             //current canvas displayed
-            Canvas canvas = holder.lockCanvas();
+            Canvas canvas = engine.getCurrentCanvas();
             //PINTAR EL FONDO EN BLANCO-----------------
             //paint.setStyle(Paint.Style.STROKE);
             //paint.setColor(Color.WHITE);
@@ -182,67 +200,66 @@ public class AGraphics implements IGraphics {
             canvas.drawPath(path, paint);
 
             //accept canvas qe want to draw
-            holder.unlockCanvasAndPost(canvas);
-        }
+            //holder.unlockCanvasAndPost(canvas);
+
     }
 
     @Override
     public void drawCircle(int xPos, int yPos, int radius) {
         //SURFACE VIEW IS CORRECTLY INITIALIZED
-        if(holder.getSurface().isValid()){
-            //current canvas displayed
-            Canvas canvas = holder.lockCanvas();
-            //PINTAR EL FONDO EN BLANCO-----------------
-            //paint.setStyle(Paint.Style.FILL);
-            //paint.setColor(Color.WHITE);
-            //canvas.drawPaint(paint);
-            //draw
+
+            Canvas canvas = engine.getCurrentCanvas();
             canvas.drawCircle(xPos, yPos, radius, paint);
 
-            //accept canvas qe want to draw
-            holder.unlockCanvasAndPost(canvas);
-        }
     }
 
     //implementar size en interfaz
     @Override
     public void drawText(String text, int x, int y, IFont font) {
-        Canvas canvas = this.holder.lockCanvas();
-        Paint paint = new Paint();//**//*
-        paint.setTypeface(((AFont)font).getFont());
-        //paint.setTextSize(size);
+        Canvas canvas = engine.getCurrentCanvas();
+            //esto no va
+            //paint.setTypeface(((AFont)font).getFont());
+
         canvas.drawText(text, x, y, paint);
-        this.holder.unlockCanvasAndPost(canvas);
+
     }
 
     @Override
     public void drawTextCentered(String text, int x, int y, IFont font) {
+        
 
+
+        Canvas canvas = engine.getCurrentCanvas();
+        //esto no va
+        //paint.setTypeface(((AFont)font).getFont());
+
+        canvas.drawText(text, x, y, paint);
     }
 
     @Override
     public int getWidth() {
-        return 0;
+        return this.logicSizeX;
     }
 
     @Override
     public int getHeight() {
-        return 0;
+        return this.logicSizeY;
     }
 
     @Override
     public int getLogicWidth() {
-        return 0;
+        return this.logicSizeX;
     }
 
     @Override
     public int getLogicHeight() {
-        return 0;
+        return this.logicSizeY;
     }
 
+    //hay transiciones pero no van con int
     @Override
     public void setGraphicsAlpha(int alpha) {
-
+        engine.getCurrentView().setAlpha(alpha);
     }
 
     @Override

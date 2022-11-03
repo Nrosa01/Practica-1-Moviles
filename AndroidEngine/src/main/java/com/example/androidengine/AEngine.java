@@ -2,9 +2,13 @@ package com.example.androidengine;
 
 import com.example.engine.*;
 
+import android.app.Activity;
 import android.content.res.AssetManager;
+import android.content.res.Resources;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
+import android.util.DisplayMetrics;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -35,12 +39,31 @@ public class AEngine implements IEngine, Runnable {
         this.paint = new Paint();
         this.paint.setColor(0xFF000000);
 
+        int sWidth = Resources.getSystem().getDisplayMetrics().widthPixels;
+        int sHeight = Resources.getSystem().getDisplayMetrics().heightPixels;
+        graphics = new AGraphics(holder,paint,assetManager,this,sWidth,sHeight);
+
         this.stateManager = new StateManager(this, 0.5f);
         this.assetManager = assetManager;
 
-        graphics = new AGraphics(holder,paint,assetManager);
+
+
+
+    }
+    public Canvas getCurrentCanvas(){
+        return canvas;
     }
 
+
+/*    void getUsableHeigtWidth(){
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        //hay que hacer un getcontext que solo se hace desde mainActivity
+        //((Activity)getContext()).getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        int height = displayMetrics.heightPixels;
+        int width = displayMetrics.widthPixels;
+    }*/
+
+    public SurfaceView getCurrentView(){       return myView;   }
 
     @Override
     public void setState(IState state) throws Exception {
@@ -148,8 +171,9 @@ public class AEngine implements IEngine, Runnable {
 
     public void render() {
         // "Borramos" el fondo.
-        canvas.drawColor(0xFF000000); // ARGB
-        //this.stateManager.render();
+        graphics.clear(255,255,255);
+        //canvas.drawColor(Color.WHITE); // ARGB
+        this.stateManager.render();
     }
 
     @Override

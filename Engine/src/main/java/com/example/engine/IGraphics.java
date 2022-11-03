@@ -7,7 +7,7 @@ public interface IGraphics {
     void setLogicSize(int xSize, int ySize);
     void setColor(int r, int g, int b);
     void setColor(int r, int g, int b, int a);
-    void setFont();
+    void setFont(IFont font);
     int getStringWidth(String text, IFont font);
     int getFontHeight(IFont font);
     int getFontAscent(IFont font);
