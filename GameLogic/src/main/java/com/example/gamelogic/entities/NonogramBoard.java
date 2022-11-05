@@ -2,6 +2,7 @@ package com.example.gamelogic.entities;
 
 import com.example.engine.IEngine;
 import com.example.engine.IFont;
+import com.example.engine.IImage;
 import com.example.engine.utilities.FloatLerper;
 import com.example.engine.utilities.LerpType;
 import com.example.gamelogic.utilities.Color;
@@ -23,6 +24,7 @@ public class NonogramBoard extends Board {
     private int initialWidth;
     private Color textColor;
     private int missingCells, badCellNumber;
+    IImage blockedCell;
 
     public NonogramBoard(IEngine engine, int[][] solvedPuzzle, int width, int gapSize, IFont font) {
         super(engine, solvedPuzzle.length, solvedPuzzle[0].length, width, gapSize);
@@ -43,6 +45,8 @@ public class NonogramBoard extends Board {
         wrongTilesTimer = new FloatLerper(0, 5, 10, LerpType.Linear); // Voy a usar esto como un timer
         wrongTilesTimer.setPaused(true);
         textColor = new Color();
+
+        blockedCell = graphics.newImage(engine.getAssetsPath() + "images/blockedTile.png");
     }
 
     public boolean getIsWin() {
@@ -179,6 +183,8 @@ public class NonogramBoard extends Board {
     }
 
     private void setColorGivenState(int state) {
+        setCellImg(null);
+
         switch (state) {
             case 0:
                 if (!isWin)
@@ -191,7 +197,10 @@ public class NonogramBoard extends Board {
                 break;
             case 2:
                 if (!isWin)
+                {
                     graphics.setColor(23, 23, 23);
+                    setCellImg(blockedCell);
+                }
                 else
                     graphics.setColor(255, 255, 255);
                 break;
