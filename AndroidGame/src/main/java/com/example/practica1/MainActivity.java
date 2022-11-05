@@ -9,6 +9,7 @@ import android.view.SurfaceView;
 import com.example.gamelogic.states.LogicTest;
 import com.example.androidengine.AEngine;
 import com.example.gamelogic.states.StartMenuLogic;
+import com.example.gamelogic.states.*;
 
 import java.io.IOException;
 
@@ -17,6 +18,7 @@ public class MainActivity extends AppCompatActivity {
     private AEngine androidEngine;
     //private SurfaceView renderView;
     private AssetManager assetManager;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,11 +32,12 @@ public class MainActivity extends AppCompatActivity {
         //this.renderView = new SurfaceView(this);
         //setContentView(this.renderView);
         setContentView(this.androidEngine);
-        StartMenuLogic logicTest = new StartMenuLogic(this.androidEngine);
+        clasederelleno clase = new clasederelleno(this.androidEngine);
+        //StartMenuLogic logicTest = new StartMenuLogic(this.androidEngine);
         //LogicTest logicTest = new LogicTest(this.androidEngine);
 
         try {
-            this.androidEngine.setState(logicTest);
+            this.androidEngine.setState(clase);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -47,6 +50,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         this.androidEngine.resume();
+
     }
 
     @Override

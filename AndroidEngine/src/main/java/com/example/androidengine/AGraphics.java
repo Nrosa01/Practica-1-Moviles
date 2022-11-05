@@ -21,7 +21,8 @@ public class AGraphics extends AbstractGraphics {
     private AEngine engine;
     AssetManager assetManager;
 
-
+    int screenWidth;
+    int screenHeight;
     private double scaleX = 1;
     private double scaleY = 1;
 
@@ -31,7 +32,10 @@ public class AGraphics extends AbstractGraphics {
         this.assetManager = assetManager;
         this.engine = engine;
 
+        screenWidth = sWidth;
+        screenHeight = sHeight;
         setLogicSize(sWidth,sHeight);
+        calculateScaleFactor();
     }
 
     @Override
@@ -58,13 +62,13 @@ public class AGraphics extends AbstractGraphics {
     public void setLogicSize(int xSize, int ySize) {
         this.logicSizeX = xSize;
         this.logicSizeY = ySize;
+        calculateScaleFactor();
     }
 
     void calculateScaleFactor() {
-        /*int canvasWidth = getWidth() - jFrame.getInsets().left - jFrame.getInsets().right;
-        int canvasHeight = getHeight() - jFrame.getInsets().top - jFrame.getInsets().bottom;*/
+
         //en android se obtiene ya el valor de la ventana de juego (dos mil ciento y algo(res-topbar) x 1080)
-        super.calculateScaleFactor(this.logicSizeX, this.logicSizeY);
+        super.calculateScaleFactor(this.screenWidth, this.screenHeight);
         setScale(1, 1);
     }
 
@@ -73,7 +77,8 @@ public class AGraphics extends AbstractGraphics {
         //HABRIA QUE HACER LA CONERSION de rgb a HEXADECIMAL
         /*Canvas canvas = engine.getCurrentCanvas();
         canvas.drawARGB(255,r,g,b); // ARGB*/
-        paint.setColor(Color.parseColor("#FF0000"));
+        //paint.setColor(Color.parseColor("#FF0000"));
+        paint.setColor( Color.rgb(r, g, b) );
     }
 
     @Override
@@ -81,7 +86,7 @@ public class AGraphics extends AbstractGraphics {
         //HABRIA QUE HACER LA CONERSION de rgb a HEXADECIMAL
         /*Canvas canvas = engine.getCurrentCanvas();
         canvas.drawARGB(a,r,g,b); // ARGB*/
-        paint.setColor(Color.parseColor("#FF0000"));
+        paint.setColor( Color.rgb(r, g, b) );
     }
 
     @Override
@@ -164,6 +169,11 @@ public class AGraphics extends AbstractGraphics {
     @Override
     public void fillRectangle(int upperLeftX, int upperLeftY, int lowerRightX, int lowerRightY) {
 
+            int uLx = logicXPositionToWindowsXPosition(upperLeftX);
+            int uLy = logicYPositionToWindowsYPosition(upperLeftY);
+            int lRx = logicXPositionToWindowsXPosition(lowerRightX);
+            int lRy = logicYPositionToWindowsYPosition(lowerRightY);
+
             //current canvas displayed
             Canvas canvas = engine.getCurrentCanvas();
 
@@ -171,10 +181,25 @@ public class AGraphics extends AbstractGraphics {
             paint.setStyle(Paint.Style.FILL);
 
             //draw
-            canvas.drawRect(upperLeftX, upperLeftY, lowerRightX, lowerRightY, paint);
+            canvas.drawRect(uLx, uLy, lRx, lRy, paint);
 
 
 
+    }
+
+    public void renderBordersAndroid()
+    {
+        // Tener en cuenta scale factor para el ancho
+       /* int scaledBarWidth = (int)(borderBarWidth * scaleFactor);
+        int scaledTopHeight = (int)(topBarHeight * scaleFactor);*/
+
+        // Barra izquierda y derecha
+    /*    fillRectangle(-scaledBarWidth/2, logicSizeY/2, scaledBarWidth, logicSizeY);
+        fillRectangle(scaledBarWidth/2 + logicSizeX, logicSizeY/2, scaledBarWidth, logicSizeY);*/
+
+        // Barras arriba y abajo
+        fillRectangle(0, 0, logicSizeX, topBarHeight);
+        fillRectangle(0, logicSizeY, logicSizeX, logicSizeY-topBarHeight);
     }
 
     @Override
@@ -226,14 +251,13 @@ public class AGraphics extends AbstractGraphics {
 
     @Override
     public void drawTextCentered(String text, int x, int y, IFont font) {
-        
-
 
         Canvas canvas = engine.getCurrentCanvas();
         //esto no va
         //paint.setTypeface(((AFont)font).getFont());
-
-        canvas.drawText(text, x, y, paint);
+        int processedX = logicXPositionToWindowsXPosition(x);
+        int processedY = logicYPositionToWindowsYPosition(y);
+        canvas.drawText(text, processedX, processedY, paint);
     }
 
     @Override
@@ -279,22 +303,22 @@ public class AGraphics extends AbstractGraphics {
 
     @Override
     public int logicXPositionToWindowsXPosition(int x) {
-        return 0;
+        return (int) (((x + (int) (borderBarWidth / scaleFactor) ) / scaleX) * scaleFactor);
     }
 
     @Override
-    public int logicYPositionToWindowsYPosition(int x) {
-        return 0;
+    public int logicYPositionToWindowsYPosition(int y) {
+        return (int) (((y + (int) (topBarHeight / scaleFactor) ) / scaleY)* scaleFactor);
     }
 
     @Override
     public int windowsXPositionToLogicXPosition(int x) {
-        return 0;
+        return (int) (((x - borderBarWidth ) / scaleFactor)  * scaleFactor);
     }
 
     @Override
-    public int windowsYPositionToLogicYPosition(int x) {
-        return 0;
+    public int windowsYPositionToLogicYPosition(int y) {
+        return (int) (((y - topBarHeight ) / scaleFactor)* scaleFactor);
     }
 
     @Override
@@ -304,7 +328,8 @@ public class AGraphics extends AbstractGraphics {
 
     @Override
     public void setScale(double x, double y) {
-
+        scaleX = x;
+        scaleY = y;
     }
 
     @Override

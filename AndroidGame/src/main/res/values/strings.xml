@@ -1,3 +1,4 @@
 <resources>
-    <string name="app_name">Practica 1</string>
+
+    <string name="app_name" parent="Theme.AppCompat.NoActionBar">Practica 1</string>
 </resources>
