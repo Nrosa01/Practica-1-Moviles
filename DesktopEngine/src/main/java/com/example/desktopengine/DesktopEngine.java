@@ -3,6 +3,7 @@ package com.example.desktopengine;
 import com.example.engine.*;
 
 import java.awt.Cursor;
+import java.awt.GraphicsEnvironment;
 import java.awt.Point;
 import java.awt.Toolkit;
 import java.awt.event.MouseEvent;
@@ -117,6 +118,11 @@ public class DesktopEngine implements IEngine, Runnable, MouseInputListener {
     @Override
     public String getAssetsPath() {
         return "GameLogic/assets/";
+    }
+
+    @Override
+    public boolean supportsTouch() {
+        return false;
     }
 
     @Override

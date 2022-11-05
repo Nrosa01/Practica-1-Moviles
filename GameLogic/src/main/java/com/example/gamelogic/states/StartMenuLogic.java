@@ -24,13 +24,14 @@ public class StartMenuLogic extends AbstractState {
     @Override
     public boolean init() {
         try {
-            pointer = new Pointer(engine);
+            if (!engine.supportsTouch())
+                pointer = new Pointer(engine);
             testFont = graphics.newFont(engine.getAssetsPath() + "fonts/Antihero.ttf", 24, false);
             button = new Button(LOGIC_WIDTH / 2, LOGIC_HEIGHT / 2, 100, 35, engine);
             button.setText("Jugar", testFont);
-            button.setBackgroundColor(0,0,0,0);
+            button.setBackgroundColor(0, 0, 0, 0);
             button.setBorderSize(0);
-            button.setHoverColor(200,200,200);
+            button.setHoverColor(200, 200, 200);
             button.setCallback(new IInteractableCallback() {
                 @Override
                 public void onInteractionOccur() {
@@ -51,7 +52,9 @@ public class StartMenuLogic extends AbstractState {
     @Override
     public void update(double deltaTime) {
         button.update((float) deltaTime);
-        pointer.update((float) deltaTime);
+
+        if (pointer != null)
+            pointer.update((float) deltaTime);
     }
 
     @Override
@@ -59,7 +62,8 @@ public class StartMenuLogic extends AbstractState {
         graphics.drawTextCentered("Nonogramas", LOGIC_WIDTH / 2, 90, testFont);
 
         button.render();
-        pointer.render();
+        if (pointer != null)
+            pointer.render();
     }
 
     @Override
@@ -69,7 +73,10 @@ public class StartMenuLogic extends AbstractState {
             int proccesedY = graphics.windowsYPositionToLogicYPosition(inputEvent.y);
 
             button.handleInput(proccesedX, proccesedY, inputEvent.type);
-            pointer.handleInput(proccesedX, proccesedY, inputEvent.type);
+
+
+            if (pointer != null)
+                pointer.handleInput(proccesedX, proccesedY, inputEvent.type);
         }
     }
 }

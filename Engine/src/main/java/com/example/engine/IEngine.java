@@ -5,6 +5,7 @@ public interface IEngine {
     IAudio getAudio();
     IState getState();
     String getAssetsPath();
+    boolean supportsTouch();
 
     void render();
     void update(double elapsedTime);

@@ -32,7 +32,8 @@ public class SelectLevelLogic extends AbstractState {
     public SelectLevelLogic(IEngine engine) {
         super(engine);
 
-        pointer = new Pointer(engine);
+        if (!engine.supportsTouch())
+            pointer = new Pointer(engine);
         entities = new ArrayList<>();
     }
 
@@ -67,12 +68,12 @@ public class SelectLevelLogic extends AbstractState {
                 }
             }
 
-            returnButton = new Button(25,25, 30, 30, engine);
+            returnButton = new Button(25, 25, 30, 30, engine);
             returnButton.setImage(arrow);
-            returnButton.setPadding(10,10);
-            returnButton.setBackgroundColor(0,0,0,0);
+            returnButton.setPadding(10, 10);
+            returnButton.setBackgroundColor(0, 0, 0, 0);
             returnButton.setBorderSize(0);
-            returnButton.setHoverColor(205,205,205);
+            returnButton.setHoverColor(205, 205, 205);
             returnButton.setCallback(new IInteractableCallback() {
                 @Override
                 public void onInteractionOccur() {
@@ -85,7 +86,8 @@ public class SelectLevelLogic extends AbstractState {
             });
 
             entities.add(returnButton);
-            entities.add(pointer);
+            if (pointer != null)
+                entities.add(pointer);
             return true;
         } catch (Exception e) {
             e.printStackTrace();
@@ -96,14 +98,14 @@ public class SelectLevelLogic extends AbstractState {
     @Override
     public void update(double deltaTime) {
         for (Entity entity : entities)
-                entity.update(deltaTime);
+            entity.update(deltaTime);
     }
 
     @Override
     public void render() {
-        graphics.setScale(0.05,0.05);
+        graphics.setScale(0.05, 0.05);
         graphics.drawImage(arrow, 25, 25);
-        graphics.setScale(1,1);
+        graphics.setScale(1, 1);
         graphics.drawText("Volver", 45, 35, font);
         graphics.drawTextCentered("Selecciona el tamaño del puzzle", LOGIC_WIDTH / 2, 200, font);
 
