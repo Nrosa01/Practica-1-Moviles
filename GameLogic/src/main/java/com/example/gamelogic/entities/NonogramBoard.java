@@ -173,7 +173,9 @@ public class NonogramBoard extends Board {
         if (isWin)
             return;
         //System.out.println("Clicked on cell: " + row + " " + col);
+
         nonogramCellStates[row][col] = Math.min(nonogramCellStates[row][col] + 1, numOfStates) % numOfStates;
+        isWin = updateBoardState(false);
     }
 
     private void setColorGivenState(int state) {
@@ -188,10 +190,16 @@ public class NonogramBoard extends Board {
                 graphics.setColor(123, 123, 255);
                 break;
             case 2:
-                graphics.setColor(23, 23, 23);
+                if (!isWin)
+                    graphics.setColor(23, 23, 23);
+                else
+                    graphics.setColor(255, 255, 255);
                 break;
             case 3:
-                graphics.setColor(255, 123, 123);
+                if (!isWin)
+                    graphics.setColor(255, 123, 123);
+                else
+                    graphics.setColor(255, 255, 255);
         }
     }
 
@@ -208,20 +216,25 @@ public class NonogramBoard extends Board {
     }
 
     // Updates board state, update missingCells and badCells, also returns true if win is satisfied
-    private boolean updateBoardState() {
+    private boolean updateBoardState(boolean updateStats) {
         boolean win = true;
-        badCellNumber = 0;
-        missingCells = 0;
+
+        if (updateStats) {
+            badCellNumber = 0;
+            missingCells = 0;
+        }
 
         for (int row = 0; row < rows; row++) {
             for (int col = 0; col < cols; col++) {
                 if (solvedPuzzle[row][col] == 1 && nonogramCellStates[row][col] != 1) {
-                    missingCells++;
+                    if (updateStats)
+                        missingCells++;
                     win = false;
                 }
 
-                if (solvedPuzzle[row][col] != 1 && nonogramCellStates[row][col] == 1) {
-                    badCellNumber++;
+                if (solvedPuzzle[row][col] != 1 && (nonogramCellStates[row][col] == 1 || nonogramCellStates[row][col] == 3)) {
+                    if (updateStats)
+                        badCellNumber++;
                     win = false;
                 }
             }
@@ -234,7 +247,7 @@ public class NonogramBoard extends Board {
         if (isWin)
             return;
 
-        isWin = updateBoardState();
+        updateBoardState(true);
 
         if (isWin) {
             for (int row = 0; row < rows; row++) {
@@ -267,9 +280,7 @@ public class NonogramBoard extends Board {
                 textColor.a = (int) (255 * (1.0f - endTransitionLerper.getProgress()));
                 borderColor.a = (int) (255 * (1.0f - endTransitionLerper.getProgress()));
                 super.init();
-            }
-            else
-            {
+            } else {
                 textColor.a = 0;
                 borderColor.a = 0;
                 borderBoardRatio = 0;
@@ -288,6 +299,8 @@ public class NonogramBoard extends Board {
                     }
                 }
             }
+
+            isWin = updateBoardState(false);
         }
     }
 
