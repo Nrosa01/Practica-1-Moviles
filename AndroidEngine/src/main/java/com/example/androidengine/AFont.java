@@ -7,9 +7,11 @@ import com.example.engine.IFont;
 
 public class AFont implements IFont {
     Typeface tface;
+    int size;
     int WeightBold = 500;
-    public AFont(String pathToFont,AssetManager assetManager,boolean isBold){
+    public AFont(String pathToFont,AssetManager assetManager,int size,boolean isBold){
         tface = Typeface.createFromAsset(assetManager, pathToFont);
+        this.size = size;
         /*if(isBold) {
             tface = Typeface.create(t, WeightBold, false);
         }*/
@@ -20,7 +22,7 @@ public class AFont implements IFont {
     //lo tiene el paint
     @Override
     public int getSize() {
-        return 0;
+        return size;
     }
 
     @Override
