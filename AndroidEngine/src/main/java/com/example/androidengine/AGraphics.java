@@ -53,8 +53,8 @@ public class AGraphics extends AbstractGraphics {
     @Override
     public IFont newFont(String pathToFont, int size, boolean isBold) {
         IFont font;
-        font = new AFont(pathToFont,assetManager,isBold);
-        this.paint.setTextSize(size);
+        font = new AFont(pathToFont,assetManager,size,isBold);
+        //this.paint.setTextSize(size);
         return font;
     }
 
@@ -134,6 +134,7 @@ public class AGraphics extends AbstractGraphics {
             paint.setARGB(255,r,g,b);
             canvas.drawPaint(paint);
 
+            paint.reset();
 
     }
 
@@ -163,11 +164,17 @@ public class AGraphics extends AbstractGraphics {
 
             //draw
             canvas.drawRect(upperLeftX, upperLeftY, lowerRightX, lowerRightY, paint);
-
+            paint.reset();
     }
 
     @Override
-    public void fillRectangle(int upperLeftX, int upperLeftY, int lowerRightX, int lowerRightY) {
+    public void fillRectangle(int x, int y, int width, int height) {
+
+            int upperLeftX, upperLeftY, lowerRightX, lowerRightY;
+            upperLeftX = x - (width / 2);
+            upperLeftY = y - (height / 2);
+            lowerRightX = x + (width / 2);
+            lowerRightY = y + (height / 2);
 
             int uLx = logicXPositionToWindowsXPosition(upperLeftX);
             int uLy = logicYPositionToWindowsYPosition(upperLeftY);
@@ -183,23 +190,26 @@ public class AGraphics extends AbstractGraphics {
             //draw
             canvas.drawRect(uLx, uLy, lRx, lRy, paint);
 
-
+        paint.reset();
 
     }
 
     public void renderBordersAndroid()
     {
+
         // Tener en cuenta scale factor para el ancho
-       /* int scaledBarWidth = (int)(borderBarWidth * scaleFactor);
-        int scaledTopHeight = (int)(topBarHeight * scaleFactor);*/
+        int scaledBarWidth = (int)Math.ceil(borderBarWidth / scaleFactor);
+        int scaledTopHeight = (int)Math.ceil(topBarHeight / scaleFactor);
 
         // Barra izquierda y derecha
-    /*    fillRectangle(-scaledBarWidth/2, logicSizeY/2, scaledBarWidth, logicSizeY);
-        fillRectangle(scaledBarWidth/2 + logicSizeX, logicSizeY/2, scaledBarWidth, logicSizeY);*/
+        fillRectangle(-scaledBarWidth/2, logicSizeY/2, scaledBarWidth, logicSizeY);
+        fillRectangle(scaledBarWidth/2 + logicSizeX, logicSizeY/2, scaledBarWidth, logicSizeY);
 
         // Barras arriba y abajo
-        fillRectangle(0, 0, logicSizeX, topBarHeight);
-        fillRectangle(0, logicSizeY, logicSizeX, logicSizeY-topBarHeight);
+
+        fillRectangle(logicSizeX/2, -( scaledTopHeight/2 ) , logicSizeX, scaledTopHeight);
+        fillRectangle(logicSizeX/2, scaledTopHeight/2 + logicSizeY, logicSizeX, scaledTopHeight);
+
     }
 
     @Override
@@ -244,9 +254,9 @@ public class AGraphics extends AbstractGraphics {
         Canvas canvas = engine.getCurrentCanvas();
             //esto no va
             //paint.setTypeface(((AFont)font).getFont());
-
+        paint.setTextSize(((AFont)font).getSize());
         canvas.drawText(text, x, y, paint);
-
+        paint.reset();
     }
 
     @Override
@@ -255,9 +265,19 @@ public class AGraphics extends AbstractGraphics {
         Canvas canvas = engine.getCurrentCanvas();
         //esto no va
         //paint.setTypeface(((AFont)font).getFont());
-        int processedX = logicXPositionToWindowsXPosition(x);
-        int processedY = logicYPositionToWindowsYPosition(y);
+       /* int processedX = logicXPositionToWindowsXPosition(x);
+        int processedY = logicYPositionToWindowsYPosition(y);*/
+
+        paint.setTextSize(((AFont)font).getSize());
+
+        int halfSwidth = (int)(((int)(getStringWidth(text, font) * scaleX) /scaleFactor)/ 2);
+        //int haldSheight = (int)(((int)(getFontHeight(font) * scaleY) / scaleFactor) / 2);
+        int processedX = logicXPositionToWindowsXPosition(x- halfSwidth);
+        int processedY = logicYPositionToWindowsYPosition(y );
+
+
         canvas.drawText(text, processedX, processedY, paint);
+        paint.reset();
     }
 
     @Override
@@ -313,12 +333,12 @@ public class AGraphics extends AbstractGraphics {
 
     @Override
     public int windowsXPositionToLogicXPosition(int x) {
-        return (int) (((x - borderBarWidth ) / scaleFactor)  * scaleFactor);
+        return (int) (((x - borderBarWidth  ) / scaleFactor));
     }
 
     @Override
     public int windowsYPositionToLogicYPosition(int y) {
-        return (int) (((y - topBarHeight ) / scaleFactor)* scaleFactor);
+        return (int) (((y - topBarHeight  ) / scaleFactor));
     }
 
     @Override

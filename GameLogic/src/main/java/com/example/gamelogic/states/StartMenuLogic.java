@@ -1,9 +1,11 @@
 package com.example.gamelogic.states;
 
+import com.example.engine.IAudio;
 import com.example.engine.IEngine;
 import com.example.engine.IFont;
 import com.example.engine.IGraphics;
 import com.example.engine.IInput;
+import com.example.engine.ISound;
 import com.example.engine.IState;
 import com.example.engine.InputEvent;
 import com.example.gamelogic.entities.Button;
@@ -42,6 +44,10 @@ public class StartMenuLogic extends AbstractState {
                     }
                 }
             });
+
+            ISound sound = audio.newMusic(engine.getAssetsPath() + "audio/bgMusic.wav", "musicBg");
+            sound.setVolume(0.25f);
+            sound.play(); //It only plays if it's not alrady playing
             return true;
         } catch (Exception e) {
             e.printStackTrace();

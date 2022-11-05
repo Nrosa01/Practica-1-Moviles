@@ -38,6 +38,8 @@ public class DesktopEngine implements IEngine, Runnable, MouseInputListener {
         BufferedImage cursorImg = new BufferedImage(16, 16, BufferedImage.TYPE_INT_ARGB);
         blankCursor = Toolkit.getDefaultToolkit().createCustomCursor(cursorImg, new Point(0, 0), "blank cursor");
         defaultCursor = new Cursor(Cursor.DEFAULT_CURSOR);
+
+        audio =  new DesktopAudio();
     }
 
     //Métodos sincronización (parar y reiniciar aplicación)

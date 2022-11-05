@@ -94,12 +94,10 @@ public class DesktopGraphics extends AbstractGraphics {
     }
 
     void resizeFrameToAddInsets() {
-        int width = 1400;
-        //int width = getWidth();
+        int width = getWidth();
         int newWidth = width + jFrame.getInsets().left + jFrame.getInsets().right;
 
-        int height = 800;
-        //int height = getHeight();
+        int height = getHeight();
         int newHeight = height + jFrame.getInsets().top + jFrame.getInsets().bottom;
 
         if (width == 0 || height == 0)

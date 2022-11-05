@@ -3,6 +3,7 @@ package com.example.gamelogic.entities;
 import com.example.engine.IEngine;
 import com.example.engine.IFont;
 import com.example.engine.IImage;
+import com.example.engine.ISound;
 import com.example.engine.utilities.FloatLerper;
 import com.example.engine.utilities.LerpType;
 import com.example.gamelogic.utilities.Color;
@@ -25,6 +26,8 @@ public class NonogramBoard extends Board {
     private Color textColor;
     private int missingCells, badCellNumber;
     IImage blockedCell;
+    ISound winSound;
+    ISound selectCell;
 
     public NonogramBoard(IEngine engine, int[][] solvedPuzzle, int width, int gapSize, IFont font) {
         super(engine, solvedPuzzle.length, solvedPuzzle[0].length, width, gapSize);
@@ -47,6 +50,8 @@ public class NonogramBoard extends Board {
         textColor = new Color();
 
         blockedCell = graphics.newImage(engine.getAssetsPath() + "images/blockedTile.png");
+        winSound = audio.newSound(engine.getAssetsPath() + "audio/winSound.wav", "winSound");
+        selectCell = audio.newSound(engine.getAssetsPath() + "audio/selectSound.wav", "selectSound");
     }
 
     public boolean getIsWin() {
@@ -180,6 +185,10 @@ public class NonogramBoard extends Board {
 
         nonogramCellStates[row][col] = Math.min(nonogramCellStates[row][col] + 1, numOfStates) % numOfStates;
         isWin = updateBoardState(false);
+        if(isWin)
+            winSound.play();
+        else
+            selectCell.play();
     }
 
     private void setColorGivenState(int state) {

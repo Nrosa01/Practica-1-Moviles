@@ -3,6 +3,7 @@ package com.example.gamelogic.entities;
 import com.example.engine.IEngine;
 import com.example.engine.IFont;
 import com.example.engine.IImage;
+import com.example.engine.ISound;
 import com.example.engine.utilities.FloatLerper;
 import com.example.engine.utilities.LerpType;
 import com.example.gamelogic.utilities.Color;
@@ -13,6 +14,7 @@ public class Button extends UIElement {
     private Color buttonPressedColor;
     private Color buttonHoverColor;
     private Color textColor;
+    ISound clickSound, hoverSound;
 
     private Color currentButtonColor;
     private int borderSize = 10;
@@ -43,6 +45,9 @@ public class Button extends UIElement {
         buttonHoverColor =new Color(255, 255, 255, 255);
         textColor = new Color();
         currentButtonColor = buttonColor;
+
+        clickSound = audio.newSound(engine.getAssetsPath() + "audio/menuClick.wav", "click");
+        hoverSound = audio.newSound(engine.getAssetsPath() + "audio/menuHover.wav", "hover" + this.hashCode());
     }
 
     public void setImage(IImage image) {
@@ -152,6 +157,7 @@ public class Button extends UIElement {
     public void OnHoverEnter() {
         currentButtonColor = buttonHoverColor;
         scaleLerper.setReversed(false);
+        hoverSound.play();
     }
 
     @Override
@@ -162,6 +168,7 @@ public class Button extends UIElement {
 
     @Override
     public void OnTouchDown() {
+        clickSound.play();
         currentButtonColor = this.buttonPressedColor;
         if (callback != null)
             callback.onInteractionOccur();
