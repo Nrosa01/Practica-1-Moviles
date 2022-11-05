@@ -32,12 +32,12 @@ public class MainActivity extends AppCompatActivity {
         //this.renderView = new SurfaceView(this);
         //setContentView(this.renderView);
         setContentView(this.androidEngine);
-        clasederelleno clase = new clasederelleno(this.androidEngine);
-        //StartMenuLogic logicTest = new StartMenuLogic(this.androidEngine);
+        //clasederelleno clase = new clasederelleno(this.androidEngine);
+        StartMenuLogic menuLogic = new StartMenuLogic(this.androidEngine);
         //LogicTest logicTest = new LogicTest(this.androidEngine);
 
         try {
-            this.androidEngine.setState(clase);
+            this.androidEngine.setState(menuLogic);
         } catch (Exception e) {
             e.printStackTrace();
         }

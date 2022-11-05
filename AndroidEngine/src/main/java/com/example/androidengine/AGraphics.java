@@ -86,7 +86,7 @@ public class AGraphics extends AbstractGraphics {
         //HABRIA QUE HACER LA CONERSION de rgb a HEXADECIMAL
         /*Canvas canvas = engine.getCurrentCanvas();
         canvas.drawARGB(a,r,g,b); // ARGB*/
-        paint.setColor( Color.rgb(r, g, b) );
+        paint.setColor( Color.argb(a,r,g,b) );
     }
 
     @Override
@@ -147,23 +147,37 @@ public class AGraphics extends AbstractGraphics {
             //current canvas displayed
             Canvas canvas = engine.getCurrentCanvas();
             // Paint paint = new Paint(); //paint ya se creo en AndroidEngine & lo recibes en la constructora
-
+            int uLx = logicXPositionToWindowsXPosition(x - x/2); int uLy = logicYPositionToWindowsYPosition(y - y/2);
+            int dRx = (int)(((AImage)image).getWidth() * scaleX * scaleFactor) + uLx;
+            int dRy = (int)(((AImage)image).getHeight() * scaleY * scaleFactor) + uLy;
+            Rect r = new Rect(uLx,uLy, dRx,dRy);
             //draw           //recibe un bitmap
-            canvas.drawBitmap(((AImage)image).getBitmap(), x, y, paint);
+            canvas.drawBitmap(((AImage)image).getBitmap(), null,r,paint);
+            //canvas.drawBitmap(((AImage)image).getBitmap(), x, y, paint);
 
     }
 
     @Override
-    public void drawRectangle(int upperLeftX, int upperLeftY, int lowerRightX, int lowerRightY, int lineWidth) {
+    public void drawRectangle(int x, int y, int width, int height,int lineWidth )  {
         //SURFACE VIEW IS CORRECTLY INITIALIZED
 
+        int upperLeftX, upperLeftY, lowerRightX, lowerRightY;
+        upperLeftX = x - (width / 2);
+        upperLeftY = y - (height / 2);
+        lowerRightX = x + (width / 2);
+        lowerRightY = y + (height / 2);
+
+        int uLx = logicXPositionToWindowsXPosition(upperLeftX);
+        int uLy = logicYPositionToWindowsYPosition(upperLeftY);
+        int lRx = logicXPositionToWindowsXPosition(lowerRightX);
+        int lRy = logicYPositionToWindowsYPosition(lowerRightY);
             //current canvas displayed
             Canvas canvas = engine.getCurrentCanvas();
             //PINTAR EL FONDO EN BLANCO-----------------
             paint.setStyle(Paint.Style.STROKE); //????????????????????????????????????????????????
-
+            paint.setStrokeWidth(lineWidth);
             //draw
-            canvas.drawRect(upperLeftX, upperLeftY, lowerRightX, lowerRightY, paint);
+        canvas.drawRect(uLx, uLy, lRx, lRy, paint);
             paint.reset();
     }
 
@@ -254,7 +268,7 @@ public class AGraphics extends AbstractGraphics {
         Canvas canvas = engine.getCurrentCanvas();
             //esto no va
             //paint.setTypeface(((AFont)font).getFont());
-        paint.setTextSize(((AFont)font).getSize());
+        paint.setTextSize((float)(((AFont)font).getSize() * scaleFactor));
         canvas.drawText(text, x, y, paint);
         paint.reset();
     }
@@ -268,12 +282,12 @@ public class AGraphics extends AbstractGraphics {
        /* int processedX = logicXPositionToWindowsXPosition(x);
         int processedY = logicYPositionToWindowsYPosition(y);*/
 
-        paint.setTextSize(((AFont)font).getSize());
+        paint.setTextSize((float)(((AFont)font).getSize() * scaleFactor * scaleX));
 
-        int halfSwidth = (int)(((int)(getStringWidth(text, font) * scaleX) /scaleFactor)/ 2);
-        //int haldSheight = (int)(((int)(getFontHeight(font) * scaleY) / scaleFactor) / 2);
+        int halfSwidth = (int)(((int)(getStringWidth(text, font)) /scaleFactor)/ 2);
+        int halfSheight = (int)(((int)(getFontHeight(font) ) / scaleFactor) / 2);
         int processedX = logicXPositionToWindowsXPosition(x- halfSwidth);
-        int processedY = logicYPositionToWindowsYPosition(y );
+        int processedY = logicYPositionToWindowsYPosition(y + halfSheight );
 
 
         canvas.drawText(text, processedX, processedY, paint);
@@ -295,6 +309,7 @@ public class AGraphics extends AbstractGraphics {
         return this.logicSizeX;
     }
 
+
     @Override
     public int getLogicHeight() {
         return this.logicSizeY;
@@ -303,7 +318,9 @@ public class AGraphics extends AbstractGraphics {
     //hay transiciones pero no van con int
     @Override
     public void setGraphicsAlpha(int alpha) {
-        engine.getCurrentView().setAlpha(alpha);
+       /* float value = alpha / 255;
+        engine.setAlpha(value);*/
+        paint.setAlpha(alpha);
     }
 
     @Override
@@ -323,12 +340,14 @@ public class AGraphics extends AbstractGraphics {
 
     @Override
     public int logicXPositionToWindowsXPosition(int x) {
-        return (int) (((x + (int) (borderBarWidth / scaleFactor) ) / scaleX) * scaleFactor);
+        return (int) (((x + (int) (borderBarWidth / scaleFactor) ) ) * scaleFactor);
+        //return (int) (((x + (int) (borderBarWidth / scaleFactor) ) / scaleX) * scaleFactor);
     }
 
     @Override
     public int logicYPositionToWindowsYPosition(int y) {
-        return (int) (((y + (int) (topBarHeight / scaleFactor) ) / scaleY)* scaleFactor);
+        return (int) (((y + (int) (topBarHeight / scaleFactor) ))* scaleFactor);
+        //return (int) (((y + (int) (topBarHeight / scaleFactor) ) / scaleY)* scaleFactor);
     }
 
     @Override

@@ -52,6 +52,8 @@ public class AEngine extends SurfaceView implements IEngine, Runnable {
         this.stateManager = new StateManager(this, 0.5f);
         this.inputManager = new AInput();
         this.assetManager = assetManager;
+
+
     }
 
     public Canvas getCurrentCanvas(){
@@ -167,6 +169,11 @@ public class AEngine extends SurfaceView implements IEngine, Runnable {
     @Override
     public String getAssetsPath() {
         return "";
+    }
+
+    @Override
+    public boolean supportsTouch() {
+        return true;
     }
 
     public void render() {
