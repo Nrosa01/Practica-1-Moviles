@@ -2,6 +2,7 @@ package com.example.gamelogic.entities;
 
 import com.example.engine.IEngine;
 import com.example.engine.IFont;
+import com.example.engine.IImage;
 import com.example.engine.utilities.FloatLerper;
 import com.example.engine.utilities.LerpType;
 import com.example.gamelogic.utilities.Color;
@@ -23,6 +24,7 @@ public class NonogramBoard extends Board {
     private int initialWidth;
     private Color textColor;
     private int missingCells, badCellNumber;
+    IImage blockedCell;
 
     public NonogramBoard(IEngine engine, int[][] solvedPuzzle, int width, int gapSize, IFont font) {
         super(engine, solvedPuzzle.length, solvedPuzzle[0].length, width, gapSize);
@@ -43,6 +45,8 @@ public class NonogramBoard extends Board {
         wrongTilesTimer = new FloatLerper(0, 5, 10, LerpType.Linear); // Voy a usar esto como un timer
         wrongTilesTimer.setPaused(true);
         textColor = new Color();
+
+        blockedCell = graphics.newImage(engine.getAssetsPath() + "images/blockedTile.png");
     }
 
     public boolean getIsWin() {
@@ -173,10 +177,14 @@ public class NonogramBoard extends Board {
         if (isWin)
             return;
         //System.out.println("Clicked on cell: " + row + " " + col);
+
         nonogramCellStates[row][col] = Math.min(nonogramCellStates[row][col] + 1, numOfStates) % numOfStates;
+        isWin = updateBoardState(false);
     }
 
     private void setColorGivenState(int state) {
+        setCellImg(null);
+
         switch (state) {
             case 0:
                 if (!isWin)
@@ -188,10 +196,19 @@ public class NonogramBoard extends Board {
                 graphics.setColor(123, 123, 255);
                 break;
             case 2:
-                graphics.setColor(23, 23, 23);
+                if (!isWin)
+                {
+                    graphics.setColor(23, 23, 23);
+                    setCellImg(blockedCell);
+                }
+                else
+                    graphics.setColor(255, 255, 255);
                 break;
             case 3:
-                graphics.setColor(255, 123, 123);
+                if (!isWin)
+                    graphics.setColor(255, 123, 123);
+                else
+                    graphics.setColor(255, 255, 255);
         }
     }
 
@@ -208,20 +225,25 @@ public class NonogramBoard extends Board {
     }
 
     // Updates board state, update missingCells and badCells, also returns true if win is satisfied
-    private boolean updateBoardState() {
+    private boolean updateBoardState(boolean updateStats) {
         boolean win = true;
-        badCellNumber = 0;
-        missingCells = 0;
+
+        if (updateStats) {
+            badCellNumber = 0;
+            missingCells = 0;
+        }
 
         for (int row = 0; row < rows; row++) {
             for (int col = 0; col < cols; col++) {
                 if (solvedPuzzle[row][col] == 1 && nonogramCellStates[row][col] != 1) {
-                    missingCells++;
+                    if (updateStats)
+                        missingCells++;
                     win = false;
                 }
 
-                if (solvedPuzzle[row][col] != 1 && nonogramCellStates[row][col] == 1) {
-                    badCellNumber++;
+                if (solvedPuzzle[row][col] != 1 && (nonogramCellStates[row][col] == 1 || nonogramCellStates[row][col] == 3)) {
+                    if (updateStats)
+                        badCellNumber++;
                     win = false;
                 }
             }
@@ -234,7 +256,7 @@ public class NonogramBoard extends Board {
         if (isWin)
             return;
 
-        isWin = updateBoardState();
+        updateBoardState(true);
 
         if (isWin) {
             for (int row = 0; row < rows; row++) {
@@ -267,9 +289,7 @@ public class NonogramBoard extends Board {
                 textColor.a = (int) (255 * (1.0f - endTransitionLerper.getProgress()));
                 borderColor.a = (int) (255 * (1.0f - endTransitionLerper.getProgress()));
                 super.init();
-            }
-            else
-            {
+            } else {
                 textColor.a = 0;
                 borderColor.a = 0;
                 borderBoardRatio = 0;
@@ -288,6 +308,8 @@ public class NonogramBoard extends Board {
                     }
                 }
             }
+
+            isWin = updateBoardState(false);
         }
     }
 

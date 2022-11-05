@@ -1,6 +1,7 @@
 package com.example.gamelogic.entities;
 
 import com.example.engine.IEngine;
+import com.example.engine.IImage;
 import com.example.gamelogic.utilities.Color;
 
 public abstract class Board extends Entity {
@@ -8,6 +9,7 @@ public abstract class Board extends Entity {
     protected int rows, cols, gapSize;
     protected int paddingHorizontal, paddingVertical = 0;
     private Color boardBackgroundColor;
+    IImage cellImg;
 
     protected int cellWidth, cellHeight, widthArea, heightArea;
 
@@ -50,8 +52,35 @@ public abstract class Board extends Entity {
             for (int col = 0; col < cols; col++) {
                 this.OnCellRender(row, col);
                 graphics.fillRectangle(getCellPosX(col), getCellPosY(row), cellWidth, cellHeight);
+                drawImageInCell(getCellPosX(col), getCellPosY(row), cellWidth, cellHeight);
             }
         }
+    }
+
+    private void drawImageInCell(int row, int col, int cellWidth, int cellHeight)
+    {
+        if (cellImg != null)
+        {
+            double imageWidthRatio = ((double)cellWidth)  / cellImg.getWidth();
+            double imageHeightRatio = ((double)cellHeight) / cellImg.getHeight();
+            double scaleFactor;
+
+            if (imageWidthRatio < imageHeightRatio) {
+                scaleFactor = imageWidthRatio;
+            }
+            else {
+                scaleFactor = imageHeightRatio;
+            }
+
+            graphics.setScale(scaleFactor, scaleFactor);
+            graphics.drawImage(cellImg, row, col);
+        }
+        graphics.setScale(1, 1);
+    }
+
+    public void setCellImg(IImage image)
+    {
+        this.cellImg = image;
     }
 
     protected abstract void OnCellClicked(int row, int col);

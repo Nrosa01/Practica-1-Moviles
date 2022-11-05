@@ -34,7 +34,9 @@ public class MainGameLogic extends AbstractState {
     public MainGameLogic(IEngine engine, String level) {
         super(engine);
         this.level = level;
-        pointer = new Pointer(engine);
+
+        if(!engine.supportsTouch())
+            pointer = new Pointer(engine);
     }
 
     @Override
@@ -120,6 +122,8 @@ public class MainGameLogic extends AbstractState {
     @Override
     public void update(double deltaTime) {
         board.update(deltaTime);
+
+        if(pointer != null)
         pointer.update(deltaTime);
 
         if (!board.getIsWin()) {
@@ -144,6 +148,7 @@ public class MainGameLogic extends AbstractState {
             winReturnButton.render();
         }
 
+        if(pointer != null)
         pointer.render();
     }
 
@@ -154,6 +159,8 @@ public class MainGameLogic extends AbstractState {
             int proccesedY = graphics.windowsYPositionToLogicYPosition(inputEvent.y);
 
             board.handleInput(proccesedX, proccesedY, inputEvent.type);
+
+            if(pointer != null)
             pointer.handleInput(proccesedX, proccesedY, inputEvent.type);
 
             if (!board.getIsWin()) {
