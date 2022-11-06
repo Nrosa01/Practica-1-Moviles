@@ -17,7 +17,7 @@ public class DesktopEngine implements IEngine, Runnable, MouseInputListener {
     DesktopGraphics graphics;
     DesktopAudio audio;
     DesktopInput inputManager;
-    // DesktopState state;
+
     JFrame mView;
     Thread renderThread;
     StateManager stateManager;

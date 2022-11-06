@@ -57,14 +57,5 @@ public class AMusic implements ISound {
         return volume;
     }
 
-
-  /*  public void play(int soundId) {
-        //soundPool.play(soundId, 1, 1, 0, 0, 1);
-    }
-
-
-    public void stop(int soundId) {
-        soundPool.stop(soundId);
-    }*/
 }
 

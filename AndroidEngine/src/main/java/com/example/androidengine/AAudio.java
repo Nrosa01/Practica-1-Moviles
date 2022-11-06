@@ -20,37 +20,15 @@ import java.util.Hashtable;
 public class AAudio implements IAudio {
 
     Dictionary<String, ISound> sounds;
-    //Dictionary<String, > music;
 
-    MediaPlayer mplayer ;
+
     SoundPool soundPool;
     AssetManager assetManager;
+
     public AAudio(AssetManager assetManager){
         this.assetManager = assetManager;
-
         sounds = new Hashtable<>();
         soundPool = new SoundPool.Builder().setMaxStreams(10).build();
-
-        this.mplayer = new MediaPlayer();
-        this.mplayer.reset();
-    }
-
-
-    public void setLoop(boolean loop){
-        mplayer.setLooping(loop);
-    }
-
-    public void play() {
-        this.mplayer.start();
-    }
-
-
-    public void stop() {
-        this.mplayer.stop();
-    }
-
-    public void release(){
-        this.mplayer.release();
     }
 
     @Override

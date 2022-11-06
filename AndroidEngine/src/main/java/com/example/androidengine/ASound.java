@@ -21,18 +21,6 @@ public class ASound implements ISound {
         volume = 1;
     }
 
-   /* public void loadSound(String pathToSound){
-        int soundId = -1;
-        try {
-            AssetFileDescriptor assetDescriptor =
-                    this.assetManager.openFd(pathToSound);
-            //soundId = soundPool.load(assetDescriptor,1);
-        } catch (RuntimeException | IOException e ) {
-            throw new RuntimeException("Couldn't load sound.");
-        }
-
-    }*/
-
     @Override
     public void play(){ soundPool.play(id, volume, volume, 0, 0, 1);}
     @Override
@@ -56,13 +44,4 @@ public class ASound implements ISound {
         return volume;
     }
 
-
-  /*  public void play(int soundId) {
-        //soundPool.play(soundId, 1, 1, 0, 0, 1);
-    }
-
-
-    public void stop(int soundId) {
-        soundPool.stop(soundId);
-    }*/
 }

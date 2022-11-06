@@ -60,17 +60,6 @@ public class AEngine extends SurfaceView implements IEngine, Runnable {
         return canvas;
     }
 
-    /*void getUsableHeigtWidth(){
-        DisplayMetrics displayMetrics = new DisplayMetrics();
-        //hay que hacer un getcontext que solo se hace desde mainActivity
-        ((Activity)getContext()).getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-        int height = displayMetrics.heightPixels;
-        int width = displayMetrics.widthPixels;
-    }
-    */
-
-    public SurfaceView getCurrentView(){       return this;   }
-
     @Override
     public void setState(IState state) throws Exception {
         // Deberiamos esperar al final del bucle lógico antes de cambiar de estado

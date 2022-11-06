@@ -331,10 +331,7 @@ public class AGraphics extends AbstractGraphics {
     @Override
     public void drawTextCentered(String text, int x, int y, IFont font) {
         Canvas canvas = engine.getCurrentCanvas();
-        //esto no va
-        //paint.setTypeface(((AFont)font).getFont());
-       /* int processedX = logicXPositionToWindowsXPosition(x);
-        int processedY = logicYPositionToWindowsYPosition(y);*/
+     
         paint.setStyle(Paint.Style.FILL); //DEFAULT VALUE
         //paint.setTextSize((float)(((AFont)font).getSize() * scaleFactor * scaleX));
 
