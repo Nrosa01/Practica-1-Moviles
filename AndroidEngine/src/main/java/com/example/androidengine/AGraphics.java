@@ -20,13 +20,14 @@ public class AGraphics extends AbstractGraphics {
     private Paint paint;
     private AEngine engine;
     AssetManager assetManager;
+    float alphaMultiplier;
 
     int screenWidth;
     int screenHeight;
     private double scaleX = 1;
     private double scaleY = 1;
 
-    public AGraphics(SurfaceHolder holder, Paint paint, AssetManager assetManager, AEngine engine, int sWidth, int sHeight){
+    public AGraphics(SurfaceHolder holder, Paint paint, AssetManager assetManager, AEngine engine, int sWidth, int sHeight) {
         this.holder = holder;
         this.paint = paint;
         this.assetManager = assetManager;
@@ -34,7 +35,7 @@ public class AGraphics extends AbstractGraphics {
 
         screenWidth = sWidth;
         screenHeight = sHeight;
-        setLogicSize(sWidth,sHeight);
+        setLogicSize(sWidth, sHeight);
         calculateScaleFactor();
     }
 
@@ -42,7 +43,7 @@ public class AGraphics extends AbstractGraphics {
     public IImage newImage(String pathToImage) {
         IImage image = null;
         try {
-            image = new AImage(pathToImage,this.assetManager);
+            image = new AImage(pathToImage, this.assetManager);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -53,7 +54,7 @@ public class AGraphics extends AbstractGraphics {
     @Override
     public IFont newFont(String pathToFont, int size, boolean isBold) {
         IFont font;
-        font = new AFont(pathToFont,assetManager,size,isBold);
+        font = new AFont(pathToFont, assetManager, size, isBold);
         //this.paint.setTextSize(size);
         return font;
     }
@@ -78,7 +79,7 @@ public class AGraphics extends AbstractGraphics {
         /*Canvas canvas = engine.getCurrentCanvas();
         canvas.drawARGB(255,r,g,b); // ARGB*/
         //paint.setColor(Color.parseColor("#FF0000"));
-        paint.setColor( Color.rgb(r, g, b) );
+        paint.setColor(Color.rgb(r, g, b));
     }
 
     @Override
@@ -86,18 +87,18 @@ public class AGraphics extends AbstractGraphics {
         //HABRIA QUE HACER LA CONERSION de rgb a HEXADECIMAL
         /*Canvas canvas = engine.getCurrentCanvas();
         canvas.drawARGB(a,r,g,b); // ARGB*/
-        paint.setColor( Color.argb(a,r,g,b) );
+        paint.setColor(Color.argb(a, r, g, b));
     }
 
     @Override
     public void setFont(IFont font) {
-        paint.setTypeface(((AFont)font).getFont());
+        paint.setTypeface(((AFont) font).getFont());
     }
 
     @Override
     public int getStringWidth(String text, IFont font) {
 
-        paint.setTextSize((float)(((AFont)font).getSize() * scaleFactor * scaleX));
+        paint.setTextSize((float) (((AFont) font).getSize() * scaleFactor * scaleX));
 
         Rect bounds = new Rect();
         setFont(font);
@@ -105,14 +106,14 @@ public class AGraphics extends AbstractGraphics {
 
         int width = bounds.width();
 
-        return (int)(width / scaleFactor);
+        return (int) (width / scaleFactor);
     }
 
     @Override
     public int getFontHeight(IFont font) {
         String ran = "a";
 
-        paint.setTextSize((float)(((AFont)font).getSize() * scaleFactor * scaleX));
+        paint.setTextSize((float) (((AFont) font).getSize() * scaleFactor * scaleX));
 
         Rect bounds = new Rect();
         setFont(font);
@@ -120,7 +121,7 @@ public class AGraphics extends AbstractGraphics {
 
         int height = bounds.height();
 
-        return  (int)(height / scaleFactor);
+        return (int) (height / scaleFactor);
     }
 
     @Override
@@ -131,54 +132,58 @@ public class AGraphics extends AbstractGraphics {
     @Override
     public void clear(int r, int g, int b) {
         //SURFACE VIEW IS CORRECTLY INITIALIZED
-            //current canvas displayed
-            Canvas canvas = engine.getCurrentCanvas();
-            //PINTAR EL FONDO EN BLANCO-----------------
-            paint.setStyle(Paint.Style.FILL);
-            paint.setARGB(255,r,g,b);
-            canvas.drawPaint(paint);
+        //current canvas displayed
+        Canvas canvas = engine.getCurrentCanvas();
+        //PINTAR EL FONDO EN BLANCO-----------------
+        paint.setStyle(Paint.Style.FILL);
+        paint.setARGB(255, r, g, b);
+        
+        canvas.drawPaint(paint);
 
-            paint.reset();
+        paint.reset();
 
     }
-
 
 
     @Override
     public void drawImage(IImage image, int x, int y) {
         //SURFACE VIEW IS CORRECTLY INITIALIZED
 
-            //current canvas displayed
-            Canvas canvas = engine.getCurrentCanvas();
-            // Paint paint = new Paint(); //paint ya se creo en AndroidEngine & lo recibes en la constructora
-            int uLy = logicYPositionToWindowsYPosition(y );
-            int uLx = logicXPositionToWindowsXPosition(x );
+        //current canvas displayed
+        Canvas canvas = engine.getCurrentCanvas();
+        // Paint paint = new Paint(); //paint ya se creo en AndroidEngine & lo recibes en la constructora
+        int uLy = logicYPositionToWindowsYPosition(y);
+        int uLx = logicXPositionToWindowsXPosition(x);
 
-            int imageWidth = (int)(((AImage)image).getWidth() * scaleX * scaleFactor);
-            int  imageHeight = (int)(((AImage)image).getHeight() * scaleY * scaleFactor);
+        int imageWidth = (int) (((AImage) image).getWidth() * scaleX * scaleFactor);
+        int imageHeight = (int) (((AImage) image).getHeight() * scaleY * scaleFactor);
 
-            uLx -= imageWidth/ 2;
-            uLy -=   imageHeight/  2;
+        uLx -= imageWidth / 2;
+        uLy -= imageHeight / 2;
 
-            int dRx = imageWidth + uLx;
-            int dRy = imageHeight + uLy;
-            Rect r = new Rect(uLx,uLy, dRx,dRy);
-            //draw           //recibe un bitmap
-            int c = paint.getColor();
-            setColor(255,255,255);
-            canvas.drawBitmap(((AImage)image).getBitmap(), null,r,paint);
-            paint.setColor(c);
-            //canvas.drawBitmap(((AImage)image).getBitmap(), x, y, paint);
+        int dRx = imageWidth + uLx;
+        int dRy = imageHeight + uLy;
+        Rect r = new Rect(uLx, uLy, dRx, dRy);
+        //draw           //recibe un bitmap
+
+        float currentAlpha = paint.getAlpha();
+        paint.setAlpha((int) (currentAlpha * alphaMultiplier));
+
+        int c = paint.getColor();
+        setColor(255, 255, 255);
+        canvas.drawBitmap(((AImage) image).getBitmap(), null, r, paint);
+        paint.setColor(c);
+        //canvas.drawBitmap(((AImage)image).getBitmap(), x, y, paint);
 
     }
 
     @Override
-    public void drawRectangle(int x, int y, int width, int height,int lineWidth )  {
+    public void drawRectangle(int x, int y, int width, int height, int lineWidth) {
         //SURFACE VIEW IS CORRECTLY INITIALIZED
 
         int upperLeftX, upperLeftY, lowerRightX, lowerRightY;
-        width*= scaleX;
-        height*= scaleY;
+        width *= scaleX;
+        height *= scaleY;
         upperLeftX = x - (width / 2);
         upperLeftY = y - (height / 2);
         lowerRightX = x + (width / 2);
@@ -190,102 +195,116 @@ public class AGraphics extends AbstractGraphics {
         int lRy = logicYPositionToWindowsYPosition(lowerRightY);
 
 
-            //current canvas displayed
-            Canvas canvas = engine.getCurrentCanvas();
-            //PINTAR EL FONDO EN BLANCO-----------------
+        //current canvas displayed
+        Canvas canvas = engine.getCurrentCanvas();
+        //PINTAR EL FONDO EN BLANCO-----------------
 
-            paint.setStyle(Paint.Style.STROKE); //????????????????????????????????????????????????
-            paint.setStrokeWidth((int)(lineWidth * scaleFactor));
-            //draw
+        paint.setStyle(Paint.Style.STROKE); //????????????????????????????????????????????????
+        paint.setStrokeWidth((int) (lineWidth * scaleFactor));
+
+        float currentAlpha = paint.getAlpha();
+        paint.setAlpha((int) (currentAlpha * alphaMultiplier));
+
+        //draw
         canvas.drawRect(uLx, uLy, lRx, lRy, paint);
-            //paint.reset();
+        //paint.reset();
     }
 
     @Override
     public void fillRectangle(int x, int y, int width, int height) {
 
-            int upperLeftX, upperLeftY, lowerRightX, lowerRightY;
-            width*= scaleX;
-            height *= scaleY;
-            upperLeftX = x - (width / 2);
-            upperLeftY = y - (height / 2);
-            lowerRightX = x + (width / 2);
-            lowerRightY = y + (height / 2);
+        int upperLeftX, upperLeftY, lowerRightX, lowerRightY;
+        width *= scaleX;
+        height *= scaleY;
+        upperLeftX = x - (width / 2);
+        upperLeftY = y - (height / 2);
+        lowerRightX = x + (width / 2);
+        lowerRightY = y + (height / 2);
 
-            int uLx = logicXPositionToWindowsXPosition(upperLeftX);
-            int uLy = logicYPositionToWindowsYPosition(upperLeftY);
-            int lRx = logicXPositionToWindowsXPosition(lowerRightX);
-            int lRy = logicYPositionToWindowsYPosition(lowerRightY);
+        int uLx = logicXPositionToWindowsXPosition(upperLeftX);
+        int uLy = logicYPositionToWindowsYPosition(upperLeftY);
+        int lRx = logicXPositionToWindowsXPosition(lowerRightX);
+        int lRy = logicYPositionToWindowsYPosition(lowerRightY);
 
-            //current canvas displayed
-            Canvas canvas = engine.getCurrentCanvas();
+        //current canvas displayed
+        Canvas canvas = engine.getCurrentCanvas();
 
-            //PINTAR EL FONDO EN BLANCO-----------------
-            paint.setStyle(Paint.Style.FILL);
+        float currentAlpha = paint.getAlpha();
+        paint.setAlpha((int) (currentAlpha * alphaMultiplier));
 
-            //draw
-            canvas.drawRect(uLx, uLy, lRx, lRy, paint);
+        //PINTAR EL FONDO EN BLANCO-----------------
+        paint.setStyle(Paint.Style.FILL);
+
+        //draw
+        canvas.drawRect(uLx, uLy, lRx, lRy, paint);
 
 
-            //hay que pulir esto y que cada metodo que cambie cosas del paint devuelva al defecto solo lo que ha cambiado
-            //paint.reset();
+        //hay que pulir esto y que cada metodo que cambie cosas del paint devuelva al defecto solo lo que ha cambiado
+        //paint.reset();
 
     }
 
-    public void renderBordersAndroid()
-    {
-        setColor(255,255,255,255);
+    public void renderBordersAndroid() {
+        setColor(255, 255, 255, 255);
 
 
         // Tener en cuenta scale factor para el ancho
-        int scaledBarWidth = (int)Math.ceil(borderBarWidth / scaleFactor);
-        int scaledTopHeight = (int)Math.ceil(topBarHeight / scaleFactor);
+        int scaledBarWidth = (int) Math.ceil(borderBarWidth / scaleFactor);
+        int scaledTopHeight = (int) Math.ceil(topBarHeight / scaleFactor);
+
+        float currentAlpha = paint.getAlpha();
+        paint.setAlpha((int) (currentAlpha * alphaMultiplier));
 
         // Barra izquierda y derecha
-        fillRectangle(-scaledBarWidth/2, logicSizeY/2, scaledBarWidth, logicSizeY);
-        fillRectangle(scaledBarWidth/2 + logicSizeX, logicSizeY/2, scaledBarWidth, logicSizeY);
+        fillRectangle(-scaledBarWidth / 2, logicSizeY / 2, scaledBarWidth, logicSizeY);
+        fillRectangle(scaledBarWidth / 2 + logicSizeX, logicSizeY / 2, scaledBarWidth, logicSizeY);
 
         // Barras arriba y abajo
 
-        fillRectangle(logicSizeX/2, -( scaledTopHeight/2 ) , logicSizeX, scaledTopHeight);
-        fillRectangle(logicSizeX/2, scaledTopHeight/2 + logicSizeY, logicSizeX, scaledTopHeight);
-          paint.reset();
+        fillRectangle(logicSizeX / 2, -(scaledTopHeight / 2), logicSizeX, scaledTopHeight);
+        fillRectangle(logicSizeX / 2, scaledTopHeight / 2 + logicSizeY, logicSizeX, scaledTopHeight);
+        paint.reset();
     }
 
     @Override
     public void drawLine(int fromX, int fromY, int toX, int toY) {
 
-            //current canvas displayed
-            Canvas canvas = engine.getCurrentCanvas();
-            //PINTAR EL FONDO EN BLANCO-----------------
-            //paint.setStyle(Paint.Style.STROKE);
-            //paint.setColor(Color.WHITE);
-            //canvas.drawPaint(paint);
-            //draw
-            //EN VEZ DE DIBUJAR UN TRIANGULO, DIBUJO SOLO 1 ARISTA
-            Point a = new Point(fromX, fromY);
-            Point b = new Point(toX, toY);
+        //current canvas displayed
+        Canvas canvas = engine.getCurrentCanvas();
+        //PINTAR EL FONDO EN BLANCO-----------------
+        //paint.setStyle(Paint.Style.STROKE);
+        //paint.setColor(Color.WHITE);
+        //canvas.drawPaint(paint);
+        //draw
+        //EN VEZ DE DIBUJAR UN TRIANGULO, DIBUJO SOLO 1 ARISTA
+        Point a = new Point(fromX, fromY);
+        Point b = new Point(toX, toY);
 
-            Path path = new Path();
-            path.setFillType(Path.FillType.EVEN_ODD);
-            path.lineTo(a.x, a.y);
-            path.lineTo(b.x, b.y);
-            path.close();
+        Path path = new Path();
+        path.setFillType(Path.FillType.EVEN_ODD);
+        path.lineTo(a.x, a.y);
+        path.lineTo(b.x, b.y);
+        path.close();
 
-            canvas.drawPath(path, paint);
-          paint.reset();
-            //accept canvas qe want to draw
-            //holder.unlockCanvasAndPost(canvas);
+        float currentAlpha = paint.getAlpha();
+        paint.setAlpha((int) (currentAlpha * alphaMultiplier));
+
+        canvas.drawPath(path, paint);
+        paint.reset();
+        //accept canvas qe want to draw
+        //holder.unlockCanvasAndPost(canvas);
 
     }
 
     @Override
     public void drawCircle(int xPos, int yPos, int radius) {
         //SURFACE VIEW IS CORRECTLY INITIALIZED
+        Canvas canvas = engine.getCurrentCanvas();
 
-            Canvas canvas = engine.getCurrentCanvas();
-            canvas.drawCircle(xPos, yPos, radius, paint);
+        float currentAlpha = paint.getAlpha();
+        paint.setAlpha((int) (currentAlpha * alphaMultiplier));
 
+        canvas.drawCircle(xPos, yPos, radius, paint);
     }
 
     //implementar size en interfaz
@@ -294,15 +313,18 @@ public class AGraphics extends AbstractGraphics {
         Canvas canvas = engine.getCurrentCanvas();
         setFont(font);
         paint.setStyle(Paint.Style.FILL);
-            //esto no va
-            //paint.setTypeface(((AFont)font).getFont());
-        paint.setTextSize((float)(((AFont)font).getSize() * scaleFactor * scaleX));
+        //esto no va
+        //paint.setTypeface(((AFont)font).getFont());
+        paint.setTextSize((float) (((AFont) font).getSize() * scaleFactor * scaleX));
 
-         x = logicXPositionToWindowsXPosition(x);
-         y = logicYPositionToWindowsYPosition(y );
+        x = logicXPositionToWindowsXPosition(x);
+        y = logicYPositionToWindowsYPosition(y);
+
+        float currentAlpha = paint.getAlpha();
+        paint.setAlpha((int) (currentAlpha * alphaMultiplier));
 
         canvas.drawText(text, x, y, paint);
-            paint.reset();
+        paint.reset();
     }
 
     @Override
@@ -316,11 +338,13 @@ public class AGraphics extends AbstractGraphics {
         paint.setStyle(Paint.Style.FILL);
         //paint.setTextSize((float)(((AFont)font).getSize() * scaleFactor * scaleX));
 
-        int halfSwidth = (int)(((int)(getStringWidth(text, font))  )/ 2);
-        int halfSheight = (int)(((int)(getFontHeight(font) )  ) / 2);
-        int processedX = logicXPositionToWindowsXPosition(x- halfSwidth);
-        int processedY = logicYPositionToWindowsYPosition(y + halfSheight  );
+        int halfSwidth = (int) (((int) (getStringWidth(text, font))) / 2);
+        int halfSheight = (int) (((int) (getFontHeight(font))) / 2);
+        int processedX = logicXPositionToWindowsXPosition(x - halfSwidth);
+        int processedY = logicYPositionToWindowsYPosition(y + halfSheight);
 
+        float currentAlpha = paint.getAlpha();
+        paint.setAlpha((int) (currentAlpha * alphaMultiplier));
 
         canvas.drawText(text, processedX, processedY, paint);
         paint.reset();
@@ -350,9 +374,7 @@ public class AGraphics extends AbstractGraphics {
     //hay transiciones pero no van con int
     @Override
     public void setGraphicsAlpha(int alpha) {
-       /* float value = alpha / 255;
-        engine.setAlpha(value);*/
-        paint.setAlpha(alpha);
+        this.alphaMultiplier = ((float) alpha) / 255;
 
     }
 
@@ -373,24 +395,24 @@ public class AGraphics extends AbstractGraphics {
 
     @Override
     public int logicXPositionToWindowsXPosition(int x) {
-        return (int) (((x + (int) (borderBarWidth / scaleFactor) ) ) * scaleFactor);
+        return (int) (((x + (int) (borderBarWidth / scaleFactor))) * scaleFactor);
         //return (int) (((x + (int) (borderBarWidth / scaleFactor) ) / scaleX) * scaleFactor);
     }
 
     @Override
     public int logicYPositionToWindowsYPosition(int y) {
-        return (int) (((y + (int) (topBarHeight / scaleFactor) ))* scaleFactor);
+        return (int) (((y + (int) (topBarHeight / scaleFactor))) * scaleFactor);
         //return (int) (((y + (int) (topBarHeight / scaleFactor) ) / scaleY)* scaleFactor);
     }
 
     @Override
     public int windowsXPositionToLogicXPosition(int x) {
-        return (int) (((x - borderBarWidth  ) / scaleFactor));
+        return (int) (((x - borderBarWidth) / scaleFactor));
     }
 
     @Override
     public int windowsYPositionToLogicYPosition(int y) {
-        return (int) (((y - topBarHeight  ) / scaleFactor));
+        return (int) (((y - topBarHeight) / scaleFactor));
     }
 
     @Override
