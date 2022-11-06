@@ -34,7 +34,7 @@ public class AEngine extends SurfaceView implements IEngine, Runnable {
     private AssetManager assetManager;
     private AGraphics graphics;
     private AInput inputManager;
-    private AAudio audio;
+    AAudio audio;
                   //SurfaceView myView
     public AEngine(Context context, AssetManager assetManager) {
         super(context); //constructora de SurfaceView
@@ -53,7 +53,7 @@ public class AEngine extends SurfaceView implements IEngine, Runnable {
         this.inputManager = new AInput();
         this.assetManager = assetManager;
 
-
+        audio = new AAudio(assetManager);
     }
 
     public Canvas getCurrentCanvas(){
@@ -76,6 +76,7 @@ public class AEngine extends SurfaceView implements IEngine, Runnable {
         // Deberiamos esperar al final del bucle lógico antes de cambiar de estado
         // para evitar problemas
         this.stateManager.setState(state);
+        inputManager.clear();
     }
 
     public void resume() {

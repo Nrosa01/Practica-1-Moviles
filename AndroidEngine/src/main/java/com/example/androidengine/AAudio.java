@@ -50,4 +50,13 @@ public class AAudio implements IAudio {
         this.mplayer.release();
     }
 
+    @Override
+    public ISound newSound(String soundPath, String soundKey) {
+        return null;
+    }
+
+    @Override
+    public ISound newMusic(String soundPath, String audioKey) {
+        return null;
+    }
 }

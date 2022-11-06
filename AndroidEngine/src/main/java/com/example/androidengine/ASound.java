@@ -19,7 +19,6 @@ public class ASound implements ISound {
     public void loadSound(String pathToSound){
         int soundId = -1;
         try {
-            AssetManager assetManager;
             AssetFileDescriptor assetDescriptor =
                     this.assetManager.openFd(pathToSound);
             soundId = soundPool.load(assetDescriptor,1);
@@ -33,6 +32,21 @@ public class ASound implements ISound {
     public void play(){}
     @Override
     public void stop(){}
+
+    @Override
+    public boolean isPlaying() {
+        return false;
+    }
+
+    @Override
+    public void setVolume(float volume) {
+
+    }
+
+    @Override
+    public float getVolume() {
+        return 0;
+    }
 
 
     public void play(int soundId) {
