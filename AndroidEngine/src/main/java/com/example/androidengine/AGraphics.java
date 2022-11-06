@@ -164,7 +164,10 @@ public class AGraphics extends AbstractGraphics {
             int dRy = imageHeight + uLy;
             Rect r = new Rect(uLx,uLy, dRx,dRy);
             //draw           //recibe un bitmap
-            canvas.drawBitmap(((AImage)image).getBitmap(), null,r,new Paint());
+            int c = paint.getColor();
+            setColor(255,255,255);
+            canvas.drawBitmap(((AImage)image).getBitmap(), null,r,paint);
+            paint.setColor(c);
             //canvas.drawBitmap(((AImage)image).getBitmap(), x, y, paint);
 
     }
@@ -246,7 +249,7 @@ public class AGraphics extends AbstractGraphics {
 
         fillRectangle(logicSizeX/2, -( scaledTopHeight/2 ) , logicSizeX, scaledTopHeight);
         fillRectangle(logicSizeX/2, scaledTopHeight/2 + logicSizeY, logicSizeX, scaledTopHeight);
-        paint.reset();
+          paint.reset();
     }
 
     @Override
@@ -270,7 +273,7 @@ public class AGraphics extends AbstractGraphics {
             path.close();
 
             canvas.drawPath(path, paint);
-            paint.reset();
+          paint.reset();
             //accept canvas qe want to draw
             //holder.unlockCanvasAndPost(canvas);
 
@@ -299,7 +302,7 @@ public class AGraphics extends AbstractGraphics {
          y = logicYPositionToWindowsYPosition(y );
 
         canvas.drawText(text, x, y, paint);
-        paint.reset();
+            paint.reset();
     }
 
     @Override
