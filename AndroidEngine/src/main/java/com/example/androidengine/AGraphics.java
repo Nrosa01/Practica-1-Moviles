@@ -20,6 +20,7 @@ public class AGraphics extends AbstractGraphics {
     private Paint paint;
     private AEngine engine;
     AssetManager assetManager;
+    float alphaMultiplier = 1;
 
     int screenWidth;
     int screenHeight;
@@ -78,7 +79,7 @@ public class AGraphics extends AbstractGraphics {
         /*Canvas canvas = engine.getCurrentCanvas();
         canvas.drawARGB(255,r,g,b); // ARGB*/
         //paint.setColor(Color.parseColor("#FF0000"));
-        paint.setColor( Color.rgb(r, g, b) );
+        paint.setColor( Color.argb((int)(255 * alphaMultiplier), r, g, b) );
     }
 
     @Override
@@ -86,7 +87,7 @@ public class AGraphics extends AbstractGraphics {
         //HABRIA QUE HACER LA CONERSION de rgb a HEXADECIMAL
         /*Canvas canvas = engine.getCurrentCanvas();
         canvas.drawARGB(a,r,g,b); // ARGB*/
-        paint.setColor( Color.argb(a,r,g,b) );
+        paint.setColor( Color.argb((int) (a * alphaMultiplier),r,g,b) );
     }
 
     @Override
@@ -350,10 +351,8 @@ public class AGraphics extends AbstractGraphics {
     //hay transiciones pero no van con int
     @Override
     public void setGraphicsAlpha(int alpha) {
-       /* float value = alpha / 255;
-        engine.setAlpha(value);*/
         paint.setAlpha(alpha);
-
+        alphaMultiplier = ((float) alpha/255);
     }
 
     @Override
