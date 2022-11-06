@@ -14,10 +14,13 @@ import java.io.IOException;
 import java.util.Dictionary;
 import java.util.Hashtable;
 
+
+
+
 public class AAudio implements IAudio {
 
     Dictionary<String, ISound> sounds;
-    Dictionary<String, MediaPlayer> music;
+    //Dictionary<String, > music;
 
     MediaPlayer mplayer ;
     SoundPool soundPool;
@@ -32,31 +35,7 @@ public class AAudio implements IAudio {
         this.mplayer.reset();
     }
 
-  /*  public ISound newSound(){
-        int soundId = -1;
-        try {
-            AssetFileDescriptor assetDescriptor =
-                    this.assetManager.openFd(pathToSound);
-            //soundId = soundPool.load(assetDescriptor,1);
-        } catch (RuntimeException | IOException e ) {
-            throw new RuntimeException("Couldn't load sound.");
-        }
-        return null;
-    }
-    public ISound newAudio(String pathToAudio) {
-        MediaPlayer media = new MediaPlayer();
-        try {
-            AssetFileDescriptor afd = assetManager.openFd(pathToAudio);
-            this.mplayer.setDataSource(afd.getFileDescriptor(),
-                    afd.getStartOffset(), afd.getLength());
-            this.mplayer.prepare();
 
-        } catch (Exception e) {
-            System.err.println("Couldn't load audio file");
-            e.printStackTrace();
-        }
-        return null;
-    }*/
     public void setLoop(boolean loop){
         mplayer.setLooping(loop);
     }
@@ -95,17 +74,21 @@ public class AAudio implements IAudio {
 
     @Override
     public ISound newMusic(String soundPath, String audioKey) {
+        if(sounds.get(audioKey) != null)
+            return (AMusic) sounds.get(audioKey);
         MediaPlayer media = new MediaPlayer();
         try {
             AssetFileDescriptor afd = assetManager.openFd(soundPath);
-            this.mplayer.setDataSource(afd.getFileDescriptor(),
+            media.setDataSource(afd.getFileDescriptor(),
                     afd.getStartOffset(), afd.getLength());
-            this.mplayer.prepare();
+            media.prepare();
 
         } catch (Exception e) {
             System.err.println("Couldn't load audio file");
             e.printStackTrace();
         }
-        return null;
+        ISound music = new AMusic(media);
+        sounds.put(audioKey, music);
+        return music;
     }
 }

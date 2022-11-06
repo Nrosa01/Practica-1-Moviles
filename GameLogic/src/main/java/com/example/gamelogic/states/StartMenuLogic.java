@@ -45,9 +45,9 @@ public class StartMenuLogic extends AbstractState {
                 }
             });
 
-            /*ISound sound = audio.newMusic(engine.getAssetsPath() + "audio/bgMusic.wav", "musicBg");
-            sound.setVolume(0.25f);
-            sound.play(); //It only plays if it's not alrady playing*/
+            ISound sound = audio.newMusic(engine.getAssetsPath() + "audio/bgMusic.wav", "musicBg");
+            sound.setVolume(1f);
+            sound.play(); //It only plays if it's not alrady playing
             return true;
         } catch (Exception e) {
             e.printStackTrace();
