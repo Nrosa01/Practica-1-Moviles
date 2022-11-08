@@ -8,9 +8,14 @@ import com.example.engine.InputEvent;
 import java.util.ArrayList;
 import java.util.List;
 
+//para que no se modifiquen los eventos mientras los estoy leyendo se dividen en 2 buffers, un buffer controla
+//los eventos que hay que leer y otro controla los eventos de la iteracion actual
 public class AInput  implements IInput {
-    private List<InputEvent>[] eventos = null;
+    //lista de eventos
+    private List<InputEvent>[] eventos ;
+    //numero de buffers de eventos que se va a usar
     private int listBufferCount = 2;
+    //indice del buffer actual
     private int listBufferIndex = 0;
 
     public AInput()
@@ -20,13 +25,6 @@ public class AInput  implements IInput {
             eventos[i] = new ArrayList<>();
     }
 
-    public AInput(int listBufferCount)
-    {
-        this.listBufferCount = listBufferCount;
-        eventos = new ArrayList[listBufferCount];
-        for(int i = 0; i < eventos.length; i++)
-            eventos[i] = new ArrayList<>();
-    }
 
     public void addEvent(MotionEvent event){
         InputTouchType tipo = null;
@@ -37,8 +35,6 @@ public class AInput  implements IInput {
             tipo = InputTouchType.TOUCH_UP;
         else if(event.getAction() == MotionEvent.ACTION_MOVE)
             tipo = InputTouchType.TOUCH_MOVE;
-        //else if(event.getAction() == MotionEvent.ACTION_MOVE)
-         //   tipo = InputTouchType.TOUCH_MOVE;
 
         eventos[listBufferIndex].add(new InputEvent((int)event.getX(), (int)event.getY(), 0, tipo));
     }

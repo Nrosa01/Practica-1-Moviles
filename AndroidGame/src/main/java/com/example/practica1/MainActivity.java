@@ -2,6 +2,7 @@ package com.example.practica1;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.pm.ActivityInfo;
 import android.content.res.AssetManager;
 import android.os.Bundle;
 import android.view.SurfaceView;
@@ -16,9 +17,7 @@ import java.io.IOException;
 public class MainActivity extends AppCompatActivity {
 
     private AEngine androidEngine;
-    //private SurfaceView renderView;
     private AssetManager assetManager;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,15 +25,12 @@ public class MainActivity extends AppCompatActivity {
 
         assetManager = getAssets();
 
-        //this.androidEngine = new AEngine(this.renderView, assetManager);
         this.androidEngine = new AEngine(this, assetManager);
-
-        //this.renderView = new SurfaceView(this);
-        //setContentView(this.renderView);
+        //bloquea la orientacion del movil a vertical
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         setContentView(this.androidEngine);
-        //clasederelleno clase = new clasederelleno(this.androidEngine);
+
         StartMenuLogic menuLogic = new StartMenuLogic(this.androidEngine);
-        //LogicTest logicTest = new LogicTest(this.androidEngine);
 
         try {
             this.androidEngine.setState(menuLogic);

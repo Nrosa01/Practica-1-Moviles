@@ -10,7 +10,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 public class AImage implements IImage {
-
+    //guardo el bitmap
     Bitmap bitmap;
 
     public AImage(String pathToImage, AssetManager assetManager) throws IOException{

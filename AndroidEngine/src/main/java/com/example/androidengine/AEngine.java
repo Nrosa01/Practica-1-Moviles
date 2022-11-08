@@ -19,8 +19,6 @@ import java.util.List;
 
 public class AEngine extends SurfaceView implements IEngine, Runnable {
 
-    //private SurfaceView myView;
-    //private SurfaceHolder holder;
     private Canvas canvas;
     private Paint paint;
 
@@ -28,30 +26,28 @@ public class AEngine extends SurfaceView implements IEngine, Runnable {
 
     private boolean running;
 
-    //private IState currentState;
     private StateManager stateManager;
 
     private AssetManager assetManager;
     private AGraphics graphics;
     private AInput inputManager;
     AAudio audio;
-                  //SurfaceView myView
+
     public AEngine(Context context, AssetManager assetManager) {
         super(context); //constructora de SurfaceView
-        // Intentamos crear el buffer strategy con 2 buffers.
 
-        //this.myView = myView;
-        //this.holder = this.myView.getHolder();
         this.paint = new Paint();
         this.paint.setColor(0xFF000000);
 
+        //obtengo el alto y el alto de la zona usable de pantalla
         int sWidth = Resources.getSystem().getDisplayMetrics().widthPixels;
         int sHeight = Resources.getSystem().getDisplayMetrics().heightPixels;
 
-        graphics = new AGraphics(getHolder(),paint,assetManager,this,sWidth,sHeight);
-        this.stateManager = new StateManager(this, 0.5f);
-        this.inputManager = new AInput();
-        this.assetManager = assetManager;
+        this.graphics = new AGraphics(getHolder(),paint,assetManager,this,sWidth,sHeight);
+
+        stateManager = new StateManager(this, 0.5f);
+        inputManager = new AInput();
+        assetManager = assetManager;
 
         audio = new AAudio(assetManager);
     }
@@ -60,10 +56,10 @@ public class AEngine extends SurfaceView implements IEngine, Runnable {
         return canvas;
     }
 
+    //cambio de estado de logica
     @Override
     public void setState(IState state) throws Exception {
-        // Deberiamos esperar al final del bucle lógico antes de cambiar de estado
-        // para evitar problemas
+
         this.stateManager.setState(state);
         inputManager.clear();
     }
@@ -82,7 +78,7 @@ public class AEngine extends SurfaceView implements IEngine, Runnable {
     public void pause() {
         if (this.running) {
             this.running = false;
-            while (true) { //que ????????????????????????????????????????????????????????
+            while (true) {
                 try {
                     this.renderThread.join();
                     this.renderThread = null;
@@ -125,6 +121,7 @@ public class AEngine extends SurfaceView implements IEngine, Runnable {
             this.handleInput();
             this.update(elapsedTime);
 
+            //cada segundo se muestran los fps
             if (currentTime - informePrevio > 1000000000l) {
                 long fps = frames * 1000000000l / (currentTime - informePrevio);
                 System.out.println("" + fps + " fps");
@@ -133,13 +130,52 @@ public class AEngine extends SurfaceView implements IEngine, Runnable {
             }
             ++frames;
 
-            // Pintamos el frame
+            //espera activa a que el surface este libre
             while (!getHolder().getSurface().isValid()) ;
+            // Pintamos el frame
             canvas = getHolder().lockCanvas();
             this.render();
             getHolder().unlockCanvasAndPost(canvas);
         }
     }
+
+
+    @Override
+    public boolean supportsTouch() {
+        return true;
+    }
+
+    public void render() {
+        // "Borramos" el fondo.
+
+        graphics.clear(255,255,255);
+        this.stateManager.render();
+        graphics.renderBordersAndroid();
+    }
+
+    @Override
+    public void update(double deltaTime) {
+        this.stateManager.update(deltaTime);
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+
+        inputManager.addEvent(event); //actualizamos nuestro registro de eventos
+        return true; //se ha manejado el evento
+
+    }
+
+    @Override
+    public void handleInput() {
+        //comprobamos nuestro registro de eventos y actualizamos el juego
+        List<InputEvent> events = inputManager.getEventList();
+        inputManager.swapListBuffer();
+        inputManager.clear();
+
+        this.stateManager.handleInput(events);
+    }
+
 
     @Override
     public IGraphics getGraphics() {
@@ -159,44 +195,6 @@ public class AEngine extends SurfaceView implements IEngine, Runnable {
     @Override
     public String getAssetsPath() {
         return "";
-    }
-
-    @Override
-    public boolean supportsTouch() {
-        return true;
-    }
-
-    public void render() {
-        // "Borramos" el fondo.
-        //graphics.clear(255,255,255);
-
-        canvas.drawColor(Color.WHITE); // ARGB
-        this.stateManager.render();
-        graphics.renderBordersAndroid();
-    }
-
-    @Override
-    public void update(double deltaTime) {
-        this.stateManager.update(deltaTime);
-    }
-
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
-
-        inputManager.addEvent(event); //actualizamos nuestro registro de eventos
-        return true; //this event has been handled
-        //return super.onTouchEvent(event);
-
-    }
-
-    @Override
-    public void handleInput() {
-        //comprobamos nuestro registro de eventos y actualizamos el juego
-        List<InputEvent> events = inputManager.getEventList();
-        inputManager.swapListBuffer();
-        inputManager.clear();
-
-        this.stateManager.handleInput(events);
     }
 
 

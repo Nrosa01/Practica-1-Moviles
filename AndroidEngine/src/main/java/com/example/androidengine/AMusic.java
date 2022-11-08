@@ -7,8 +7,8 @@ import com.example.engine.ISound;
 
 public class AMusic implements ISound {
 
-   MediaPlayer mediaPlayer;
-
+    MediaPlayer mediaPlayer;
+    //guardo el volumen para poder saberlo mas tarde
     float volume;
 
 
@@ -17,21 +17,9 @@ public class AMusic implements ISound {
         volume = 1;
     }
 
-   /* public void loadSound(String pathToSound){
-        int soundId = -1;
-        try {
-            AssetFileDescriptor assetDescriptor =
-                    this.assetManager.openFd(pathToSound);
-            //soundId = soundPool.load(assetDescriptor,1);
-        } catch (RuntimeException | IOException e ) {
-            throw new RuntimeException("Couldn't load sound.");
-        }
-
-    }*/
-
     @Override
     public void play(){
-
+        //si esta sonando se reinicia
         if (!mediaPlayer.isPlaying())
             mediaPlayer.seekTo(0);
 
@@ -46,6 +34,7 @@ public class AMusic implements ISound {
 
     @Override
     public void setVolume(float volume) {
+        //control de que el valor del volumen entra dentro del rango válido
         if (volume < 0f || volume > 1f)
             throw new IllegalArgumentException("Volume not valid: " + volume);
         mediaPlayer.setVolume(volume,volume);

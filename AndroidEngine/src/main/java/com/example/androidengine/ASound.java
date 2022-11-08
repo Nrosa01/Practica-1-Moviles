@@ -11,12 +11,14 @@ import java.io.IOException;
 public class ASound implements ISound {
 
     SoundPool soundPool;
+    //mi id dentro de soundPool
     int id;
+    //guardo el volumen para poder saberlo mas tarde
     float volume;
 
 
     public ASound(int id,SoundPool soundPool){
-        this.soundPool =soundPool;
+        this.soundPool = soundPool;
         this.id = id;
         volume = 1;
     }
@@ -26,6 +28,7 @@ public class ASound implements ISound {
     @Override
     public void stop(){soundPool.stop(id);}
 
+    //no he encontrado forma de saber si un sonido esta sonando con soundPool
     @Override
     public boolean isPlaying() {
         return false;
@@ -33,6 +36,7 @@ public class ASound implements ISound {
 
     @Override
     public void setVolume(float volume) {
+        //control de que el valor del volumen entra dentro del rango válido
         if (volume < 0f || volume > 1f)
             throw new IllegalArgumentException("Volume not valid: " + volume);
         soundPool.setVolume(id,volume,volume);
