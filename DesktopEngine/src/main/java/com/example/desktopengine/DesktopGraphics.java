@@ -70,6 +70,8 @@ public class DesktopGraphics extends AbstractGraphics {
             }
         });
 
+
+        // Calcular tamaño lógico al principio
         calculateBorderOffset();
         resizeFrameToAddInsets();
         calculateScaleFactor();
@@ -88,7 +90,6 @@ public class DesktopGraphics extends AbstractGraphics {
     }
 
     void calculateBorderOffset() {
-        // Taking in account screen insets
         topInsetOffset = jFrame.getInsets().top;
         borderInsetOffset = jFrame.getInsets().left;
     }
@@ -106,6 +107,7 @@ public class DesktopGraphics extends AbstractGraphics {
         jFrame.setSize(newWidth, newHeight);
     }
 
+    // Ajustar el graphics2d actual para despues de cambiar el buffer
     void updateGraphics() {
         this.graphics2D = (Graphics2D) bufferStrategy.getDrawGraphics();
     }
@@ -194,25 +196,28 @@ public class DesktopGraphics extends AbstractGraphics {
         graphics2D.setTransform(currentTransform);
     }
 
+    // Dibuja una imagen teniendo en cuenta la escala con centro como pivote
     @Override
-    public void drawImage(IImage image, int x, int y) {
-        int processedX = logicXPositionToWindowsXPosition(x - ((int)(image.getWidth() * scaleX) / 2));
-        int processedY = logicYPositionToWindowsYPosition(y - ((int)(image.getHeight() * scaleY) / 2));
+    public void drawImage(IImage image, int px, int py) {
+        int processedX = logicXPositionToWindowsXPosition(px - ((int)(image.getWidth() * scaleX) / 2));
+        int processedY = logicYPositionToWindowsYPosition(py - ((int)(image.getHeight() * scaleY) / 2));
         this.graphics2D.drawImage(((DesktopImage) image).getImage(), processedX, processedY, null);
     }
 
+    // Dibuja el borde de un rectángulo teniendo en cuenta la escala con centro como pivote
     @Override
-    public void drawRectangle(int x, int y, int width, int height, int lineWidth) {
-        int processedX = logicXPositionToWindowsXPosition(x - ((int)(width * scaleX) / 2));
-        int processedY = logicYPositionToWindowsYPosition(y - ((int)(height * scaleY) / 2));
+    public void drawRectangle(int px, int py, int width, int height, int lineWidth) {
+        int processedX = logicXPositionToWindowsXPosition(px - ((int)(width * scaleX) / 2));
+        int processedY = logicYPositionToWindowsYPosition(py - ((int)(height * scaleY) / 2));
         graphics2D.setStroke(new BasicStroke(lineWidth));
         graphics2D.drawRect(processedX, processedY, width, height);
     }
 
+    // Dibuja un rectángulo relleno teniendo en cuenta la escala con centro como pivote
     @Override
-    public void fillRectangle(int x, int y, int width, int height) {
-        int processedX = logicXPositionToWindowsXPosition(x - ((int)(width * scaleX) / 2));
-        int processedY = logicYPositionToWindowsYPosition(y - ((int)(height * scaleY) / 2));
+    public void fillRectangle(int px, int py, int width, int height) {
+        int processedX = logicXPositionToWindowsXPosition(px - ((int)(width * scaleX) / 2));
+        int processedY = logicYPositionToWindowsYPosition(py - ((int)(height * scaleY) / 2));
         graphics2D.fillRect(processedX, processedY, width, height);
     }
 
@@ -221,30 +226,34 @@ public class DesktopGraphics extends AbstractGraphics {
 
     }
 
+    // Dibujar un circulo centrado en px py de radio radius teniendo en cuenta la escala
     @Override
-    public void drawCircle(int xPos, int yPos, int radius) {
-        int processedX = logicXPositionToWindowsXPosition(xPos - radius);
-        int processedY = logicYPositionToWindowsYPosition(yPos - radius);
+    public void drawCircle(int px, int py, int radius) {
+        int processedX = logicXPositionToWindowsXPosition(px - radius);
+        int processedY = logicYPositionToWindowsYPosition(py - radius);
         graphics2D.fillOval(processedX, processedY, radius * 2, radius * 2);
     }
 
+    // Dibuja un texto teniendo en cuenta la escala con la parte izquierda como pivote del texto
     @Override
-    public void drawText(String text, int x, int y, IFont font) {
-        int processedX = logicXPositionToWindowsXPosition(x);
-        int processedY = logicYPositionToWindowsYPosition(y);
+    public void drawText(String text, int px, int py, IFont font) {
+        int processedX = logicXPositionToWindowsXPosition(px);
+        int processedY = logicYPositionToWindowsYPosition(py);
 
         graphics2D.setFont(((DesktopFont) font).getFont());
         graphics2D.drawString(text, processedX, processedY);
     }
 
+    // Dibuja un texto teniendo en cuenta la escala con el centro como pivote del texto
     @Override
-    public void drawTextCentered(String text, int x, int y, IFont font) {
-        int processedX = logicXPositionToWindowsXPosition(x -  ((int)(getStringWidth(text, font) * scaleX) / 2));
-        int processedY = logicYPositionToWindowsYPosition(y - ((int)(getFontHeight(font) * scaleY) / 2) + (int)(getFontAscent(font) * scaleY));
+    public void drawTextCentered(String text, int px, int py, IFont font) {
+        int processedX = logicXPositionToWindowsXPosition(px -  ((int)(getStringWidth(text, font) * scaleX) / 2));
+        int processedY = logicYPositionToWindowsYPosition(py - ((int)(getFontHeight(font) * scaleY) / 2) + (int)(getFontAscent(font) * scaleY));
 
         graphics2D.drawString(text, processedX, processedY);
     }
 
+    // Obtiene el ancho en pixeles de pantalla de un texto dada una fuente
     @Override
     public int getStringWidth(String text, IFont font) {
         graphics2D.setFont(((DesktopFont) font).getFont());
@@ -252,6 +261,8 @@ public class DesktopGraphics extends AbstractGraphics {
         return fm.stringWidth(text);
     }
 
+
+    // Obtiene el alto de una fuente en pixeles de pantalla
     @Override
     public int getFontHeight(IFont font) {
         graphics2D.setFont(((DesktopFont) font).getFont());
@@ -259,6 +270,7 @@ public class DesktopGraphics extends AbstractGraphics {
         return fm.getHeight();
     }
 
+    // Obtiene el ascent de una fuente en pixeles de pantalla
     @Override
     public int getFontAscent(IFont font) {
         graphics2D.setFont(((DesktopFont) font).getFont());
@@ -292,14 +304,14 @@ public class DesktopGraphics extends AbstractGraphics {
     }
 
     @Override
-    public void scale(double x, double y) {
-        graphics2D.scale(x, y);
+    public void scale(double sx, double sy) {
+        graphics2D.scale(sx, sy);
         save();
     }
 
     @Override
-    public void translate(double x, double y) {
-        graphics2D.translate(x, y);
+    public void translate(double px, double py) {
+        graphics2D.translate(px, py);
         save();
     }
 
@@ -310,40 +322,40 @@ public class DesktopGraphics extends AbstractGraphics {
     }
 
     @Override
-    public int logicXPositionToWindowsXPosition(int x) {
-        return (int) ((x + (int) (borderBarWidth / scaleFactor) + (int) (borderInsetOffset / scaleFactor)) / scaleX);
+    public int logicXPositionToWindowsXPosition(int px) {
+        return (int) ((px + (int) (borderBarWidth / scaleFactor) + (int) (borderInsetOffset / scaleFactor)) / scaleX);
     }
 
     @Override
-    public int logicYPositionToWindowsYPosition(int y) {
-        return (int) ((y + (int) (topBarHeight / scaleFactor) + (int) (topInsetOffset / scaleFactor)) / scaleY);
+    public int logicYPositionToWindowsYPosition(int py) {
+        return (int) ((py + (int) (topBarHeight / scaleFactor) + (int) (topInsetOffset / scaleFactor)) / scaleY);
     }
 
     @Override
-    public int windowsXPositionToLogicXPosition(int x) {
-        return (int) ((x - borderBarWidth - borderInsetOffset) / scaleFactor);
+    public int windowsXPositionToLogicXPosition(int px) {
+        return (int) ((px - borderBarWidth - borderInsetOffset) / scaleFactor);
     }
 
     @Override
-    public int windowsYPositionToLogicYPosition(int y) {
-        return (int) ((y - topBarHeight - topInsetOffset) / scaleFactor);
+    public int windowsYPositionToLogicYPosition(int py) {
+        return (int) ((py - topBarHeight - topInsetOffset) / scaleFactor);
     }
 
     @Override
-    public void setScale(double x, double y) {
-        scaleX = x;
-        scaleY = y;
+    public void setScale(double sx, double sy) {
+        scaleX = sx;
+        scaleY = sy;
 
-        currentTransform.setToScale((x * scaleFactor) / currentTransform.getScaleX(), (y * scaleFactor) / currentTransform.getScaleY());
+        currentTransform.setToScale((sx * scaleFactor) / currentTransform.getScaleX(), (sy * scaleFactor) / currentTransform.getScaleY());
 
         apply();
         save();
     }
 
     @Override
-    public void setTranslation(double x, double y) {
+    public void setTranslation(double px, double py) {
 
-        currentTransform.setToTranslation(x - currentTransform.getTranslateX(), y - currentTransform.getTranslateY());
+        currentTransform.setToTranslation(px - currentTransform.getTranslateX(), py - currentTransform.getTranslateY());
         apply();
         save();
     }

@@ -9,8 +9,7 @@ public class NonogramGenerator {
     public static int[][] GenerateLevel(int rows, int cols) {
         int[][] level = new int[rows][cols];
 
-        // We generate a random grid, each cell has a 50% chance of being filled
-        // It usually works
+        // Grid de celdas con un 50% de posibilidades de spawnear
         Random rnd = new Random();
         for (int row = 0; row < rows; row++) {
             for (int col = 0; col < cols; col++) {
@@ -18,9 +17,8 @@ public class NonogramGenerator {
             }
         }
 
-        // But sometimes it doesn't so...
-        // This checks if any row or column is empty or full, if empty add a random cell
-        // If full, remove a random cell. It might not be the most efficient solution, but it works.
+        // Comprobar si alguna fila o columna está vacía o rellena. En ese caso quitar o poner una celda aleatoria
+        // En dicha fila o columna. No es lo más eficiente pero funciona y la probabilidad de que el bucle sea infinito son nulas
         boolean isValid = false;
         do
         {

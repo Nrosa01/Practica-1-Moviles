@@ -32,12 +32,13 @@ public class DesktopSound implements ISound {
         return clip.isRunning();
     }
 
-    // Gets volume between 0 and 1 (linear scale)
+    // Obtiene volumen en escala lineal entre 0 y 1
     public float getVolume() {
         FloatControl gainControl = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
         return (float) Math.pow(10f, gainControl.getValue() / 20f);
     }
 
+    // Setea el volumen en escala logaritmica entre 0 y 1
     public void setVolume(float volume) {
         if (volume < 0f || volume > 1f)
             throw new IllegalArgumentException("Volume not valid: " + volume);

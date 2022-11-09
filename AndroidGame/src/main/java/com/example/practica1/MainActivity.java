@@ -5,14 +5,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.pm.ActivityInfo;
 import android.content.res.AssetManager;
 import android.os.Bundle;
-import android.view.SurfaceView;
 
-import com.example.gamelogic.states.LogicTest;
 import com.example.androidengine.AEngine;
 import com.example.gamelogic.states.StartMenuLogic;
-import com.example.gamelogic.states.*;
-
-import java.io.IOException;
 
 public class MainActivity extends AppCompatActivity {
 
