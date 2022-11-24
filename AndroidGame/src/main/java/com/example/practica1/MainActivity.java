@@ -22,7 +22,6 @@ public class MainActivity extends AppCompatActivity {
 
         this.androidEngine = new AEngine(this, assetManager);
         //bloquea la orientacion del movil a vertical
-        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         setContentView(this.androidEngine);
 
         StartMenuLogic menuLogic = new StartMenuLogic(this.androidEngine);
@@ -36,12 +35,17 @@ public class MainActivity extends AppCompatActivity {
         this.androidEngine.resume();
     }
 
-
     @Override
     protected void onResume() {
         super.onResume();
         this.androidEngine.resume();
 
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        this.androidEngine.stop();
     }
 
     @Override

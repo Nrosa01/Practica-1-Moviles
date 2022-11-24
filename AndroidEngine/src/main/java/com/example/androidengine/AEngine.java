@@ -9,6 +9,7 @@ import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.media.MediaPlayer;
 import android.os.Build;
 import android.util.DisplayMetrics;
 import android.view.MotionEvent;
@@ -69,6 +70,7 @@ public class AEngine extends SurfaceView implements IEngine, Runnable {
             // Solo hacemos algo si no nos estábamos ejecutando ya
             // (programación defensiva)
             this.running = true;
+            this.audio.resume();
             // Lanzamos la ejecución de nuestro método run() en un nuevo Thread.
             this.renderThread = new Thread(this);
             this.renderThread.start();
@@ -78,6 +80,7 @@ public class AEngine extends SurfaceView implements IEngine, Runnable {
     public void pause() {
         if (this.running) {
             this.running = false;
+            this.audio.pause();
             while (true) {
                 try {
                     this.renderThread.join();
@@ -176,6 +179,10 @@ public class AEngine extends SurfaceView implements IEngine, Runnable {
         this.stateManager.handleInput(events);
     }
 
+    public void stop()
+    {
+        audio.freeResources();
+    }
 
     @Override
     public IGraphics getGraphics() {
@@ -196,7 +203,4 @@ public class AEngine extends SurfaceView implements IEngine, Runnable {
     public String getAssetsPath() {
         return "";
     }
-
-
-
 }
