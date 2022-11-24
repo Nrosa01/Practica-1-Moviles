@@ -1,0 +1,700 @@
+@startuml
+abstract class Board {
+# int[][] board
+# int rows
+# int paddingHorizontal
+- Color boardBackgroundColor
+~ IImage cellImg
+# int cellWidth
++ <<Create>> Board(IEngine,int,int,int,int)
+# void init()
++ {abstract}void update(double)
++ void render()
+- void drawImageInCell(int,int,int,int)
++ void setCellImg(IImage)
+# {abstract}void OnCellClicked(int,int)
+# {abstract}void OnCellRender(int,int)
+~ int getCellPosX(int)
+~ int getCellPosY(int)
+~ boolean isPointInsideCell(int,int,int,int)
+~ int[] pointToCell(int,int)
++ void OnPointerDown(int,int)
++ void OnPointerUp(int,int)
++ void OnPointerMove(int,int)
++ void setBoardBackgroundColor(int,int,int)
+}
+class DesktopGraphics {
+~ Graphics2D graphics2D
+~ JFrame jFrame
+~ Color currentColor
+~ AffineTransform currentTransform
+~ AffineTransform defaultTransform
+~ BufferStrategy bufferStrategy
+- double scaleX
+- double scaleY
+# int topInsetOffset
++ <<Create>> DesktopGraphics(JFrame,int,int)
+~ void handleWindowsResize()
+~ void calculateScaleFactor()
+~ void calculateBorderOffset()
+~ void resizeFrameToAddInsets()
+~ void updateGraphics()
+~ void prepareFrame()
+~ void finishFrame()
+~ boolean swapBuffer()
++ IImage newImage(String)
++ IFont newFont(String,int,boolean)
++ void setLogicSize(int,int)
++ void setColor(int,int,int)
++ void setColor(int,int,int,int)
++ void setFont(IFont)
++ void clear(int,int,int)
++ void drawImage(IImage,int,int)
++ void drawRectangle(int,int,int,int,int)
++ void fillRectangle(int,int,int,int)
++ void drawLine(int,int,int,int)
++ void drawCircle(int,int,int)
++ void drawText(String,int,int,IFont)
++ void drawTextCentered(String,int,int,IFont)
++ int getStringWidth(String,IFont)
++ int getFontHeight(IFont)
++ int getFontAscent(IFont)
++ int getWidth()
++ int getHeight()
++ int getLogicWidth()
++ int getLogicHeight()
++ void setGraphicsAlpha(int)
++ void scale(double,double)
++ void translate(double,double)
++ void rotate(double)
++ int logicXPositionToWindowsXPosition(int)
++ int logicYPositionToWindowsYPosition(int)
++ int windowsXPositionToLogicXPosition(int)
++ int windowsYPositionToLogicYPosition(int)
++ void setScale(double,double)
++ void setTranslation(double,double)
++ void setRotation(double)
++ void resetScale()
++ void resetTranslation()
++ boolean isInsideLogicCanvas(int,int)
++ void resetRotation()
++ void resetTransform()
++ void save()
+- void apply()
++ void restore()
+}
+interface IEngine {
+~ IGraphics getGraphics()
+~ IAudio getAudio()
+~ IState getState()
+~ String getAssetsPath()
+~ boolean supportsTouch()
+~ void render()
+~ void update(double)
+~ void handleInput()
+~ void setState(IState)
+}
+class DesktopAudio {
+~ Dictionary<String,ISound> sounds
+~ Dictionary<String,ISound> music
++ <<Create>> DesktopAudio()
++ ISound newSound(String,String)
++ ISound newMusic(String,String)
+}
+class ExampleUnitTest {
++ void addition_isCorrect()
+}
+class ExampleInstrumentedTest {
++ void useAppContext()
+}
+class ExampleInstrumentedTest {
++ void useAppContext()
+}
+class DesktopImage {
+~ Image image
++ <<Create>> DesktopImage(String)
+~ Image getImage()
++ int getWidth()
++ int getHeight()
+}
+class SelectLevelLogic {
+~ IFont font
+~ IFont fontBold
+~ IImage arrow
+~ Button returnButton
+~ Pointer pointer
+~ int rows
+~ String[][] texts
+~ List<Entity> entities
++ <<Create>> SelectLevelLogic(IEngine)
++ boolean init()
++ void update(double)
++ void render()
++ void handleInput(List<InputEvent>)
+}
+class FloatLerper {
+- float startValue
+- float endValue
+- float duration
+- float currentTime
+- LerpType lerpType
+- boolean reversed
+- float currentValue
+- boolean isPaused
++ <<Create>> FloatLerper(float,float,float)
++ <<Create>> FloatLerper(float,float,float,LerpType)
++ void update(double)
+- float calculateCurrentValue()
++ void restart()
++ float getStartValue()
++ float getEndValue()
++ void setPaused(boolean)
++ boolean isFinished()
++ boolean getPaused()
++ void reverse()
++ void setReversed(boolean)
++ float getValue()
++ float getProgress()
+}
+class ASound {
+~ SoundPool soundPool
+~ int id
+~ float volume
++ <<Create>> ASound(int,SoundPool)
++ void play()
++ void stop()
++ boolean isPlaying()
++ void setVolume(float)
++ float getVolume()
+}
+class NonogramGenerator {
++ {static} int[][] GenerateLevel(int,int)
+}
+interface IGraphics {
+~ IImage newImage(String)
+~ IFont newFont(String,int,boolean)
+~ void setLogicSize(int,int)
+~ void setColor(int,int,int)
+~ void setColor(int,int,int,int)
+~ void setFont(IFont)
+~ int getStringWidth(String,IFont)
+~ int getFontHeight(IFont)
+~ int getFontAscent(IFont)
+~ void clear(int,int,int)
+~ void drawImage(IImage,int,int)
+~ void drawRectangle(int,int,int,int,int)
+~ void fillRectangle(int,int,int,int)
+~ void drawLine(int,int,int,int)
+~ void drawCircle(int,int,int)
+~ void drawText(String,int,int,IFont)
+~ void drawTextCentered(String,int,int,IFont)
+~ int getWidth()
+~ int getHeight()
+~ int getLogicWidth()
+~ int getLogicHeight()
+~ void setGraphicsAlpha(int)
+~ void translate(double,double)
+~ void scale(double,double)
+~ void rotate(double)
+~ int logicXPositionToWindowsXPosition(int)
+~ int logicYPositionToWindowsYPosition(int)
+~ int windowsXPositionToLogicXPosition(int)
+~ int windowsYPositionToLogicYPosition(int)
+~ void setTranslation(double,double)
+~ void setScale(double,double)
+~ void setRotation(double)
+~ void resetTranslation()
+~ void resetScale()
+~ void resetRotation()
+~ void resetTransform()
+~ void save()
+~ void restore()
+}
+abstract class AbstractState {
+# IEngine engine
+# IGraphics graphics
+# IAudio audio
+# {static} int LOGIC_WIDTH
+# {static} int LOGIC_HEIGHT
+# <<Create>> AbstractState(IEngine)
+}
+class LerperFuncs {
+- {static} float Linear(float)
+- {static} float EaseIn(float)
+- {static} float EaseOut(float)
+- {static} float EaseInOut(float)
++ {static} float getValue(float,LerpType)
+}
+abstract class AbstractGraphics {
+# int logicSizeX
+# double scaleFactor
+# int borderBarWidth
+# void calculateScaleFactor(int,int)
+# void renderBorders()
+}
+class AFont {
+~ Typeface tface
+~ int size
++ <<Create>> AFont(String,AssetManager,int,boolean)
++ Typeface getFont()
++ int getSize()
++ boolean isBold()
+}
+class Pointer {
+- int radius
+- int r
+- FloatLerper lerper
++ <<Create>> Pointer(IEngine)
++ <<Create>> Pointer(int,int,int,int,int,IEngine)
++ void update(double)
++ void render()
++ void OnPointerDown(int,int)
++ void OnPointerUp(int,int)
++ void OnPointerMove(int,int)
+}
+class Button {
+- Color buttonColor
+- Color borderColor
+- Color buttonPressedColor
+- Color buttonHoverColor
+- Color textColor
+~ ISound clickSound
+- Color currentButtonColor
+- int borderSize
+~ float scale
+~ FloatLerper scaleLerper
+~ String buttonText
+~ IFont font
+~ IInteractableCallback callback
+~ IImage image
+~ int paddingHorizontal
++ <<Create>> Button(int,int,int,int,IEngine)
++ void setImage(IImage)
++ void setPadding(int,int)
++ void setCallback(IInteractableCallback)
++ void update(double)
++ void setBorderColor(int,int,int)
++ void setBorderSize(int)
++ void setBackgroundColor(int,int,int)
++ void setBackgroundColor(int,int,int,int)
++ void setPressedColor(int,int,int)
++ void setPressedColorColor(int,int,int,int)
++ void setHoverColor(int,int,int)
++ void setHoverColor(int,int,int,int)
++ void setTextColor(int,int,int)
++ void setTextColor(int,int,int,int)
++ void setText(String,IFont)
++ void render()
++ void OnHoverEnter()
++ void OnHoverExit()
++ void OnTouchDown()
++ void OnTouchUp()
++ void OnPointerMove(int,int)
+- void renderBackground()
+- void renderBorders()
+- void renderText()
+- void renderImage()
+}
+class MainGameLogic {
+~ String level
+~ Pointer pointer
+~ NonogramBoard board
+~ Button returnButton
+~ Button checkButton
+~ Button winReturnButton
+~ IFont font
+~ IFont boardFont
+~ IFont congratsFont
+~ IImage arrow
+~ IImage search
+~ boolean gameWin
++ <<Create>> MainGameLogic(IEngine,String)
++ boolean init()
++ void update(double)
++ void render()
++ void handleInput(List<InputEvent>)
+}
+class AAudio {
+~ Dictionary<String,ISound> sounds
+~ SoundPool soundPool
+~ AssetManager assetManager
++ <<Create>> AAudio(AssetManager)
++ ISound newSound(String,String)
++ ISound newMusic(String,String)
+}
+interface ISound {
+~ void play()
+~ void stop()
+~ boolean isPlaying()
+~ void setVolume(float)
+~ float getVolume()
+}
+interface IState {
+~ boolean init()
+~ void update(double)
+~ void render()
+~ void handleInput(List<InputEvent>)
+}
+interface IInteractable {
++ void OnHoverEnter()
++ void OnHoverExit()
++ void OnTouchDown()
++ void OnTouchUp()
+}
+interface IInputHandler {
+~ void handleInput(int,int,IInput.InputTouchType)
+}
+class DesktopInput {
+- List<InputEvent>[] eventos
+- int listBufferCount
+- int listBufferIndex
++ <<Create>> DesktopInput()
++ <<Create>> DesktopInput(int)
++ void addEvent(MouseEvent)
++ List<InputEvent> getEventList()
++ void swapListBuffer()
++ void clear()
+}
+class StartMenuLogic {
+~ IFont testFont
+~ Button button
+~ Pointer pointer
++ <<Create>> StartMenuLogic(IEngine)
++ boolean init()
++ void update(double)
++ void render()
++ void handleInput(List<InputEvent>)
+}
+class AGraphics {
+- SurfaceHolder holder
+- Paint paint
+- AEngine engine
+~ AssetManager assetManager
+~ int screenWidth
+~ int screenHeight
+- double scaleX
+- double scaleY
+~ int r
+~ int g
+~ int b
+~ float alphaMultiplier
++ <<Create>> AGraphics(SurfaceHolder,Paint,AssetManager,AEngine,int,int)
++ IImage newImage(String)
++ IFont newFont(String,int,boolean)
++ void setLogicSize(int,int)
+~ void calculateScaleFactor()
++ void setColor(int,int,int)
++ void setColor(int,int,int,int)
++ void setFont(IFont)
++ int getStringWidth(String,IFont)
++ int getFontHeight(IFont)
++ int getFontAscent(IFont)
++ void clear(int,int,int)
++ void drawImage(IImage,int,int)
++ void drawRectangle(int,int,int,int,int)
++ void fillRectangle(int,int,int,int)
++ void renderBordersAndroid()
++ void drawLine(int,int,int,int)
++ void drawCircle(int,int,int)
++ void drawText(String,int,int,IFont)
++ void drawTextCentered(String,int,int,IFont)
++ int getWidth()
++ int getHeight()
++ int getLogicWidth()
++ int getLogicHeight()
++ void setGraphicsAlpha(int)
++ void translate(double,double)
++ void scale(double,double)
++ void rotate(double)
++ int logicXPositionToWindowsXPosition(int)
++ int logicYPositionToWindowsYPosition(int)
++ int windowsXPositionToLogicXPosition(int)
++ int windowsYPositionToLogicYPosition(int)
++ void setTranslation(double,double)
++ void setScale(double,double)
++ void setRotation(double)
++ void resetTranslation()
++ void resetScale()
++ void resetRotation()
++ void resetTransform()
++ void save()
++ void restore()
+}
+interface IInteractableCallback {
++ void onInteractionOccur()
+}
+interface IAudio {
+~ ISound newSound(String,String)
+~ ISound newMusic(String,String)
+}
+class NonogramBoard {
+- int[][] nonogramCellStates
+- int numOfStates
+- int borderBoardSize
+- Color borderColor
+- int borderWidth
+- int[][] solvedPuzzle
+- String[] rowsText
+- String[] colsText
+- IFont font
+- FloatLerper endTransitionLerper
+- FloatLerper wrongTilesTimer
+- boolean isWin
+- float borderBoardRatio
+- int initialWidth
+- Color textColor
+- int missingCells
+~ IImage blockedCell
+~ ISound winSound
+~ ISound selectCell
++ <<Create>> NonogramBoard(IEngine,int[][],int,int,IFont)
++ boolean getIsWin()
++ void setWidth(int)
+- void generateRowsText()
+- void generateColsText()
++ void render()
+- void renderErrorLabels()
+- void RenderTextArea()
+- void RenderBordersStroke()
+# void OnCellClicked(int,int)
+- void setColorGivenState(int)
++ void setBorderColor(int,int,int)
+# void OnCellRender(int,int)
+- boolean updateBoardState(boolean)
++ void checkSolution()
++ void update(double)
++ void OnPointerDown(int,int)
+}
+interface IImage {
+~ int getWidth()
+~ int getHeight()
+}
+class InputEvent {
++ int x
++ IInput.InputTouchType type
++ int index
++ <<Create>> InputEvent(int,int,int,IInput.InputTouchType)
+}
+enum LerpType {
++  Linear
++  EaseIn
++  EaseOut
++  EaseInOut
+}
+class MainActivity {
+- AEngine androidEngine
+- AssetManager assetManager
+# void onCreate(Bundle)
+# void onResume()
+# void onPause()
+}
+class AImage {
+~ Bitmap bitmap
++ <<Create>> AImage(String,AssetManager)
++ Bitmap getBitmap()
++ int getWidth()
++ int getHeight()
+}
+class Color {
++ int r
++ <<Create>> Color()
++ <<Create>> Color(int,int,int)
++ <<Create>> Color(int,int,int,int)
++ String toString()
+}
+class ExampleUnitTest {
++ void addition_isCorrect()
+}
+class DesktopSound {
+~ Clip clip
++ <<Create>> DesktopSound(Clip)
++ void play()
++ void stop()
++ boolean isPlaying()
++ float getVolume()
++ void setVolume(float)
+}
+class DesktopGameMain {
++ {static} void main(String[])
+}
+abstract class UIElement {
+- boolean alreadyOnHover
+- boolean insideLastFrame
+- boolean wasPressed
++ <<Create>> UIElement(IEngine)
++ void OnPointerDown(int,int)
++ void OnPointerUp(int,int)
++ void handleInput(int,int,IInput.InputTouchType)
+- boolean isInside(int,int,int,int,int,int)
+}
+class DesktopFont {
+~ Font font
++ <<Create>> DesktopFont(String,int,boolean)
+~ Font getFont()
++ int getSize()
++ boolean isBold()
+}
+abstract class Entity {
+# int width
+~ IEngine engine
+# IGraphics graphics
+# IAudio audio
++ <<Create>> Entity(IEngine)
++ void setWidth(int)
++ void setHeight(int)
++ int getWidth()
++ int getHeight()
++ void setPosX(int)
++ void setPosY(int)
++ int getPosX()
++ int getPosY()
++ {abstract}void update(double)
++ {abstract}void render()
++ void handleInput(int,int,IInput.InputTouchType)
++ {abstract}void OnPointerDown(int,int)
++ {abstract}void OnPointerUp(int,int)
++ {abstract}void OnPointerMove(int,int)
+}
+class AInput {
+- List<InputEvent>[] eventos
+- int listBufferCount
+- int listBufferIndex
++ <<Create>> AInput()
++ void addEvent(MotionEvent)
++ List<InputEvent> getEventList()
++ void swapListBuffer()
++ void clear()
+}
+class AMusic {
+~ MediaPlayer mediaPlayer
+~ float volume
++ <<Create>> AMusic(MediaPlayer)
++ void play()
++ void stop()
++ boolean isPlaying()
++ void setVolume(float)
++ float getVolume()
+}
+class DesktopEngine {
+~ DesktopGraphics graphics
+~ DesktopAudio audio
+~ DesktopInput inputManager
+~ JFrame mView
+~ Thread renderThread
+~ StateManager stateManager
+~ boolean isRunning
+~ Cursor blankCursor
+~ Cursor defaultCursor
++ <<Create>> DesktopEngine(int,int,String)
++ void resume()
++ void pause()
++ void run()
++ IGraphics getGraphics()
++ IAudio getAudio()
++ IState getState()
++ String getAssetsPath()
++ boolean supportsTouch()
++ void render()
++ void update(double)
++ void handleInput()
++ void setState(IState)
++ void mouseClicked(MouseEvent)
++ void mousePressed(MouseEvent)
++ void mouseReleased(MouseEvent)
++ void mouseEntered(MouseEvent)
++ void mouseExited(MouseEvent)
++ void mouseDragged(MouseEvent)
++ void mouseMoved(MouseEvent)
+}
+interface IFont {
+~ int getSize()
+~ boolean isBold()
+}
+class StateManager {
+- IState currentState
+- IState oldState
+- IGraphics graphics
+- FloatLerper lerper
+~ boolean isOnTransition
++ <<Create>> StateManager(IEngine,float)
++ boolean init()
++ void update(double)
++ void render()
++ void handleInput(List<InputEvent>)
++ void setState(IState)
+}
+interface IInput {
+}
+enum InputTouchType {
++  TOUCH_DOWN
++  TOUCH_UP
++  TOUCH_MOVE
+}
+enum InputKeyType {
++  KEY_DOWN
++  KEY_UP
++  KEY_MOVE
+}
+class AEngine {
+- Canvas canvas
+- Paint paint
+- Thread renderThread
+- boolean running
+- StateManager stateManager
+- AssetManager assetManager
+- AGraphics graphics
+- AInput inputManager
+~ AAudio audio
++ <<Create>> AEngine(Context,AssetManager)
++ Canvas getCurrentCanvas()
++ void setState(IState)
++ void resume()
++ void pause()
++ void run()
++ boolean supportsTouch()
++ void render()
++ void update(double)
++ boolean onTouchEvent(MotionEvent)
++ void handleInput()
++ IGraphics getGraphics()
++ IAudio getAudio()
++ IState getState()
++ String getAssetsPath()
+}
+
+
+Entity <|-- Board
+AbstractGraphics <|-- DesktopGraphics
+IAudio <|.. DesktopAudio
+IImage <|.. DesktopImage
+AbstractState <|-- SelectLevelLogic
+ISound <|.. ASound
+IState <|.. AbstractState
+IGraphics <|.. AbstractGraphics
+IFont <|.. AFont
+Entity <|-- Pointer
+UIElement <|-- Button
+AbstractState <|-- MainGameLogic
+IAudio <|.. AAudio
+IInput <|.. DesktopInput
+AbstractState <|-- StartMenuLogic
+AbstractGraphics <|-- AGraphics
+Board <|-- NonogramBoard
+AppCompatActivity <|-- MainActivity
+IImage <|.. AImage
+ISound <|.. DesktopSound
+IInputHandler <|.. UIElement
+IInteractable <|.. UIElement
+Entity <|-- UIElement
+IFont <|.. DesktopFont
+IInputHandler <|.. Entity
+IInput <|.. AInput
+ISound <|.. AMusic
+IEngine <|.. DesktopEngine
+Runnable <|.. DesktopEngine
+MouseInputListener <|.. DesktopEngine
+IState <|.. StateManager
+IEngine <|.. AEngine
+Runnable <|.. AEngine
+SurfaceView <|-- AEngine
+@enduml

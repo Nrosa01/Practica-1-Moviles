@@ -1,0 +1,155 @@
+@startuml
+class ExampleInstrumentedTest {
++ void useAppContext()
+}
+class AFont {
+~ Typeface tface
+~ int size
++ <<Create>> AFont(String,AssetManager,int,boolean)
++ Typeface getFont()
++ int getSize()
++ boolean isBold()
+}
+class AImage {
+~ Bitmap bitmap
++ <<Create>> AImage(String,AssetManager)
++ Bitmap getBitmap()
++ int getWidth()
++ int getHeight()
+}
+class ExampleUnitTest {
++ void addition_isCorrect()
+}
+class AAudio {
+~ Dictionary<String,ISound> sounds
+~ SoundPool soundPool
+~ AssetManager assetManager
++ <<Create>> AAudio(AssetManager)
++ ISound newSound(String,String)
++ ISound newMusic(String,String)
+}
+class ASound {
+~ SoundPool soundPool
+~ int id
+~ float volume
++ <<Create>> ASound(int,SoundPool)
++ void play()
++ void stop()
++ boolean isPlaying()
++ void setVolume(float)
++ float getVolume()
+}
+class AEngine {
+- Canvas canvas
+- Paint paint
+- Thread renderThread
+- boolean running
+- StateManager stateManager
+- AssetManager assetManager
+- AGraphics graphics
+- AInput inputManager
+~ AAudio audio
++ <<Create>> AEngine(Context,AssetManager)
++ Canvas getCurrentCanvas()
++ void setState(IState)
++ void resume()
++ void pause()
++ void run()
++ boolean supportsTouch()
++ void render()
++ void update(double)
++ boolean onTouchEvent(MotionEvent)
++ void handleInput()
++ IGraphics getGraphics()
++ IAudio getAudio()
++ IState getState()
++ String getAssetsPath()
+}
+class AInput {
+- List<InputEvent>[] eventos
+- int listBufferCount
+- int listBufferIndex
++ <<Create>> AInput()
++ void addEvent(MotionEvent)
++ List<InputEvent> getEventList()
++ void swapListBuffer()
++ void clear()
+}
+class AMusic {
+~ MediaPlayer mediaPlayer
+~ float volume
++ <<Create>> AMusic(MediaPlayer)
++ void play()
++ void stop()
++ boolean isPlaying()
++ void setVolume(float)
++ float getVolume()
+}
+class AGraphics {
+- SurfaceHolder holder
+- Paint paint
+- AEngine engine
+~ AssetManager assetManager
+~ int screenWidth
+~ int screenHeight
+- double scaleX
+- double scaleY
+~ int r
+~ int g
+~ int b
+~ float alphaMultiplier
++ <<Create>> AGraphics(SurfaceHolder,Paint,AssetManager,AEngine,int,int)
++ IImage newImage(String)
++ IFont newFont(String,int,boolean)
++ void setLogicSize(int,int)
+~ void calculateScaleFactor()
++ void setColor(int,int,int)
++ void setColor(int,int,int,int)
++ void setFont(IFont)
++ int getStringWidth(String,IFont)
++ int getFontHeight(IFont)
++ int getFontAscent(IFont)
++ void clear(int,int,int)
++ void drawImage(IImage,int,int)
++ void drawRectangle(int,int,int,int,int)
++ void fillRectangle(int,int,int,int)
++ void renderBordersAndroid()
++ void drawLine(int,int,int,int)
++ void drawCircle(int,int,int)
++ void drawText(String,int,int,IFont)
++ void drawTextCentered(String,int,int,IFont)
++ int getWidth()
++ int getHeight()
++ int getLogicWidth()
++ int getLogicHeight()
++ void setGraphicsAlpha(int)
++ void translate(double,double)
++ void scale(double,double)
++ void rotate(double)
++ int logicXPositionToWindowsXPosition(int)
++ int logicYPositionToWindowsYPosition(int)
++ int windowsXPositionToLogicXPosition(int)
++ int windowsYPositionToLogicYPosition(int)
++ void setTranslation(double,double)
++ void setScale(double,double)
++ void setRotation(double)
++ void resetTranslation()
++ void resetScale()
++ void resetRotation()
++ void resetTransform()
++ void save()
++ void restore()
+}
+
+
+IFont <|.. AFont
+IImage <|.. AImage
+IAudio <|.. AAudio
+ISound <|.. ASound
+IEngine <|.. AEngine
+Runnable <|.. AEngine
+SurfaceView <|-- AEngine
+IInput <|.. AInput
+ISound <|.. AMusic
+AbstractGraphics <|-- AGraphics
+@enduml

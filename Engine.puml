@@ -1,0 +1,157 @@
+@startuml
+enum LerpType {
++  Linear
++  EaseIn
++  EaseOut
++  EaseInOut
+}
+interface IState {
+~ boolean init()
+~ void update(double)
+~ void render()
+~ void handleInput(List<InputEvent>)
+}
+abstract class AbstractGraphics {
+# int logicSizeX
+# double scaleFactor
+# int borderBarWidth
+# void calculateScaleFactor(int,int)
+# void renderBorders()
+}
+interface IEngine {
+~ IGraphics getGraphics()
+~ IAudio getAudio()
+~ IState getState()
+~ String getAssetsPath()
+~ boolean supportsTouch()
+~ void render()
+~ void update(double)
+~ void handleInput()
+~ void setState(IState)
+}
+interface IFont {
+~ int getSize()
+~ boolean isBold()
+}
+class StateManager {
+- IState currentState
+- IState oldState
+- IGraphics graphics
+- FloatLerper lerper
+~ boolean isOnTransition
++ <<Create>> StateManager(IEngine,float)
++ boolean init()
++ void update(double)
++ void render()
++ void handleInput(List<InputEvent>)
++ void setState(IState)
+}
+interface IAudio {
+~ ISound newSound(String,String)
+~ ISound newMusic(String,String)
+}
+interface IInput {
+}
+enum InputTouchType {
++  TOUCH_DOWN
++  TOUCH_UP
++  TOUCH_MOVE
+}
+enum InputKeyType {
++  KEY_DOWN
++  KEY_UP
++  KEY_MOVE
+}
+class FloatLerper {
+- float startValue
+- float endValue
+- float duration
+- float currentTime
+- LerpType lerpType
+- boolean reversed
+- float currentValue
+- boolean isPaused
++ <<Create>> FloatLerper(float,float,float)
++ <<Create>> FloatLerper(float,float,float,LerpType)
++ void update(double)
+- float calculateCurrentValue()
++ void restart()
++ float getStartValue()
++ float getEndValue()
++ void setPaused(boolean)
++ boolean isFinished()
++ boolean getPaused()
++ void reverse()
++ void setReversed(boolean)
++ float getValue()
++ float getProgress()
+}
+interface IGraphics {
+~ IImage newImage(String)
+~ IFont newFont(String,int,boolean)
+~ void setLogicSize(int,int)
+~ void setColor(int,int,int)
+~ void setColor(int,int,int,int)
+~ void setFont(IFont)
+~ int getStringWidth(String,IFont)
+~ int getFontHeight(IFont)
+~ int getFontAscent(IFont)
+~ void clear(int,int,int)
+~ void drawImage(IImage,int,int)
+~ void drawRectangle(int,int,int,int,int)
+~ void fillRectangle(int,int,int,int)
+~ void drawLine(int,int,int,int)
+~ void drawCircle(int,int,int)
+~ void drawText(String,int,int,IFont)
+~ void drawTextCentered(String,int,int,IFont)
+~ int getWidth()
+~ int getHeight()
+~ int getLogicWidth()
+~ int getLogicHeight()
+~ void setGraphicsAlpha(int)
+~ void translate(double,double)
+~ void scale(double,double)
+~ void rotate(double)
+~ int logicXPositionToWindowsXPosition(int)
+~ int logicYPositionToWindowsYPosition(int)
+~ int windowsXPositionToLogicXPosition(int)
+~ int windowsYPositionToLogicYPosition(int)
+~ void setTranslation(double,double)
+~ void setScale(double,double)
+~ void setRotation(double)
+~ void resetTranslation()
+~ void resetScale()
+~ void resetRotation()
+~ void resetTransform()
+~ void save()
+~ void restore()
+}
+interface ISound {
+~ void play()
+~ void stop()
+~ boolean isPlaying()
+~ void setVolume(float)
+~ float getVolume()
+}
+class LerperFuncs {
+- {static} float Linear(float)
+- {static} float EaseIn(float)
+- {static} float EaseOut(float)
+- {static} float EaseInOut(float)
++ {static} float getValue(float,LerpType)
+}
+interface IImage {
+~ int getWidth()
+~ int getHeight()
+}
+class InputEvent {
++ int x
++ IInput.InputTouchType type
++ int index
++ <<Create>> InputEvent(int,int,int,IInput.InputTouchType)
+}
+
+
+IGraphics <|.. AbstractGraphics
+IState <|.. StateManager
+@enduml

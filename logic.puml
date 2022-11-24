@@ -1,0 +1,238 @@
+@startuml
+abstract class Board {
+# int[][] board
+# int rows
+# int paddingHorizontal
+- Color boardBackgroundColor
+~ IImage cellImg
+# int cellWidth
++ <<Create>> Board(IEngine,int,int,int,int)
+# void init()
++ {abstract}void update(double)
++ void render()
+- void drawImageInCell(int,int,int,int)
++ void setCellImg(IImage)
+# {abstract}void OnCellClicked(int,int)
+# {abstract}void OnCellRender(int,int)
+~ int getCellPosX(int)
+~ int getCellPosY(int)
+~ boolean isPointInsideCell(int,int,int,int)
+~ int[] pointToCell(int,int)
++ void OnPointerDown(int,int)
++ void OnPointerUp(int,int)
++ void OnPointerMove(int,int)
++ void setBoardBackgroundColor(int,int,int)
+}
+class Color {
++ int r
++ <<Create>> Color()
++ <<Create>> Color(int,int,int)
++ <<Create>> Color(int,int,int,int)
++ String toString()
+}
+interface IInteractable {
++ void OnHoverEnter()
++ void OnHoverExit()
++ void OnTouchDown()
++ void OnTouchUp()
+}
+interface IInputHandler {
+~ void handleInput(int,int,IInput.InputTouchType)
+}
+class StartMenuLogic {
+~ IFont testFont
+~ Button button
+~ Pointer pointer
++ <<Create>> StartMenuLogic(IEngine)
++ boolean init()
++ void update(double)
++ void render()
++ void handleInput(List<InputEvent>)
+}
+abstract class UIElement {
+- boolean alreadyOnHover
+- boolean insideLastFrame
+- boolean wasPressed
++ <<Create>> UIElement(IEngine)
++ void OnPointerDown(int,int)
++ void OnPointerUp(int,int)
++ void handleInput(int,int,IInput.InputTouchType)
+- boolean isInside(int,int,int,int,int,int)
+}
+abstract class Entity {
+# int width
+~ IEngine engine
+# IGraphics graphics
+# IAudio audio
++ <<Create>> Entity(IEngine)
++ void setWidth(int)
++ void setHeight(int)
++ int getWidth()
++ int getHeight()
++ void setPosX(int)
++ void setPosY(int)
++ int getPosX()
++ int getPosY()
++ {abstract}void update(double)
++ {abstract}void render()
++ void handleInput(int,int,IInput.InputTouchType)
++ {abstract}void OnPointerDown(int,int)
++ {abstract}void OnPointerUp(int,int)
++ {abstract}void OnPointerMove(int,int)
+}
+class Pointer {
+- int radius
+- int r
+- FloatLerper lerper
++ <<Create>> Pointer(IEngine)
++ <<Create>> Pointer(int,int,int,int,int,IEngine)
++ void update(double)
++ void render()
++ void OnPointerDown(int,int)
++ void OnPointerUp(int,int)
++ void OnPointerMove(int,int)
+}
+class Button {
+- Color buttonColor
+- Color borderColor
+- Color buttonPressedColor
+- Color buttonHoverColor
+- Color textColor
+~ ISound clickSound
+- Color currentButtonColor
+- int borderSize
+~ float scale
+~ FloatLerper scaleLerper
+~ String buttonText
+~ IFont font
+~ IInteractableCallback callback
+~ IImage image
+~ int paddingHorizontal
++ <<Create>> Button(int,int,int,int,IEngine)
++ void setImage(IImage)
++ void setPadding(int,int)
++ void setCallback(IInteractableCallback)
++ void update(double)
++ void setBorderColor(int,int,int)
++ void setBorderSize(int)
++ void setBackgroundColor(int,int,int)
++ void setBackgroundColor(int,int,int,int)
++ void setPressedColor(int,int,int)
++ void setPressedColorColor(int,int,int,int)
++ void setHoverColor(int,int,int)
++ void setHoverColor(int,int,int,int)
++ void setTextColor(int,int,int)
++ void setTextColor(int,int,int,int)
++ void setText(String,IFont)
++ void render()
++ void OnHoverEnter()
++ void OnHoverExit()
++ void OnTouchDown()
++ void OnTouchUp()
++ void OnPointerMove(int,int)
+- void renderBackground()
+- void renderBorders()
+- void renderText()
+- void renderImage()
+}
+interface IInteractableCallback {
++ void onInteractionOccur()
+}
+class MainGameLogic {
+~ String level
+~ Pointer pointer
+~ NonogramBoard board
+~ Button returnButton
+~ Button checkButton
+~ Button winReturnButton
+~ IFont font
+~ IFont boardFont
+~ IFont congratsFont
+~ IImage arrow
+~ IImage search
+~ boolean gameWin
++ <<Create>> MainGameLogic(IEngine,String)
++ boolean init()
++ void update(double)
++ void render()
++ void handleInput(List<InputEvent>)
+}
+class SelectLevelLogic {
+~ IFont font
+~ IFont fontBold
+~ IImage arrow
+~ Button returnButton
+~ Pointer pointer
+~ int rows
+~ String[][] texts
+~ List<Entity> entities
++ <<Create>> SelectLevelLogic(IEngine)
++ boolean init()
++ void update(double)
++ void render()
++ void handleInput(List<InputEvent>)
+}
+class NonogramGenerator {
++ {static} int[][] GenerateLevel(int,int)
+}
+abstract class AbstractState {
+# IEngine engine
+# IGraphics graphics
+# IAudio audio
+# {static} int LOGIC_WIDTH
+# {static} int LOGIC_HEIGHT
+# <<Create>> AbstractState(IEngine)
+}
+class NonogramBoard {
+- int[][] nonogramCellStates
+- int numOfStates
+- int borderBoardSize
+- Color borderColor
+- int borderWidth
+- int[][] solvedPuzzle
+- String[] rowsText
+- String[] colsText
+- IFont font
+- FloatLerper endTransitionLerper
+- FloatLerper wrongTilesTimer
+- boolean isWin
+- float borderBoardRatio
+- int initialWidth
+- Color textColor
+- int missingCells
+~ IImage blockedCell
+~ ISound winSound
+~ ISound selectCell
++ <<Create>> NonogramBoard(IEngine,int[][],int,int,IFont)
++ boolean getIsWin()
++ void setWidth(int)
+- void generateRowsText()
+- void generateColsText()
++ void render()
+- void renderErrorLabels()
+- void RenderTextArea()
+- void RenderBordersStroke()
+# void OnCellClicked(int,int)
+- void setColorGivenState(int)
++ void setBorderColor(int,int,int)
+# void OnCellRender(int,int)
+- boolean updateBoardState(boolean)
++ void checkSolution()
++ void update(double)
++ void OnPointerDown(int,int)
+}
+
+
+Entity <|-- Board
+AbstractState <|-- StartMenuLogic
+IInputHandler <|.. UIElement
+IInteractable <|.. UIElement
+Entity <|-- UIElement
+IInputHandler <|.. Entity
+Entity <|-- Pointer
+UIElement <|-- Button
+AbstractState <|-- MainGameLogic
+AbstractState <|-- SelectLevelLogic
+IState <|.. AbstractState
+Board <|-- NonogramBoard
+@enduml

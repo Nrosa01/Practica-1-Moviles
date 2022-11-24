@@ -16,6 +16,4 @@ rootProject.name = "Practica 1"
 include ':AndroidGame'
 include ':AndroidEngine'
 include ':GameLogic'
-include ':DesktopEngine'
-include ':DesktopGame'
 include ':Engine'
