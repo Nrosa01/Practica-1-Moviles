@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.pm.ActivityInfo;
 import android.content.res.AssetManager;
 import android.os.Bundle;
+import android.view.SurfaceView;
 
 import com.example.androidengine.AEngine;
 import com.example.gamelogic.states.StartMenuLogic;
@@ -17,12 +18,13 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
 
         assetManager = getAssets();
 
-        this.androidEngine = new AEngine(this, assetManager);
+        SurfaceView view = (SurfaceView) findViewById(R.id.surfaceView);
+        this.androidEngine = new AEngine(view, assetManager);
         //bloquea la orientacion del movil a vertical
-        setContentView(this.androidEngine);
 
         StartMenuLogic menuLogic = new StartMenuLogic(this.androidEngine);
 

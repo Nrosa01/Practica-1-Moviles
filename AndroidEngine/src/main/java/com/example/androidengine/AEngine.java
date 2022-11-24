@@ -2,26 +2,20 @@ package com.example.androidengine;
 
 import com.example.engine.*;
 
-import android.app.Activity;
-import android.content.Context;
 import android.content.res.AssetManager;
 import android.content.res.Resources;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
-import android.media.MediaPlayer;
-import android.os.Build;
-import android.util.DisplayMetrics;
 import android.view.MotionEvent;
-import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
 import java.util.List;
 
-public class AEngine extends SurfaceView implements IEngine, Runnable {
+public class AEngine implements IEngine, Runnable {
 
     private Canvas canvas;
     private Paint paint;
+    private SurfaceView view;
 
     private Thread renderThread;
 
@@ -29,28 +23,35 @@ public class AEngine extends SurfaceView implements IEngine, Runnable {
 
     private StateManager stateManager;
 
-    private AssetManager assetManager;
     private AGraphics graphics;
     private AInput inputManager;
     AAudio audio;
 
-    public AEngine(Context context, AssetManager assetManager) {
-        super(context); //constructora de SurfaceView
+    public AEngine(SurfaceView context, AssetManager assetManager) {
 
         this.paint = new Paint();
         this.paint.setColor(0xFF000000);
+        this.view = context;
 
         //obtengo el alto y el alto de la zona usable de pantalla
         int sWidth = Resources.getSystem().getDisplayMetrics().widthPixels;
         int sHeight = Resources.getSystem().getDisplayMetrics().heightPixels;
 
-        this.graphics = new AGraphics(getHolder(),paint,assetManager,this,sWidth,sHeight);
+        this.graphics = new AGraphics(context.getHolder(),paint,assetManager,this,sWidth,sHeight);
 
         stateManager = new StateManager(this, 0.5f);
         inputManager = new AInput();
-        assetManager = assetManager;
 
         audio = new AAudio(assetManager);
+
+        view.setOnTouchListener((view1, motionEvent) ->
+                onTouchEvent(motionEvent));
+    }
+
+    public boolean onTouchEvent(MotionEvent event) {
+
+        inputManager.addEvent(event); //actualizamos nuestro registro de eventos
+        return true; //se ha manejado el evento
     }
 
     public Canvas getCurrentCanvas(){
@@ -104,7 +105,7 @@ public class AEngine extends SurfaceView implements IEngine, Runnable {
 
         // Si el Thread se pone en marcha
         // muy rápido, la vista podría todavía no estar inicializada.
-        while (this.running && getWidth() == 0) ; //this.myView.getWidth()
+        while (this.running && view.getWidth() == 0) ; //this.myView.getWidth()
         // Espera activa. Sería más elegante al menos dormir un poco.
 
         long lastFrameTime = System.nanoTime();
@@ -134,11 +135,11 @@ public class AEngine extends SurfaceView implements IEngine, Runnable {
             ++frames;
 
             //espera activa a que el surface este libre
-            while (!getHolder().getSurface().isValid()) ;
+            while (!view.getHolder().getSurface().isValid()) ;
             // Pintamos el frame
-            canvas = getHolder().lockCanvas();
+            canvas = view.getHolder().lockCanvas();
             this.render();
-            getHolder().unlockCanvasAndPost(canvas);
+            view.getHolder().unlockCanvasAndPost(canvas);
         }
     }
 
@@ -159,14 +160,6 @@ public class AEngine extends SurfaceView implements IEngine, Runnable {
     @Override
     public void update(double deltaTime) {
         this.stateManager.update(deltaTime);
-    }
-
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
-
-        inputManager.addEvent(event); //actualizamos nuestro registro de eventos
-        return true; //se ha manejado el evento
-
     }
 
     @Override
