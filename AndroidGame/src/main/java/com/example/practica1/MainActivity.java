@@ -10,22 +10,41 @@ import android.view.SurfaceView;
 import com.example.androidengine.AEngine;
 import com.example.gamelogic.states.StartMenuLogic;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.initialization.InitializationStatus;
+import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
+
 public class MainActivity extends AppCompatActivity {
 
     private AEngine androidEngine;
     private AssetManager assetManager;
-
+    private AdView mAdView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
+
         assetManager = getAssets();
 
         SurfaceView view = (SurfaceView) findViewById(R.id.surfaceView);
         this.androidEngine = new AEngine(view, assetManager);
-        //bloquea la orientacion del movil a vertical
 
+        //anuncios--------------
+        /*MobileAds.initialize(this, new OnInitializationCompleteListener() {
+            @Override
+            public void onInitializationComplete(InitializationStatus initializationStatus) {
+            }
+        });*/
+
+        mAdView = findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
+        //----------------------
+        //bloquea la orientacion del movil a vertical
         StartMenuLogic menuLogic = new StartMenuLogic(this.androidEngine);
 
         try {
