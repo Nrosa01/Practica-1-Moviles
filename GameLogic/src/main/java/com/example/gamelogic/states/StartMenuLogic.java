@@ -49,7 +49,7 @@ public class StartMenuLogic extends AbstractState {
                 @Override
                 public void onInteractionOccur() {
                     try {
-                        engine.setState(new SelectLevelLogic(engine));
+                        engine.setState(new HistoryModeSelection(engine));
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
