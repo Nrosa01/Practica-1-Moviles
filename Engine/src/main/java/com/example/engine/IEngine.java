@@ -6,6 +6,7 @@ public interface IEngine {
     IState getState();
     String getAssetsPath();
     boolean supportsTouch();
+    void enableBanner(boolean enable);
 
     void render();
     void update(double elapsedTime);

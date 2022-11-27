@@ -26,6 +26,8 @@ public class StartMenuLogic extends AbstractState {
     @Override
     public boolean init() {
         try {
+
+
             if (!engine.supportsTouch())
                 pointer = new Pointer(engine);
             testFont = graphics.newFont(engine.getAssetsPath() + "fonts/Antihero.ttf", 24, false);
@@ -45,9 +47,13 @@ public class StartMenuLogic extends AbstractState {
                 }
             });
 
+
+
             ISound sound = audio.newMusic(engine.getAssetsPath() + "audio/bgMusic.wav", "musicBg");
             sound.setVolume(1f);
             sound.play(); //It only plays if it's not alrady playing
+            engine.enableBanner(true);
+
             return true;
         } catch (Exception e) {
             e.printStackTrace();

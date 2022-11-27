@@ -8,8 +8,11 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.view.MotionEvent;
 import android.view.SurfaceView;
+import android.view.View;
 
 import java.util.List;
+
+import com.google.android.gms.ads.AdView;
 
 public class AEngine implements IEngine, Runnable {
 
@@ -25,9 +28,14 @@ public class AEngine implements IEngine, Runnable {
 
     private AGraphics graphics;
     private AInput inputManager;
+
+    private AdView mAdView;
+
     AAudio audio;
 
-    public AEngine(SurfaceView context, AssetManager assetManager) {
+    public AEngine(SurfaceView context, AssetManager assetManager,AdView adView) {
+
+        this.mAdView = adView;
 
         this.paint = new Paint();
         this.paint.setColor(0xFF000000);
@@ -46,6 +54,14 @@ public class AEngine implements IEngine, Runnable {
 
         view.setOnTouchListener((view1, motionEvent) ->
                 onTouchEvent(motionEvent));
+    }
+
+    @Override
+    public void enableBanner(boolean enable){
+        if (enable)
+            mAdView.setVisibility(View.VISIBLE);
+        else
+            mAdView.setVisibility(View.GONE);
     }
 
     public boolean onTouchEvent(MotionEvent event) {

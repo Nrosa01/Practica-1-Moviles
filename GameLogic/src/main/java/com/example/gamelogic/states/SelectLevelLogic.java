@@ -40,6 +40,9 @@ public class SelectLevelLogic extends AbstractState {
     @Override
     public boolean init() {
         try {
+
+
+
             fontBold = graphics.newFont(engine.getAssetsPath() + "fonts/Roboto-Regular.ttf", 24, true);
             font = graphics.newFont(engine.getAssetsPath() + "fonts/Roboto-Regular.ttf", 24, false);
             arrow = graphics.newImage(engine.getAssetsPath() + "images/arrow.png");
@@ -63,10 +66,11 @@ public class SelectLevelLogic extends AbstractState {
                         }
                     });
 
-
                     entities.add(button);
                 }
             }
+
+
 
             returnButton = new Button(25, 25, 30, 30, engine);
             returnButton.setImage(arrow);
@@ -88,6 +92,7 @@ public class SelectLevelLogic extends AbstractState {
             entities.add(returnButton);
             if (pointer != null)
                 entities.add(pointer);
+            engine.enableBanner(false);
             return true;
         } catch (Exception e) {
             e.printStackTrace();

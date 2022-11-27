@@ -6,6 +6,7 @@ import android.content.pm.ActivityInfo;
 import android.content.res.AssetManager;
 import android.os.Bundle;
 import android.view.SurfaceView;
+import android.view.View;
 
 import com.example.androidengine.AEngine;
 import com.example.gamelogic.states.StartMenuLogic;
@@ -30,8 +31,6 @@ public class MainActivity extends AppCompatActivity {
 
         assetManager = getAssets();
 
-        SurfaceView view = (SurfaceView) findViewById(R.id.surfaceView);
-        this.androidEngine = new AEngine(view, assetManager);
 
         //anuncios--------------
         /*MobileAds.initialize(this, new OnInitializationCompleteListener() {
@@ -39,11 +38,17 @@ public class MainActivity extends AppCompatActivity {
             public void onInitializationComplete(InitializationStatus initializationStatus) {
             }
         });*/
-
         mAdView = findViewById(R.id.adView);
         AdRequest adRequest = new AdRequest.Builder().build();
         mAdView.loadAd(adRequest);
         //----------------------
+
+        SurfaceView view = (SurfaceView) findViewById(R.id.surfaceView);
+        this.androidEngine = new AEngine(view, assetManager, mAdView);
+
+
+
+
         //bloquea la orientacion del movil a vertical
         StartMenuLogic menuLogic = new StartMenuLogic(this.androidEngine);
 
