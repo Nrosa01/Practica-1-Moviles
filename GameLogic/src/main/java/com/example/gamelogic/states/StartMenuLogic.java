@@ -27,6 +27,7 @@ public class StartMenuLogic extends AbstractState {
     public boolean init() {
         try {
 
+            engine.enableBanner(true);
 
             if (!engine.supportsTouch())
                 pointer = new Pointer(engine);
@@ -52,7 +53,7 @@ public class StartMenuLogic extends AbstractState {
             ISound sound = audio.newMusic(engine.getAssetsPath() + "audio/bgMusic.wav", "musicBg");
             sound.setVolume(1f);
             sound.play(); //It only plays if it's not alrady playing
-            engine.enableBanner(true);
+          
 
             return true;
         } catch (Exception e) {

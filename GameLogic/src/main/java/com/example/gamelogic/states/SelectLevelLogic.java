@@ -41,7 +41,7 @@ public class SelectLevelLogic extends AbstractState {
     public boolean init() {
         try {
 
-
+            engine.enableBanner(false);
 
             fontBold = graphics.newFont(engine.getAssetsPath() + "fonts/Roboto-Regular.ttf", 24, true);
             font = graphics.newFont(engine.getAssetsPath() + "fonts/Roboto-Regular.ttf", 24, false);
@@ -92,7 +92,7 @@ public class SelectLevelLogic extends AbstractState {
             entities.add(returnButton);
             if (pointer != null)
                 entities.add(pointer);
-            engine.enableBanner(false);
+
             return true;
         } catch (Exception e) {
             e.printStackTrace();

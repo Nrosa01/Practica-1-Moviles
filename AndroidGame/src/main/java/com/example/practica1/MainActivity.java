@@ -17,7 +17,7 @@ import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.ads.initialization.InitializationStatus;
 import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity  {
 
     private AEngine androidEngine;
     private AssetManager assetManager;
@@ -44,7 +44,7 @@ public class MainActivity extends AppCompatActivity {
         //----------------------
 
         SurfaceView view = (SurfaceView) findViewById(R.id.surfaceView);
-        this.androidEngine = new AEngine(view, assetManager, mAdView);
+        this.androidEngine = new AEngine(view, assetManager, mAdView,this);
 
 
 

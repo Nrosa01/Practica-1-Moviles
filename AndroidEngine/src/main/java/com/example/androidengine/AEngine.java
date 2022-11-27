@@ -2,6 +2,7 @@ package com.example.androidengine;
 
 import com.example.engine.*;
 
+import android.app.Activity;
 import android.content.res.AssetManager;
 import android.content.res.Resources;
 import android.graphics.Canvas;
@@ -30,13 +31,16 @@ public class AEngine implements IEngine, Runnable {
     private AInput inputManager;
 
     private AdView mAdView;
+    private Activity activity;
 
     AAudio audio;
 
-    public AEngine(SurfaceView context, AssetManager assetManager,AdView adView) {
+    public AEngine(SurfaceView context, AssetManager assetManager, AdView adView, Activity act) {
 
         this.mAdView = adView;
+        this.activity = act;
 
+        enableBanner(true);
         this.paint = new Paint();
         this.paint.setColor(0xFF000000);
         this.view = context;
@@ -58,10 +62,13 @@ public class AEngine implements IEngine, Runnable {
 
     @Override
     public void enableBanner(boolean enable){
+
         if (enable)
             mAdView.setVisibility(View.VISIBLE);
-        else
+        else {
             mAdView.setVisibility(View.GONE);
+            mAdView.clearAnimation();
+        }
     }
 
     public boolean onTouchEvent(MotionEvent event) {
@@ -77,8 +84,16 @@ public class AEngine implements IEngine, Runnable {
     //cambio de estado de logica
     @Override
     public void setState(IState state) throws Exception {
+        //si esta en un hilo que no es el principal manda la accion a que la realice el principal
+        this.activity.runOnUiThread(() -> {
+            try {
+                stateManager.setState(state);
+            }
+            catch (Exception e){
+                e.printStackTrace();
+            }
+        });
 
-        this.stateManager.setState(state);
         inputManager.clear();
     }
 
@@ -113,6 +128,8 @@ public class AEngine implements IEngine, Runnable {
 
     @Override
     public void run() {
+
+
         if (renderThread != Thread.currentThread()) {
             // Evita que cualquiera que no sea esta clase llame a este Runnable en un Thread
             // Programación defensiva
