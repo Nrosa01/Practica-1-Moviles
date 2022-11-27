@@ -14,6 +14,7 @@ import android.view.View;
 import java.util.List;
 
 import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.interstitial.InterstitialAd;
 
 public class AEngine implements IEngine, Runnable {
 
@@ -31,11 +32,17 @@ public class AEngine implements IEngine, Runnable {
     private AInput inputManager;
 
     private AdView mAdView;
+    private InterstitialAd mInterstitialAd;
+
     private Activity activity;
 
     AAudio audio;
 
-    public AEngine(SurfaceView context, AssetManager assetManager, AdView adView, Activity act) {
+    public AEngine( Activity act, SurfaceView context, AssetManager assetManager, AdView adView, InterstitialAd mInterstitialAd) {
+
+        this.mInterstitialAd = mInterstitialAd;
+
+
 
         this.mAdView = adView;
         this.activity = act;
@@ -87,6 +94,10 @@ public class AEngine implements IEngine, Runnable {
         //si esta en un hilo que no es el principal manda la accion a que la realice el principal
         this.activity.runOnUiThread(() -> {
             try {
+                if (mInterstitialAd != null) {
+                    mInterstitialAd.show(this.activity);
+
+                }
                 stateManager.setState(state);
             }
             catch (Exception e){
@@ -228,5 +239,13 @@ public class AEngine implements IEngine, Runnable {
     @Override
     public String getAssetsPath() {
         return "";
+    }
+
+    public boolean videoAd() {
+        return mInterstitialAd != null;
+    }
+
+    public void setAd(InterstitialAd mInterstitialAd) {
+        this.mInterstitialAd = mInterstitialAd;
     }
 }
