@@ -19,7 +19,6 @@ import java.util.List;
 public class MainGameLogic extends AbstractState {
 
     String level;
-    Pointer pointer;
     NonogramBoard board;
     Button returnButton;
     Button checkButton;
@@ -34,9 +33,6 @@ public class MainGameLogic extends AbstractState {
     public MainGameLogic(IEngine engine, String level) {
         super(engine);
         this.level = level;
-
-        if(!engine.supportsTouch())
-            pointer = new Pointer(engine);
     }
 
     @Override
@@ -98,20 +94,13 @@ public class MainGameLogic extends AbstractState {
             int rows = Integer.parseInt(level.split("x")[0]);
             int cols = Integer.parseInt(level.split("x")[1]);
 
-            // Nivel de prueba para tests
-            int[][] level =
-                    {
-                            {1, 0, 1, 1},
-                            {0, 1, 0, 1},
-                            {1, 0, 1, 0},
-                            {1, 1, 0, 0}
-                    };
-            level = NonogramGenerator.GenerateLevel(rows, cols);
-
+            int[][] level = NonogramGenerator.GenerateLevel(rows, cols);
 
             board = new NonogramBoard(engine, level, LOGIC_WIDTH - 20, 2, boardFont);
             board.setPosX(LOGIC_WIDTH / 2);
             board.setPosY(LOGIC_HEIGHT / 2);
+
+
             return true;
         } catch (Exception e) {
             e.printStackTrace();
@@ -122,9 +111,6 @@ public class MainGameLogic extends AbstractState {
     @Override
     public void update(double deltaTime) {
         board.update(deltaTime);
-
-        if(pointer != null)
-        pointer.update(deltaTime);
 
         if (!board.getIsWin()) {
             returnButton.update(deltaTime);
@@ -147,9 +133,6 @@ public class MainGameLogic extends AbstractState {
             graphics.drawTextCentered("¡Enhorabuena!", LOGIC_WIDTH / 2, 50, congratsFont);
             winReturnButton.render();
         }
-
-        if(pointer != null)
-        pointer.render();
     }
 
     @Override
@@ -159,9 +142,6 @@ public class MainGameLogic extends AbstractState {
             int proccesedY = graphics.windowsYPositionToLogicYPosition(inputEvent.y);
 
             board.handleInput(proccesedX, proccesedY, inputEvent.type);
-
-            if(pointer != null)
-            pointer.handleInput(proccesedX, proccesedY, inputEvent.type);
 
             if (!board.getIsWin()) {
                 checkButton.handleInput(proccesedX, proccesedY, inputEvent.type);
