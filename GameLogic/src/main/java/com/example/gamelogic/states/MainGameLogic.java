@@ -39,7 +39,7 @@ public class MainGameLogic extends AbstractState {
     public boolean init() {
         try {
             font = graphics.newFont(engine.getAssetsPath() + "fonts/Roboto-Regular.ttf", 24, false);
-            boardFont = graphics.newFont(engine.getAssetsPath() + "fonts/Roboto-Regular.ttf", 12, false);
+            boardFont = graphics.newFont(engine.getAssetsPath() + "fonts/Roboto-Regular.ttf", 18, true);
             congratsFont = graphics.newFont(engine.getAssetsPath() + "fonts/Roboto-Regular.ttf", 36, true);
             arrow = graphics.newImage(engine.getAssetsPath() + "images/arrow.png");
             search = graphics.newImage(engine.getAssetsPath() + "images/search.png");

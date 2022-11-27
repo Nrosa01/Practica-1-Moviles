@@ -25,6 +25,8 @@ public class NonogramBoard extends Board {
     private int initialWidth;
     private Color textColor;
     private int missingCells, badCellNumber;
+    private int maxRow = 0;
+    private int maxCol = 0;
     IImage blockedCell;
     ISound winSound;
     ISound selectCell;
@@ -42,6 +44,7 @@ public class NonogramBoard extends Board {
 
         generateRowsText();
         generateColsText();
+        calculateMaxRowAndMaxCol();
 
         this.font = font;
         endTransitionLerper = new FloatLerper(borderBoardRatio, 0, 0.55f, LerpType.EaseOut);
@@ -143,30 +146,86 @@ public class NonogramBoard extends Board {
 
         graphics.setColor(textColor.r, textColor.g, textColor.b, textColor.a);
 
-        // Render rows text from right to left
+        renderRowText();
+        renderColText();
+    }
+
+    private void calculateMaxRowAndMaxCol() {
         for (int row = 0; row < rows; row++) {
-            String text = rowsText[row];
-            int textWidth = graphics.getStringWidth(text, font);
-            int textPosX = posX - width / 2 - borderBoardSize / 2 + (borderBoardSize - textWidth) / 2;
-            int textPosY = getCellPosY(row);
-            graphics.drawTextCentered(text, textPosX, textPosY, font);
+            int count = 0;
+            for (int col = 0; col < rowsText[row].length(); col++) {
+                if (rowsText[row].charAt(col) != ' ') {
+                    count++;
+                }
+            }
+            if (count > maxRow) {
+                maxRow = count;
+            }
+        }
+
+        for (int col = 0; col < cols; col++) {
+            int count = 0;
+            for (int row = 0; row < colsText[col].length(); row++) {
+                if (colsText[col].charAt(row) != ' ') {
+                    count++;
+                }
+            }
+            if (count > maxCol) {
+                maxCol = count;
+            }
+        }
+    }
+
+    private void renderRowText() {
+        // We divide the row in maxRow areas, each text will be in one area from right to left
+        int areaWidth = borderBoardSize / maxRow;
+
+        // For each row, render character by character
+        int rightestCellX = posX - width / 2 - areaWidth / 2;
+        for (int row = 0; row < rows; row++) {
+            String rowText = rowsText[row];
+            int count = 0;
+            for (int character = rowText.length() - 1; character >= 0; character--) {
+                // If current character is not a space, we render it
+                if (rowText.charAt(character) != ' ') {
+                    graphics.drawTextCentered(rowText.charAt(character) + "", rightestCellX - areaWidth * count, getCellPosY(row), font);
+                    count++;
+                }
+            }
+        }
+    }
+
+    private void renderColText() {
+        // The same we did for rows, but now we do it for cols from bottom to top
+        int areaHeight = borderBoardSize / maxCol;
+
+        int bottomestCellY = posY - height / 2 - areaHeight / 2;
+        for (int col = 0; col < cols; col++) {
+            String colText = colsText[col];
+            int count = 0;
+            for (int character = colText.length() - 1; character >= 0; character--) {
+                if (colText.charAt(character) != ' ') {
+                    graphics.drawTextCentered(colText.charAt(character) + "", getCellPosX(col), bottomestCellY - areaHeight * count, font);
+                    count++;
+                }
+            }
         }
 
         // Render cols text from bottom to top
-        for (int col = 0; col < cols; col++) {
-            String text = colsText[col];
-            String[] texts = text.split(" ");
+        // for (int col = 0; col < cols; col++) {
+        //     String text = colsText[col];
+        //     String[] texts = text.split(" ");
 
-            int numOfTexts = texts.length;
-            for (int i = 0; i < numOfTexts; i++) {
-                String textToRender = texts[(numOfTexts - 1) - i];
-                int textHeight = graphics.getFontHeight(font);
-                int textPosX = getCellPosX(col);
-                int textPosY = posY - height / 2 - borderBoardSize / 2 + (borderBoardSize - textHeight) / 2 - (i * textHeight);
-                graphics.drawTextCentered(textToRender, textPosX, textPosY, font);
-            }
+        //     int numOfTexts = texts.length;
+        //     for (int i = 0; i < numOfTexts; i++) {
+        //         String textToRender = texts[(numOfTexts - 1) - i];
+        //         int textHeight = graphics.getFontHeight(font);
+        //         int textPosX = getCellPosX(col);
+        //         int textPosY = posY - height / 2 - borderBoardSize / 2 + (borderBoardSize - textHeight) / 2 - (i * textHeight);
+        //         graphics.drawTextCentered(textToRender, textPosX, textPosY, font);
+        //     }
 
-        }
+        // }
     }
 
     private void RenderBordersStroke() {
@@ -185,7 +244,7 @@ public class NonogramBoard extends Board {
 
         nonogramCellStates[row][col] = Math.min(nonogramCellStates[row][col] + 1, numOfStates) % numOfStates;
         isWin = updateBoardState(false);
-        if(isWin)
+        if (isWin)
             winSound.play();
         else
             selectCell.play();
@@ -205,12 +264,10 @@ public class NonogramBoard extends Board {
                 graphics.setColor(123, 123, 255);
                 break;
             case 2:
-                if (!isWin)
-                {
+                if (!isWin) {
                     graphics.setColor(23, 23, 23);
                     setCellImg(blockedCell);
-                }
-                else
+                } else
                     graphics.setColor(255, 255, 255);
                 break;
             case 3:
