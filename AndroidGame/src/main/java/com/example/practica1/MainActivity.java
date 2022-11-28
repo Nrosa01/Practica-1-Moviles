@@ -38,6 +38,9 @@ public class MainActivity extends AppCompatActivity  {
     private AssetManager assetManager;
     private AdView mAdView;
     private InterstitialAd mInterstitialAd;
+
+    NotificationCompat.Builder builder;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -69,13 +72,13 @@ public class MainActivity extends AppCompatActivity  {
         createNotificationChannel();
 
         // CREAR INTENT: Create an explicit intent for an Activity in your app
-        //Intent intent = new Intent(this, StartMenuLogic.class);
-        //intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        //PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_IMMUTABLE);
+        Intent intent = new Intent(this, MainActivity.class); //triple
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_IMMUTABLE);
 
         //CREAR NOTIFICACION:
         //var CHANNEL_ID = "My Notification";
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(this,  "My Notification") //CHANNEL_ID
+        builder = new NotificationCompat.Builder(this,  "My Notification") //CHANNEL_ID
                 .setSmallIcon(R.drawable.ic_launcher_background) //R.drawable.notification_icon
                 .setContentTitle("Notificación del Nonograma")
                 .setContentText("Eres un grande!")
@@ -85,20 +88,18 @@ public class MainActivity extends AppCompatActivity  {
                 //-----------------
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                 // Set the intent that will fire when the user taps the notification
-                //.setContentIntent(pendingIntent)
+                .setContentIntent(pendingIntent)
                 .setAutoCancel(true);
-
-        //MOSTRAR NOTIFICACION
-        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
-        // notificationId is a unique int for each notification that you must define
-        notificationManager.notify(1, builder.build()); //notificationId
 
         SurfaceView view = (SurfaceView) findViewById(R.id.surfaceView);
 
         this.androidEngine = new AEngine(this,view, assetManager, mAdView,mInterstitialAd);
 
 
-
+        //MOSTRAR NOTIFICACION
+        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
+        // notificationId is a unique int for each notification that you must define
+        notificationManager.notify(1, builder.build()); //notificationId
 
         //bloquea la orientacion del movil a vertical
         StartMenuLogic menuLogic = new StartMenuLogic(this.androidEngine);
