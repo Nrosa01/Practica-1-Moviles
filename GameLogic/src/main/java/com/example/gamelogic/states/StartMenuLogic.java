@@ -3,12 +3,8 @@ package com.example.gamelogic.states;
 import com.example.engine.IEngine;
 import com.example.engine.IFont;
 import com.example.engine.ISound;
-import com.example.engine.InputEvent;
 import com.example.gamelogic.entities.Button;
 import com.example.gamelogic.entities.IInteractableCallback;
-import com.example.gamelogic.entities.Pointer;
-
-import java.util.List;
 
 public class StartMenuLogic extends AbstractState {
     IFont testFont;
@@ -49,7 +45,7 @@ public class StartMenuLogic extends AbstractState {
                 @Override
                 public void onInteractionOccur() {
                     try {
-                        engine.setState(new HistoryModeSelection(engine));
+                        engine.setState(new WorldSelectionPageLogic(engine));
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
