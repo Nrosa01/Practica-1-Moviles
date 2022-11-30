@@ -10,6 +10,7 @@ import com.example.gamelogic.entities.Board;
 import com.example.gamelogic.entities.Button;
 import com.example.gamelogic.entities.Entity;
 import com.example.gamelogic.entities.IInteractableCallback;
+import com.example.gamelogic.entities.LivesPanel;
 import com.example.gamelogic.entities.NonogramBoard;
 import com.example.gamelogic.entities.Pointer;
 import com.example.gamelogic.levels.NonogramGenerator;
@@ -32,6 +33,10 @@ public class MainGameLogic extends AbstractState {
     IFont congratsFont;
     IImage arrow;
     IImage search;
+
+    IImage fullLive;
+    IImage emptyLive;
+    LivesPanel livesPanel;
     boolean gameWin = false;
     boolean random = true;
     IInteractableCallback returnCallback;
@@ -74,6 +79,16 @@ public class MainGameLogic extends AbstractState {
             congratsFont = graphics.newFont(engine.getAssetsPath() + "fonts/Roboto-Regular.ttf", 36, true);
             arrow = graphics.newImage(engine.getAssetsPath() + "images/arrow.png");
             search = graphics.newImage(engine.getAssetsPath() + "images/search.png");
+            emptyLive = graphics.newImage(engine.getAssetsPath() + "images/heart-empty.png");
+            fullLive = graphics.newImage(engine.getAssetsPath() + "images/heart-full.png");
+
+            int numLifes = 3;
+            int livesPanelWidth = LOGIC_WIDTH / 4;
+            int livesPanelHeight = livesPanelWidth / numLifes;
+            int livesPanelYPos = (LOGIC_WIDTH - 20) / 2 + LOGIC_HEIGHT / 2 + livesPanelHeight;
+            int livesPanelXPos = LOGIC_WIDTH - LOGIC_WIDTH / 25 - livesPanelWidth / 2;
+            livesPanel = new LivesPanel(engine, livesPanelXPos, livesPanelYPos, livesPanelWidth, livesPanelHeight, numLifes, fullLive, emptyLive);
+            addEntity(livesPanel);
 
             returnButton = new Button(25, 25, 30, 30, engine);
             returnButton.setImage(arrow);
@@ -187,6 +202,8 @@ public class MainGameLogic extends AbstractState {
             graphics.drawTextCentered("¡Enhorabuena!", LOGIC_WIDTH / 2, 50, congratsFont);
             winReturnButton.render();
         }
+
+        livesPanel.render();
     }
 
     @Override
