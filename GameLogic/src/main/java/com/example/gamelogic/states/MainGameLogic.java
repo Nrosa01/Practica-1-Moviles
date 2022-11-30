@@ -34,6 +34,7 @@ public class MainGameLogic extends AbstractState {
     IImage search;
     boolean gameWin = false;
     boolean random = true;
+    IInteractableCallback returnCallback;
 
     public MainGameLogic(IEngine engine, String level) {
         super(engine);
@@ -46,9 +47,28 @@ public class MainGameLogic extends AbstractState {
         this.random = random;
     }
 
+    public MainGameLogic(IEngine engine, String level, boolean random, IInteractableCallback returnCallabck) {
+        super(engine);
+        this.level = level;
+        this.random = random;
+        this.returnCallback = returnCallabck;
+    }
+
     @Override
     public boolean init() {
         try {
+            if(returnCallback == null)
+                returnCallback = new IInteractableCallback() {
+                    @Override
+                    public void onInteractionOccur() {
+                        try {
+                            engine.setState(new SelectLevelLogic(engine));
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                };
+
             font = graphics.newFont(engine.getAssetsPath() + "fonts/Roboto-Regular.ttf", 24, false);
             boardFont = graphics.newFont(engine.getAssetsPath() + "fonts/Roboto-Regular.ttf", 18, true);
             congratsFont = graphics.newFont(engine.getAssetsPath() + "fonts/Roboto-Regular.ttf", 36, true);
@@ -61,16 +81,7 @@ public class MainGameLogic extends AbstractState {
             returnButton.setBackgroundColor(0, 0, 0, 0);
             returnButton.setBorderSize(0);
             returnButton.setHoverColor(205, 205, 205);
-            returnButton.setCallback(new IInteractableCallback() {
-                @Override
-                public void onInteractionOccur() {
-                    try {
-                        engine.setState(new SelectLevelLogic(engine));
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-            });
+            returnButton.setCallback(returnCallback);
 
             checkButton = new Button(LOGIC_WIDTH - 30 - graphics.getStringWidth("Comprobar", font), 25, 30, 30, engine);
             checkButton.setImage(search);
@@ -91,16 +102,7 @@ public class MainGameLogic extends AbstractState {
             winReturnButton.setBackgroundColor(0, 0, 0, 0);
             winReturnButton.setBorderSize(0);
             winReturnButton.setHoverColor(205, 205, 205);
-            winReturnButton.setCallback(new IInteractableCallback() {
-                @Override
-                public void onInteractionOccur() {
-                    try {
-                        engine.setState(new SelectLevelLogic(engine));
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-            });
+            winReturnButton.setCallback(returnCallback);
 
             int[][] level = loadLevel();
             if (level == null)

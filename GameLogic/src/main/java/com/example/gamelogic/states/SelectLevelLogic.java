@@ -10,9 +10,6 @@ import com.example.gamelogic.entities.Button;
 import com.example.gamelogic.entities.Entity;
 import com.example.gamelogic.entities.IInteractableCallback;
 import com.example.gamelogic.entities.Pointer;
-
-import org.graalvm.compiler.core.common.type.ArithmeticOpTable;
-
 import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.Collections;
