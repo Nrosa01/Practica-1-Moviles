@@ -9,10 +9,9 @@ import com.example.engine.utilities.LerpType;
 import com.example.gamelogic.utilities.Color;
 import com.example.gamelogic.utilities.Event;
 import com.example.gamelogic.utilities.EventManager;
-import com.example.gamelogic.utilities.events.DefaultEvent;
+import com.example.gamelogic.utilities.events.OnDamaged;
 
 public class NonogramBoard extends Board {
-    private int[][] nonogramCellStates;
     private final int numOfStates = 3;
     private int borderBoardSize;
     private Color borderColor;
@@ -41,8 +40,6 @@ public class NonogramBoard extends Board {
         setWidth(width);
         this.solvedPuzzle = solvedPuzzle;
         init();
-
-        nonogramCellStates = new int[rows][cols];
         borderColor = new Color();
 
         generateRowsText();
@@ -133,12 +130,12 @@ public class NonogramBoard extends Board {
     }
 
     private void renderErrorLabels() {
-        if (isWin || wrongTilesTimer.getPaused())
-            return;
+        //if (isWin || wrongTilesTimer.getPaused())
+        return;
 
-        graphics.setColor(255, 50, 50);
-        graphics.drawTextCentered("Te faltan " + missingCells + " casillas", posX, posY - height / 2 - borderBoardSize, font);
-        graphics.drawTextCentered("Tienes mal " + badCellNumber + " casillas", posX, posY - height / 2 - borderBoardSize + graphics.getFontHeight(font), font);
+        //graphics.setColor(255, 50, 50);
+        //graphics.drawTextCentered("Te faltan " + missingCells + " casillas", posX, posY - height / 2 - borderBoardSize, font);
+        //graphics.drawTextCentered("Tienes mal " + badCellNumber + " casillas", posX, posY - height / 2 - borderBoardSize + graphics.getFontHeight(font), font);
     }
 
     private void RenderTextArea() {
@@ -213,22 +210,6 @@ public class NonogramBoard extends Board {
                 }
             }
         }
-
-        // Render cols text from bottom to top
-        // for (int col = 0; col < cols; col++) {
-        //     String text = colsText[col];
-        //     String[] texts = text.split(" ");
-
-        //     int numOfTexts = texts.length;
-        //     for (int i = 0; i < numOfTexts; i++) {
-        //         String textToRender = texts[(numOfTexts - 1) - i];
-        //         int textHeight = graphics.getFontHeight(font);
-        //         int textPosX = getCellPosX(col);
-        //         int textPosY = posY - height / 2 - borderBoardSize / 2 + (borderBoardSize - textHeight) / 2 - (i * textHeight);
-        //         graphics.drawTextCentered(textToRender, textPosX, textPosY, font);
-        //     }
-
-        // }
     }
 
     private void RenderBordersStroke() {
@@ -244,10 +225,16 @@ public class NonogramBoard extends Board {
         if (isWin)
             return;
         //System.out.println("Clicked on cell: " + row + " " + col);
-        final Event event = new DefaultEvent();
-        EventManager.callEvent(event);
-        nonogramCellStates[row][col] = Math.min(nonogramCellStates[row][col] + 1, numOfStates) % numOfStates;
-        isWin = updateBoardState(false);
+
+        board[row][col] = Math.min(board[row][col] + 1, numOfStates) % numOfStates;
+        isWin = updateBoardState(true);
+
+        if(this.badCellNumber > 0)
+        {
+            final Event event = new OnDamaged();
+            EventManager.callEvent(event);
+        }
+
         if (isWin)
             winSound.play();
         else
@@ -291,7 +278,7 @@ public class NonogramBoard extends Board {
 
     @Override
     protected void OnCellRender(int row, int col) {
-        setColorGivenState(nonogramCellStates[row][col]);
+        setColorGivenState(board[row][col]);
     }
 
     // Updates board state, update missingCells and badCells, also returns true if win is satisfied
@@ -305,18 +292,38 @@ public class NonogramBoard extends Board {
 
         for (int row = 0; row < rows; row++) {
             for (int col = 0; col < cols; col++) {
-                if (solvedPuzzle[row][col] == 1 && nonogramCellStates[row][col] != 1) {
+                if (solvedPuzzle[row][col] == 1 && board[row][col] != 1) {
                     if (updateStats)
                         missingCells++;
                     win = false;
                 }
 
-                if (solvedPuzzle[row][col] != 1 && (nonogramCellStates[row][col] == 1 || nonogramCellStates[row][col] == 3)) {
+                if (solvedPuzzle[row][col] != 1 && (board[row][col] == 1 || board[row][col] == 3)) {
                     if (updateStats)
                         badCellNumber++;
                     win = false;
                 }
             }
+        }
+
+        if (win) {
+            for (int row = 0; row < rows; row++) {
+                for (int col = 0; col < cols; col++) {
+                    if (solvedPuzzle[row][col] != 1) {
+                        board[row][col] = 0;
+                    }
+                }
+            }
+        } else {
+            for (int row = 0; row < rows; row++) {
+                for (int col = 0; col < cols; col++) {
+                    if (solvedPuzzle[row][col] != 1 && board[row][col] == 1) {
+                        board[row][col] = 3;
+                    }
+                }
+            }
+
+            wrongTilesTimer.restart();
         }
 
         return win;
@@ -327,26 +334,6 @@ public class NonogramBoard extends Board {
             return;
 
         updateBoardState(true);
-
-        if (isWin) {
-            for (int row = 0; row < rows; row++) {
-                for (int col = 0; col < cols; col++) {
-                    if (solvedPuzzle[row][col] != 1) {
-                        nonogramCellStates[row][col] = 0;
-                    }
-                }
-            }
-        } else {
-            for (int row = 0; row < rows; row++) {
-                for (int col = 0; col < cols; col++) {
-                    if (solvedPuzzle[row][col] != 1 && nonogramCellStates[row][col] == 1) {
-                        nonogramCellStates[row][col] = 3;
-                    }
-                }
-            }
-
-            wrongTilesTimer.restart();
-        }
     }
 
     @Override
@@ -373,8 +360,8 @@ public class NonogramBoard extends Board {
 
             for (int row = 0; row < rows; row++) {
                 for (int col = 0; col < cols; col++) {
-                    if (nonogramCellStates[row][col] == 3) {
-                        nonogramCellStates[row][col] = 0;
+                    if (board[row][col] == 3) {
+                        board[row][col] = 0;
                     }
                 }
             }

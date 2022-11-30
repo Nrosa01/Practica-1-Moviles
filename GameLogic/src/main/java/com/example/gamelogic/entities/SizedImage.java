@@ -21,6 +21,10 @@ public class SizedImage extends Entity {
 
     }
 
+    public void setImage(IImage image) {
+        this.image = image;
+    }
+
     @Override
     public void render() {
         double imageWidthRatio = ((width) * scale) / image.getWidth();

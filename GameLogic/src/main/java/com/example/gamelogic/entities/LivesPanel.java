@@ -5,6 +5,7 @@ import com.example.engine.IImage;
 
 public class LivesPanel extends Entity{
     private int numLives = 3;
+    private int currentLive = 0;
     private int liveSize;
     IImage fullLive;
     IImage emptyLive;
@@ -55,6 +56,42 @@ public class LivesPanel extends Entity{
         }
 
         //graphics.drawRectangle(posX, posY, width, height, 4);
+    }
+
+    public boolean isAlive()
+    {
+        return currentLive < icons.length;
+    }
+
+    public boolean takeLive()
+    {
+        if(currentLive >= icons.length)
+            return false;
+
+        icons[currentLive].setImage(emptyLive);
+        currentLive++;
+        return true;
+    }
+
+    public boolean restoreLive()
+    {
+        // Ya tiene todas las vidas
+        if(currentLive == 0)
+            return false;
+
+        currentLive--;
+        icons[currentLive].setImage(fullLive);
+
+        return  true;
+    }
+
+    public void restoreLives()
+    {
+        currentLive = 0;
+
+        for (int i = 0; i < numLives; i++) {
+            icons[i].setImage(fullLive);
+        }
     }
 
     @Override

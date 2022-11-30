@@ -19,6 +19,7 @@ import com.example.gamelogic.utilities.EventHandler;
 import com.example.gamelogic.utilities.EventManager;
 import com.example.gamelogic.utilities.Listener;
 import com.example.gamelogic.utilities.events.DefaultEvent;
+import com.example.gamelogic.utilities.events.OnDamaged;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -65,9 +66,14 @@ public class MainGameLogic extends AbstractState implements Listener {
     }
 
     @EventHandler
-    public void cellClicked(DefaultEvent eventArgs)
+    public void onDamaged(OnDamaged eventArgs)
     {
-        System.out.println("Cell clicked");
+        livesPanel.takeLive();
+        if(!livesPanel.isAlive())
+        {
+            board.clear();
+            livesPanel.restoreLives();
+        }
     }
 
     @Override
