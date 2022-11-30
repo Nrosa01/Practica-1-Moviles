@@ -13,10 +13,12 @@ public class WorldLevelSelectionPageLogic extends AbstractState {
     Button levels[][];
     IFont tittleFont; // TODO: Crear una entidad que sea simplemente un texto
     String text;
+    WorldLevelType type;
 
     protected WorldLevelSelectionPageLogic(IEngine engine, WorldLevelType type) {
         super(engine);
         text = type.toString();
+        this.type = type;
     }
 
     @Override
@@ -44,6 +46,18 @@ public class WorldLevelSelectionPageLogic extends AbstractState {
                     levels[i][j].setBorderColor(183, 210, 79);
                     levels[i][j].setBackgroundColor(240, 240, 240, 255);
                     levels[i][j].setPadding(5, 5);
+
+                    final String level = getLevelName(type, i);
+                    levels[i][j].setCallback(new IInteractableCallback() {
+                        @Override
+                        public void onInteractionOccur() {
+                            try {
+                                engine.setState(new MainGameLogic(engine, level, false));
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    });
                     addEntity(levels[i][j]);
                 }
             }
@@ -73,6 +87,13 @@ public class WorldLevelSelectionPageLogic extends AbstractState {
         return true;
     }
 
+    private String getLevelName(WorldLevelType type, int index)
+    {
+        int cells = (index + 1) * 5;
+        String typeToLower = type.toString().toLowerCase();
+        String filename = typeToLower + cells + "x" + cells + "-" + (index + 1) + ".txt";
+        return "levels/" + typeToLower + "/" + filename;
+    }
 
     @Override
     public void render() {

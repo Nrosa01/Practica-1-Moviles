@@ -9,6 +9,8 @@ import android.graphics.Paint;
 import android.view.MotionEvent;
 import android.view.SurfaceView;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 
 public class AEngine implements IEngine, Runnable {
@@ -16,6 +18,7 @@ public class AEngine implements IEngine, Runnable {
     private Canvas canvas;
     private Paint paint;
     private SurfaceView view;
+    private AssetManager assetManager;
 
     private Thread renderThread;
 
@@ -32,6 +35,7 @@ public class AEngine implements IEngine, Runnable {
         this.paint = new Paint();
         this.paint.setColor(0xFF000000);
         this.view = context;
+        this.assetManager = assetManager;
 
         //obtengo el alto y el alto de la zona usable de pantalla
         int sWidth = Resources.getSystem().getDisplayMetrics().widthPixels;
@@ -195,5 +199,15 @@ public class AEngine implements IEngine, Runnable {
     @Override
     public String getAssetsPath() {
         return "";
+    }
+
+    @Override
+    public InputStream openFile(String filename) {
+        try {
+            return assetManager.open(filename);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }

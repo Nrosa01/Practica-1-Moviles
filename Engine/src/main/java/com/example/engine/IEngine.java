@@ -1,10 +1,13 @@
 package com.example.engine;
 
+import java.io.InputStream;
+
 public interface IEngine {
     IGraphics getGraphics();
     IAudio getAudio();
     IState getState();
     String getAssetsPath();
+    InputStream openFile(String filename);
     boolean supportsTouch();
 
     void render();

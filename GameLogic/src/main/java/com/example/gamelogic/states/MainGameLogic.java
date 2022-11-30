@@ -14,6 +14,10 @@ import com.example.gamelogic.entities.NonogramBoard;
 import com.example.gamelogic.entities.Pointer;
 import com.example.gamelogic.levels.NonogramGenerator;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.List;
 
 public class MainGameLogic extends AbstractState {
@@ -29,10 +33,17 @@ public class MainGameLogic extends AbstractState {
     IImage arrow;
     IImage search;
     boolean gameWin = false;
+    boolean random = true;
 
     public MainGameLogic(IEngine engine, String level) {
         super(engine);
         this.level = level;
+    }
+
+    public MainGameLogic(IEngine engine, String level, boolean random) {
+        super(engine);
+        this.level = level;
+        this.random = random;
     }
 
     @Override
@@ -91,20 +102,61 @@ public class MainGameLogic extends AbstractState {
                 }
             });
 
-            int rows = Integer.parseInt(level.split("x")[0]);
-            int cols = Integer.parseInt(level.split("x")[1]);
-
-            int[][] level = NonogramGenerator.GenerateLevel(rows, cols);
+            int[][] level = loadLevel();
+            if (level == null)
+                return false;
 
             board = new NonogramBoard(engine, level, LOGIC_WIDTH - 20, 2, boardFont);
             board.setPosX(LOGIC_WIDTH / 2);
             board.setPosY(LOGIC_HEIGHT / 2);
 
-
             return true;
         } catch (Exception e) {
             e.printStackTrace();
             return false;
+        }
+    }
+
+    private int[][] loadLevel() {
+        if (random) {
+            int rows = Integer.parseInt(level.split("x")[0]);
+            int cols = Integer.parseInt(level.split("x")[1]);
+            return NonogramGenerator.GenerateLevel(rows, cols);
+        } else {
+            InputStream is = engine.openFile(level);
+            if (is == null)
+                return null;
+
+            // Read width and height
+            try {
+                String file = "";
+                InputStreamReader isr = new InputStreamReader(is);
+                BufferedReader br = new BufferedReader(isr);
+                String line;
+                while ((line = br.readLine()) != null) {
+                    if (!line.endsWith(" "))
+                        line += " ";
+                    file += line;
+                }
+
+                String[] fileDivied = file.split(" ");
+                int width = Integer.parseInt(fileDivied[0]);
+                int height = Integer.parseInt(fileDivied[1]);
+
+                int[][] level = new int[width][height];
+                for (int i = 0; i < width; i++) {
+                    for (int j = 0; j < height; j++) {
+                        level[i][j] = Integer.parseInt(fileDivied[i * height + j + 2]);
+                    }
+                }
+
+                br.close();
+                is.close();
+                return level;
+            } catch (Exception e) {
+                e.printStackTrace();
+                return null;
+            }
         }
     }
 
