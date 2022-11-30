@@ -298,7 +298,7 @@ public class NonogramBoard extends Board {
                     win = false;
                 }
 
-                if (solvedPuzzle[row][col] != 1 && (board[row][col] == 1 || board[row][col] == 3)) {
+                if (solvedPuzzle[row][col] != 1 && (board[row][col] == 1 /*|| board[row][col] == 3*/)) {
                     if (updateStats)
                         badCellNumber++;
                     win = false;
