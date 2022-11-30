@@ -14,6 +14,11 @@ import com.example.gamelogic.entities.LivesPanel;
 import com.example.gamelogic.entities.NonogramBoard;
 import com.example.gamelogic.entities.Pointer;
 import com.example.gamelogic.levels.NonogramGenerator;
+import com.example.gamelogic.utilities.Event;
+import com.example.gamelogic.utilities.EventHandler;
+import com.example.gamelogic.utilities.EventManager;
+import com.example.gamelogic.utilities.Listener;
+import com.example.gamelogic.utilities.events.DefaultEvent;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -21,7 +26,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.List;
 
-public class MainGameLogic extends AbstractState {
+public class MainGameLogic extends AbstractState implements Listener {
 
     String level;
     NonogramBoard board;
@@ -59,6 +64,12 @@ public class MainGameLogic extends AbstractState {
         this.returnCallback = returnCallabck;
     }
 
+    @EventHandler
+    public void cellClicked(DefaultEvent eventArgs)
+    {
+        System.out.println("Cell clicked");
+    }
+
     @Override
     public boolean init() {
         try {
@@ -73,6 +84,8 @@ public class MainGameLogic extends AbstractState {
                         }
                     }
                 };
+
+            EventManager.register(this);
 
             font = graphics.newFont(engine.getAssetsPath() + "fonts/Roboto-Regular.ttf", 24, false);
             boardFont = graphics.newFont(engine.getAssetsPath() + "fonts/Roboto-Regular.ttf", 18, true);
@@ -130,6 +143,7 @@ public class MainGameLogic extends AbstractState {
             return true;
         } catch (Exception e) {
             e.printStackTrace();
+            EventManager.unregister(this);
             return false;
         }
     }

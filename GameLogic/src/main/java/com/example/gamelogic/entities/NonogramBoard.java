@@ -7,6 +7,9 @@ import com.example.engine.ISound;
 import com.example.engine.utilities.FloatLerper;
 import com.example.engine.utilities.LerpType;
 import com.example.gamelogic.utilities.Color;
+import com.example.gamelogic.utilities.Event;
+import com.example.gamelogic.utilities.EventManager;
+import com.example.gamelogic.utilities.events.DefaultEvent;
 
 public class NonogramBoard extends Board {
     private int[][] nonogramCellStates;
@@ -241,7 +244,8 @@ public class NonogramBoard extends Board {
         if (isWin)
             return;
         //System.out.println("Clicked on cell: " + row + " " + col);
-
+        final Event event = new DefaultEvent();
+        EventManager.callEvent(event);
         nonogramCellStates[row][col] = Math.min(nonogramCellStates[row][col] + 1, numOfStates) % numOfStates;
         isWin = updateBoardState(false);
         if (isWin)
