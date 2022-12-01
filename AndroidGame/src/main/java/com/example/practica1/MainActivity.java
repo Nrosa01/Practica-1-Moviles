@@ -45,6 +45,11 @@ public class MainActivity extends AppCompatActivity  {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        Intent intentParam = getIntent();
+        if (intentParam != null){
+            int a = intentParam.getIntExtra("someKey", 0);
+            Log.i("Cosa ","ramon "+a);
+        }
 
         cargarBanner();
 
@@ -73,6 +78,7 @@ public class MainActivity extends AppCompatActivity  {
 
         // CREAR INTENT: Create an explicit intent for an Activity in your app
         Intent intent = new Intent(this, MainActivity.class); //triple
+        intent.putExtra("someKey", 115);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_IMMUTABLE);
 
