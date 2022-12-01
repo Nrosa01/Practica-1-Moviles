@@ -51,12 +51,14 @@ public class AEngine implements IEngine, Runnable {
 
     public AEngine( Activity act, SurfaceView context, AssetManager assetManager, AdView adView, InterstitialAd mInterstitialAd) {
 
-        this.mInterstitialAd = mInterstitialAd;
+        //this.mInterstitialAd = mInterstitialAd;
 
 
 
         this.mAdView = adView;
         this.activity = act;
+
+        this.cargarVideoAnuncio();
 
         enableBanner(true);
         this.paint = new Paint();
@@ -127,19 +129,8 @@ public class AEngine implements IEngine, Runnable {
     @Override
     public void setState(IState state) throws Exception {
         //si esta en un hilo que no es el principal manda la accion a que la realice el principal
-        this.activity.runOnUiThread(() -> {
-            try {
 
-                if (mInterstitialAd != null) {
-                    mInterstitialAd.show(this.activity);
-                    cargarVideoAnuncio();
-                }
-                stateManager.setState(state);
-            }
-            catch (Exception e){
-                e.printStackTrace();
-            }
-        });
+        stateManager.setState(state);
 
         inputManager.clear();
     }
@@ -283,6 +274,20 @@ public class AEngine implements IEngine, Runnable {
 
     public void setAd(InterstitialAd mInterstitialAd) {
         this.mInterstitialAd = mInterstitialAd;
+    }
+    @Override
+    public void showVid(){
+        this.activity.runOnUiThread(() -> {
+            try {
+                if (mInterstitialAd != null) {
+                    mInterstitialAd.show(this.activity);
+                    cargarVideoAnuncio();
+                }
+            }
+            catch (Exception e){
+                e.printStackTrace();
+            }
+        });
     }
     @Override
     public InputStream openFile(String filename) {

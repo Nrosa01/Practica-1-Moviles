@@ -10,6 +10,7 @@ public interface IEngine {
     InputStream openFile(String filename);
     boolean supportsTouch();
     void enableBanner(boolean enable);
+    void showVid();
 
     void render();
     void update(double elapsedTime);
