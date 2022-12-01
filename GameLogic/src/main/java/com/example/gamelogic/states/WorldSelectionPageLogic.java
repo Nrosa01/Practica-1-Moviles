@@ -5,6 +5,7 @@ import com.example.engine.IFont;
 import com.example.engine.IImage;
 import com.example.gamelogic.entities.Button;
 import com.example.gamelogic.entities.IInteractableCallback;
+import com.example.gamelogic.entities.Text;
 import com.example.gamelogic.entities.WorldCard;
 import com.example.gamelogic.levels.WorldLevelType;
 
@@ -18,6 +19,7 @@ public class WorldSelectionPageLogic extends AbstractState {
     IImage tape;
     Button returnButton;
     IImage arrow;
+    Text tittle;
 
     protected WorldSelectionPageLogic(IEngine engine) {
         super(engine);
@@ -26,13 +28,18 @@ public class WorldSelectionPageLogic extends AbstractState {
     @Override
     public boolean init() {
         IImage forestImg = graphics.newImage(engine.getAssetsPath() + "images/forest.png");
-        IImage seaImg = graphics.newImage(engine.getAssetsPath() + "images/beach.png");
+        IImage seaImg = graphics.newImage(engine.getAssetsPath() + "images/sea.png");
         IImage cityImg = graphics.newImage(engine.getAssetsPath() + "images/city.png");
         IImage animalImg = graphics.newImage(engine.getAssetsPath() + "images/animals.png");
         cardHolder = graphics.newImage(engine.getAssetsPath() + "images/worldCard.png");
         tape = graphics.newImage(engine.getAssetsPath() + "images/tape.png");
         textFont = graphics.newFont(engine.getAssetsPath() + "fonts/Roboto-Regular.ttf", 24, true);
         arrow = graphics.newImage(engine.getAssetsPath() + "images/arrow.png");
+
+        IFont tittleFont = graphics.newFont(engine.getAssetsPath() + "fonts/Roboto-Black.ttf", 20, false);
+
+        tittle = new Text(engine, "Elige la categoría a la que quieres jugar", tittleFont, LOGIC_WIDTH / 2, (int) (LOGIC_HEIGHT * 0.2));
+        addEntity(tittle);
 
         int buttonSize = (int) (LOGIC_WIDTH / 2.5);
         int gapSize = buttonSize / 8;

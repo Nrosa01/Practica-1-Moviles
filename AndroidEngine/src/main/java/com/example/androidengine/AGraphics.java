@@ -97,6 +97,7 @@ public class AGraphics extends AbstractGraphics {
         this.b = b;
 
         paint.setColor( Color.argb((int) (a * alphaMultiplier),this.r, this.g, this.b) );
+        paint.setAlpha(a);
     }
 
     //set de la fuente actual
