@@ -79,7 +79,7 @@ public class MainActivity extends AppCompatActivity  {
         //CREAR NOTIFICACION:
         //var CHANNEL_ID = "My Notification";
         builder = new NotificationCompat.Builder(this,  "My Notification") //CHANNEL_ID
-                .setSmallIcon(R.drawable.ic_launcher_background) //R.drawable.notification_icon
+                .setSmallIcon(R.drawable.bell) //R.drawable.notification_icon
                 .setContentTitle("Notificación del Nonograma")
                 .setContentText("Eres un grande!")
                 // Si quieres que ocupe mas de 1 linea la notificacion
