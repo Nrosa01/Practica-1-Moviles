@@ -13,6 +13,8 @@ import com.example.gamelogic.utilities.Color;
 public class WorldLevelSelectionPageLogic extends AbstractState {
     Button returnButton;
     IImage arrow;
+    IImage lockedImg;
+    IImage unlockedImg;
     SizedImage backgroundImg;
     Button levels[][];
     IFont tittleFont; // TODO: Crear una entidad que sea simplemente un texto
@@ -33,6 +35,8 @@ public class WorldLevelSelectionPageLogic extends AbstractState {
             tittleText = new Text(engine, text, tittleFont, LOGIC_WIDTH / 2, (LOGIC_HEIGHT / 2) - 100);
             tittleText.setBackgroundColor(new Color(255,255,255,169));
             tittleText.setBackgruondSize(LOGIC_WIDTH, -1);
+            lockedImg = graphics.newImage(engine.getAssetsPath() + "images/lock.png");
+            unlockedImg = graphics.newImage(engine.getAssetsPath() + "images/unlock.png");
 
             int width = 0, height = 0;
             createBackground();
@@ -55,10 +59,11 @@ public class WorldLevelSelectionPageLogic extends AbstractState {
 
                     // Create the button
                     levels[i][j] = new Button(xPos, yPos, width, height, engine);
-                    levels[i][j].setBorderSize(4);
+                    levels[i][j].setBorderSize(8);
                     levels[i][j].setBorderColor(183, 210, 79);
-                    levels[i][j].setBackgroundColor(240, 240, 240, 255);
+                    levels[i][j].setBackgroundColor(0, 0, 0, 169);
                     levels[i][j].setPadding(5, 5);
+                    levels[i][j].setImage(unlockedImg);
 
                     final String level = getLevelName(type, i);
                     levels[i][j].setCallback(new IInteractableCallback() {
