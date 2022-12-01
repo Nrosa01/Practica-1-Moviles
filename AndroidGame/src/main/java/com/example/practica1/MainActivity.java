@@ -53,7 +53,7 @@ public class MainActivity extends AppCompatActivity  {
             public void onInitializationComplete(InitializationStatus initializationStatus) {}
         });
 
-        cargarVideoAnuncio();
+        //cargarVideoAnuncio();
 
         assetManager = getAssets();
 
@@ -112,30 +112,7 @@ public class MainActivity extends AppCompatActivity  {
 
         this.androidEngine.resume();
     }
-    private void cargarVideoAnuncio(){
 
-
-        AdRequest adRequest = new AdRequest.Builder().build();
-
-        InterstitialAd.load(this,"ca-app-pub-3940256099942544/1033173712", adRequest,
-                new InterstitialAdLoadCallback() {
-                    @Override
-                    public void onAdLoaded(@NonNull InterstitialAd interstitialAd) {
-                        // The mInterstitialAd reference will be null until
-                        // an ad is loaded.
-                        mInterstitialAd = interstitialAd;
-                        if(!androidEngine.videoAd()) androidEngine.setAd(mInterstitialAd);
-                        Log.i(TAG, "onAdLoaded");
-                    }
-
-                    @Override
-                    public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
-                        // Handle the error
-                        Log.d(TAG, loadAdError.toString());
-                        mInterstitialAd = null;
-                    }
-    });
-}
     private void cargarBanner(){
         mAdView = findViewById(R.id.adView);
         AdRequest adRequest = new AdRequest.Builder().build();

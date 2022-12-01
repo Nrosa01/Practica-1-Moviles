@@ -1,5 +1,7 @@
 package com.example.androidengine;
 
+import static android.content.ContentValues.TAG;
+
 import com.example.engine.*;
 
 import android.app.Activity;
@@ -7,14 +9,20 @@ import android.content.res.AssetManager;
 import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceView;
 import android.view.View;
 
+import androidx.annotation.NonNull;
+
 import java.util.List;
 
+import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.LoadAdError;
 import com.google.android.gms.ads.interstitial.InterstitialAd;
+import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback;
 
 public class AEngine implements IEngine, Runnable {
 
@@ -67,6 +75,29 @@ public class AEngine implements IEngine, Runnable {
                 onTouchEvent(motionEvent));
     }
 
+    private void cargarVideoAnuncio(){
+        AdRequest adRequest = new AdRequest.Builder().build();
+
+        InterstitialAd.load(this.activity,"ca-app-pub-3940256099942544/1033173712", adRequest,
+                new InterstitialAdLoadCallback() {
+                    @Override
+                    public void onAdLoaded(@NonNull InterstitialAd interstitialAd) {
+                        // The mInterstitialAd reference will be null until
+                        // an ad is loaded.
+                        mInterstitialAd = interstitialAd;
+                        if(!videoAd()) setAd(mInterstitialAd);
+                        Log.i(TAG, "onAdLoaded");
+                    }
+
+                    @Override
+                    public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
+                        // Handle the error
+                        Log.d(TAG, loadAdError.toString());
+                        mInterstitialAd = null;
+                    }
+                });
+    }
+
     @Override
     public void enableBanner(boolean enable){
 
@@ -94,9 +125,10 @@ public class AEngine implements IEngine, Runnable {
         //si esta en un hilo que no es el principal manda la accion a que la realice el principal
         this.activity.runOnUiThread(() -> {
             try {
+
                 if (mInterstitialAd != null) {
                     mInterstitialAd.show(this.activity);
-
+                    cargarVideoAnuncio();
                 }
                 stateManager.setState(state);
             }
