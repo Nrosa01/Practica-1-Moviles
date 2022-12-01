@@ -106,13 +106,14 @@ public class AEngine implements IEngine, Runnable {
 
     @Override
     public void enableBanner(boolean enable){
-
-        if (enable)
-            mAdView.setVisibility(View.VISIBLE);
-        else {
-            mAdView.setVisibility(View.GONE);
-            mAdView.clearAnimation();
-        }
+        this.activity.runOnUiThread(() -> {
+            if (enable)
+                mAdView.setVisibility(View.VISIBLE);
+            else {
+                mAdView.setVisibility(View.GONE);
+                mAdView.clearAnimation();
+            }
+        });
     }
 
     public boolean onTouchEvent(MotionEvent event) {
