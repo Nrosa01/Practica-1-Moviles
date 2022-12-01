@@ -65,7 +65,7 @@ public class WorldLevelSelectionPageLogic extends AbstractState {
                     levels[i][j].setPadding(5, 5);
                     levels[i][j].setImage(unlockedImg);
 
-                    final String level = getLevelName(type, i);
+                    final String level = getLevelName(type, (i * 5) + j, i);
                     levels[i][j].setCallback(new IInteractableCallback() {
                         @Override
                         public void onInteractionOccur() {
@@ -124,10 +124,10 @@ public class WorldLevelSelectionPageLogic extends AbstractState {
         backgroundImg = new SizedImage(engine, bg, LOGIC_WIDTH / 2, LOGIC_HEIGHT / 2, maximum, maximum);
     }
 
-    private String getLevelName(WorldLevelType type, int index) {
-        int cells = (index + 1) * 5;
+    private String getLevelName(WorldLevelType type, int index, int i) {
+        int cells = (i + 1) * 5;
         String typeToLower = type.toString().toLowerCase();
-        String filename = typeToLower + cells + "x" + cells + "-" + (index + 1) + ".txt";
+        String filename = typeToLower + cells + "x" + cells + "-" + ((index % 5) + 1) + ".txt";
         return "levels/" + typeToLower + "/" + filename;
     }
 }
