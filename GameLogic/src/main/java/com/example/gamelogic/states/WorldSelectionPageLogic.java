@@ -27,6 +27,8 @@ public class WorldSelectionPageLogic extends AbstractState {
 
     @Override
     public boolean init() {
+
+        engine.enableBanner(false);
         IImage forestImg = graphics.newImage(engine.getAssetsPath() + "images/forest.png");
         IImage seaImg = graphics.newImage(engine.getAssetsPath() + "images/sea.png");
         IImage cityImg = graphics.newImage(engine.getAssetsPath() + "images/city.png");
