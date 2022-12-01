@@ -16,6 +16,8 @@ import android.view.View;
 
 import androidx.annotation.NonNull;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 
 import com.google.android.gms.ads.AdRequest;
@@ -29,6 +31,7 @@ public class AEngine implements IEngine, Runnable {
     private Canvas canvas;
     private Paint paint;
     private SurfaceView view;
+    private AssetManager assetManager;
 
     private Thread renderThread;
 
@@ -59,6 +62,7 @@ public class AEngine implements IEngine, Runnable {
         this.paint = new Paint();
         this.paint.setColor(0xFF000000);
         this.view = context;
+        this.assetManager = assetManager;
 
         //obtengo el alto y el alto de la zona usable de pantalla
         int sWidth = Resources.getSystem().getDisplayMetrics().widthPixels;
@@ -279,5 +283,14 @@ public class AEngine implements IEngine, Runnable {
 
     public void setAd(InterstitialAd mInterstitialAd) {
         this.mInterstitialAd = mInterstitialAd;
+    }
+    @Override
+    public InputStream openFile(String filename) {
+        try {
+            return assetManager.open(filename);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }

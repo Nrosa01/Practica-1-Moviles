@@ -7,9 +7,11 @@ import com.example.engine.ISound;
 import com.example.engine.utilities.FloatLerper;
 import com.example.engine.utilities.LerpType;
 import com.example.gamelogic.utilities.Color;
+import com.example.gamelogic.utilities.Event;
+import com.example.gamelogic.utilities.EventManager;
+import com.example.gamelogic.utilities.events.OnDamaged;
 
 public class NonogramBoard extends Board {
-    private int[][] nonogramCellStates;
     private final int numOfStates = 3;
     private int borderBoardSize;
     private Color borderColor;
@@ -25,6 +27,8 @@ public class NonogramBoard extends Board {
     private int initialWidth;
     private Color textColor;
     private int missingCells, badCellNumber;
+    private int maxRow = 0;
+    private int maxCol = 0;
     IImage blockedCell;
     ISound winSound;
     ISound selectCell;
@@ -36,12 +40,11 @@ public class NonogramBoard extends Board {
         setWidth(width);
         this.solvedPuzzle = solvedPuzzle;
         init();
-
-        nonogramCellStates = new int[rows][cols];
         borderColor = new Color();
 
         generateRowsText();
         generateColsText();
+        calculateMaxRowAndMaxCol();
 
         this.font = font;
         endTransitionLerper = new FloatLerper(borderBoardRatio, 0, 0.55f, LerpType.EaseOut);
@@ -127,12 +130,12 @@ public class NonogramBoard extends Board {
     }
 
     private void renderErrorLabels() {
-        if (isWin || wrongTilesTimer.getPaused())
-            return;
+        //if (isWin || wrongTilesTimer.getPaused())
+        return;
 
-        graphics.setColor(255, 50, 50);
-        graphics.drawTextCentered("Te faltan " + missingCells + " casillas", posX, posY - height / 2 - borderBoardSize, font);
-        graphics.drawTextCentered("Tienes mal " + badCellNumber + " casillas", posX, posY - height / 2 - borderBoardSize + graphics.getFontHeight(font), font);
+        //graphics.setColor(255, 50, 50);
+        //graphics.drawTextCentered("Te faltan " + missingCells + " casillas", posX, posY - height / 2 - borderBoardSize, font);
+        //graphics.drawTextCentered("Tienes mal " + badCellNumber + " casillas", posX, posY - height / 2 - borderBoardSize + graphics.getFontHeight(font), font);
     }
 
     private void RenderTextArea() {
@@ -143,29 +146,69 @@ public class NonogramBoard extends Board {
 
         graphics.setColor(textColor.r, textColor.g, textColor.b, textColor.a);
 
-        // Render rows text from right to left
+        renderRowText();
+        renderColText();
+    }
+
+    private void calculateMaxRowAndMaxCol() {
         for (int row = 0; row < rows; row++) {
-            String text = rowsText[row];
-            int textWidth = graphics.getStringWidth(text, font);
-            int textPosX = posX - width / 2 - borderBoardSize / 2 + (borderBoardSize - textWidth) / 2;
-            int textPosY = getCellPosY(row);
-            graphics.drawTextCentered(text, textPosX, textPosY, font);
+            int count = 0;
+            for (int col = 0; col < rowsText[row].length(); col++) {
+                if (rowsText[row].charAt(col) != ' ') {
+                    count++;
+                }
+            }
+            if (count > maxRow) {
+                maxRow = count;
+            }
         }
 
-        // Render cols text from bottom to top
         for (int col = 0; col < cols; col++) {
-            String text = colsText[col];
-            String[] texts = text.split(" ");
-
-            int numOfTexts = texts.length;
-            for (int i = 0; i < numOfTexts; i++) {
-                String textToRender = texts[(numOfTexts - 1) - i];
-                int textHeight = graphics.getFontHeight(font);
-                int textPosX = getCellPosX(col);
-                int textPosY = posY - height / 2 - borderBoardSize / 2 + (borderBoardSize - textHeight) / 2 - (i * textHeight);
-                graphics.drawTextCentered(textToRender, textPosX, textPosY, font);
+            int count = 0;
+            for (int row = 0; row < colsText[col].length(); row++) {
+                if (colsText[col].charAt(row) != ' ') {
+                    count++;
+                }
             }
+            if (count > maxCol) {
+                maxCol = count;
+            }
+        }
+    }
 
+    private void renderRowText() {
+        // We divide the row in maxRow areas, each text will be in one area from right to left
+        int areaWidth = borderBoardSize / maxRow;
+
+        // For each row, render character by character
+        int rightestCellX = posX - width / 2 - areaWidth / 2;
+        for (int row = 0; row < rows; row++) {
+            String rowText = rowsText[row];
+            int count = 0;
+            for (int character = rowText.length() - 1; character >= 0; character--) {
+                // If current character is not a space, we render it
+                if (rowText.charAt(character) != ' ') {
+                    graphics.drawTextCentered(rowText.charAt(character) + "", rightestCellX - areaWidth * count, getCellPosY(row), font);
+                    count++;
+                }
+            }
+        }
+    }
+
+    private void renderColText() {
+        // The same we did for rows, but now we do it for cols from bottom to top
+        int areaHeight = borderBoardSize / maxCol;
+
+        int bottomestCellY = posY - height / 2 - areaHeight / 2;
+        for (int col = 0; col < cols; col++) {
+            String colText = colsText[col];
+            int count = 0;
+            for (int character = colText.length() - 1; character >= 0; character--) {
+                if (colText.charAt(character) != ' ') {
+                    graphics.drawTextCentered(colText.charAt(character) + "", getCellPosX(col), bottomestCellY - areaHeight * count, font);
+                    count++;
+                }
+            }
         }
     }
 
@@ -183,9 +226,16 @@ public class NonogramBoard extends Board {
             return;
         //System.out.println("Clicked on cell: " + row + " " + col);
 
-        nonogramCellStates[row][col] = Math.min(nonogramCellStates[row][col] + 1, numOfStates) % numOfStates;
-        isWin = updateBoardState(false);
-        if(isWin)
+        board[row][col] = Math.min(board[row][col] + 1, numOfStates) % numOfStates;
+        isWin = updateBoardState(true);
+
+        if(this.badCellNumber > 0)
+        {
+            final Event event = new OnDamaged();
+            EventManager.callEvent(event);
+        }
+
+        if (isWin)
             winSound.play();
         else
             selectCell.play();
@@ -205,12 +255,10 @@ public class NonogramBoard extends Board {
                 graphics.setColor(123, 123, 255);
                 break;
             case 2:
-                if (!isWin)
-                {
+                if (!isWin) {
                     graphics.setColor(23, 23, 23);
                     setCellImg(blockedCell);
-                }
-                else
+                } else
                     graphics.setColor(255, 255, 255);
                 break;
             case 3:
@@ -230,7 +278,7 @@ public class NonogramBoard extends Board {
 
     @Override
     protected void OnCellRender(int row, int col) {
-        setColorGivenState(nonogramCellStates[row][col]);
+        setColorGivenState(board[row][col]);
     }
 
     // Updates board state, update missingCells and badCells, also returns true if win is satisfied
@@ -244,18 +292,38 @@ public class NonogramBoard extends Board {
 
         for (int row = 0; row < rows; row++) {
             for (int col = 0; col < cols; col++) {
-                if (solvedPuzzle[row][col] == 1 && nonogramCellStates[row][col] != 1) {
+                if (solvedPuzzle[row][col] == 1 && board[row][col] != 1) {
                     if (updateStats)
                         missingCells++;
                     win = false;
                 }
 
-                if (solvedPuzzle[row][col] != 1 && (nonogramCellStates[row][col] == 1 || nonogramCellStates[row][col] == 3)) {
+                if (solvedPuzzle[row][col] != 1 && (board[row][col] == 1 /*|| board[row][col] == 3*/)) {
                     if (updateStats)
                         badCellNumber++;
                     win = false;
                 }
             }
+        }
+
+        if (win) {
+            for (int row = 0; row < rows; row++) {
+                for (int col = 0; col < cols; col++) {
+                    if (solvedPuzzle[row][col] != 1) {
+                        board[row][col] = 0;
+                    }
+                }
+            }
+        } else {
+            for (int row = 0; row < rows; row++) {
+                for (int col = 0; col < cols; col++) {
+                    if (solvedPuzzle[row][col] != 1 && board[row][col] == 1) {
+                        board[row][col] = 3;
+                    }
+                }
+            }
+
+            wrongTilesTimer.restart();
         }
 
         return win;
@@ -266,26 +334,6 @@ public class NonogramBoard extends Board {
             return;
 
         updateBoardState(true);
-
-        if (isWin) {
-            for (int row = 0; row < rows; row++) {
-                for (int col = 0; col < cols; col++) {
-                    if (solvedPuzzle[row][col] != 1) {
-                        nonogramCellStates[row][col] = 0;
-                    }
-                }
-            }
-        } else {
-            for (int row = 0; row < rows; row++) {
-                for (int col = 0; col < cols; col++) {
-                    if (solvedPuzzle[row][col] != 1 && nonogramCellStates[row][col] == 1) {
-                        nonogramCellStates[row][col] = 3;
-                    }
-                }
-            }
-
-            wrongTilesTimer.restart();
-        }
     }
 
     @Override
@@ -312,8 +360,8 @@ public class NonogramBoard extends Board {
 
             for (int row = 0; row < rows; row++) {
                 for (int col = 0; col < cols; col++) {
-                    if (nonogramCellStates[row][col] == 3) {
-                        nonogramCellStates[row][col] = 0;
+                    if (board[row][col] == 3) {
+                        board[row][col] = 0;
                     }
                 }
             }
