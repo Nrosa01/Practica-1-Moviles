@@ -152,24 +152,18 @@ public class NonogramBoard extends Board {
 
     private void calculateMaxRowAndMaxCol() {
         for (int row = 0; row < rows; row++) {
-            int count = 0;
-            for (int col = 0; col < rowsText[row].length(); col++) {
-                if (rowsText[row].charAt(col) != ' ') {
-                    count++;
-                }
-            }
+            String[] aux = rowsText[row].split(" ");
+            int count = aux.length;
+
             if (count > maxRow) {
                 maxRow = count;
             }
         }
 
         for (int col = 0; col < cols; col++) {
-            int count = 0;
-            for (int row = 0; row < colsText[col].length(); row++) {
-                if (colsText[col].charAt(row) != ' ') {
-                    count++;
-                }
-            }
+            String[] aux = colsText[col].split(" ");
+            int count = aux.length;
+
             if (count > maxCol) {
                 maxCol = count;
             }
@@ -183,14 +177,11 @@ public class NonogramBoard extends Board {
         // For each row, render character by character
         int rightestCellX = posX - width / 2 - areaWidth / 2;
         for (int row = 0; row < rows; row++) {
-            String rowText = rowsText[row];
+            String[] texts = rowsText[row].split(" ");
             int count = 0;
-            for (int character = rowText.length() - 1; character >= 0; character--) {
-                // If current character is not a space, we render it
-                if (rowText.charAt(character) != ' ') {
-                    graphics.drawTextCentered(rowText.charAt(character) + "", rightestCellX - areaWidth * count, getCellPosY(row), font);
-                    count++;
-                }
+            for (int character = texts.length - 1; character >= 0; character--) {
+                graphics.drawTextCentered(texts[character], rightestCellX - areaWidth * count, getCellPosY(row), font);
+                count++;
             }
         }
     }
@@ -201,13 +192,11 @@ public class NonogramBoard extends Board {
 
         int bottomestCellY = posY - height / 2 - areaHeight / 2;
         for (int col = 0; col < cols; col++) {
-            String colText = colsText[col];
+            String[] texts = colsText[col].split(" ");
             int count = 0;
-            for (int character = colText.length() - 1; character >= 0; character--) {
-                if (colText.charAt(character) != ' ') {
-                    graphics.drawTextCentered(colText.charAt(character) + "", getCellPosX(col), bottomestCellY - areaHeight * count, font);
-                    count++;
-                }
+            for (int character = texts.length - 1; character >= 0; character--) {
+                graphics.drawTextCentered(texts[character] + "", getCellPosX(col), bottomestCellY - areaHeight * count, font);
+                count++;
             }
         }
     }
@@ -229,8 +218,7 @@ public class NonogramBoard extends Board {
         board[row][col] = Math.min(board[row][col] + 1, numOfStates) % numOfStates;
         isWin = updateBoardState(true);
 
-        if(this.badCellNumber > 0)
-        {
+        if (this.badCellNumber > 0) {
             final Event event = new OnDamaged();
             EventManager.callEvent(event);
         }
