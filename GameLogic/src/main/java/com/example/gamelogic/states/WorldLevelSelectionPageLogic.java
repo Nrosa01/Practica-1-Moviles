@@ -5,6 +5,7 @@ import com.example.engine.IFont;
 import com.example.engine.IImage;
 import com.example.gamelogic.entities.Button;
 import com.example.gamelogic.entities.IInteractableCallback;
+import com.example.gamelogic.entities.Text;
 import com.example.gamelogic.levels.WorldLevelType;
 
 public class WorldLevelSelectionPageLogic extends AbstractState {
@@ -14,6 +15,7 @@ public class WorldLevelSelectionPageLogic extends AbstractState {
     IFont tittleFont; // TODO: Crear una entidad que sea simplemente un texto
     String text;
     WorldLevelType type;
+    Text tittleText;
 
     protected WorldLevelSelectionPageLogic(IEngine engine, WorldLevelType type) {
         super(engine);
@@ -25,6 +27,8 @@ public class WorldLevelSelectionPageLogic extends AbstractState {
     public boolean init() {
         try {
             tittleFont = graphics.newFont(engine.getAssetsPath() + "fonts/Roboto-Regular.ttf", 24, true);
+            tittleText = new Text(engine, text, tittleFont, LOGIC_WIDTH/2, (LOGIC_HEIGHT / 2) - 100);
+            addEntity(tittleText);
 
             int xPos = 0;
             int yPos = 100;
@@ -103,11 +107,5 @@ public class WorldLevelSelectionPageLogic extends AbstractState {
         String typeToLower = type.toString().toLowerCase();
         String filename = typeToLower + cells + "x" + cells + "-" + (index + 1) + ".txt";
         return "levels/" + typeToLower + "/" + filename;
-    }
-
-    @Override
-    public void render() {
-        super.render();
-        graphics.drawTextCentered(text, LOGIC_WIDTH/2, (LOGIC_HEIGHT / 2) - 100, tittleFont);
     }
 }
