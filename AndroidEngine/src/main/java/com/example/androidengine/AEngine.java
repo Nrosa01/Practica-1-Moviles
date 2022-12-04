@@ -53,8 +53,6 @@ public class AEngine implements IEngine, Runnable {
 
         //this.mInterstitialAd = mInterstitialAd;
 
-
-
         this.mAdView = adView;
         this.activity = act;
 
@@ -64,6 +62,7 @@ public class AEngine implements IEngine, Runnable {
         this.paint = new Paint();
         this.paint.setColor(0xFF000000);
         this.view = context;
+
         this.assetManager = assetManager;
 
         //obtengo el alto y el alto de la zona usable de pantalla
@@ -76,6 +75,15 @@ public class AEngine implements IEngine, Runnable {
         inputManager = new AInput();
 
         audio = new AAudio(assetManager);
+
+
+        final AGraphics graph = this.graphics;
+        this.view.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
+            @Override
+            public void onLayoutChange(View view, int i, int i1, int i2, int i3, int i4, int i5, int i6, int i7) {
+                graph.setScreenSize(view.getWidth(),view.getHeight());
+            }
+        });
 
         view.setOnTouchListener((view1, motionEvent) ->
                 onTouchEvent(motionEvent));
