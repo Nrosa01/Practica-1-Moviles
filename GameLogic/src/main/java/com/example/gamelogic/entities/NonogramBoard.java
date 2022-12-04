@@ -11,7 +11,10 @@ import com.example.gamelogic.utilities.Event;
 import com.example.gamelogic.utilities.EventManager;
 import com.example.gamelogic.utilities.events.OnDamaged;
 
+import org.graalvm.compiler.replacements.Log;
+
 public class NonogramBoard extends Board {
+    private float timeLongPress = 1500;
     private final int numOfStates = 3;
     private int borderBoardSize;
     private Color borderColor;
@@ -214,19 +217,44 @@ public class NonogramBoard extends Board {
         if (isWin)
             return;
         //System.out.println("Clicked on cell: " + row + " " + col);
+        timePressBoard[row][col] = System.currentTimeMillis();
 
-        board[row][col] = Math.min(board[row][col] + 1, numOfStates) % numOfStates;
+       // System.out.println(row + " / "+ col);
+
+    }
+    @Override
+    protected void OnCellReleased(int row, int col) {
+        if (isWin)
+            return;
+        long releaseTime = System.currentTimeMillis();
+
+      /*  System.out.println(releaseTime);
+        System.out.println(timePressBoard[row][col]);*/
+        System.out.println(releaseTime- timePressBoard[row][col]);
+
+
+        if(System.currentTimeMillis()- timePressBoard[row][col] < timeLongPress) {
+            board[row][col] = Math.min(board[row][col] + 1, numOfStates) % numOfStates;
+
+            if (this.badCellNumber > 0) {
+                final Event event = new OnDamaged();
+                EventManager.callEvent(event);
+            }
+
+        }
+        else{
+
+            board[row][col] = 4;
+        }
         isWin = updateBoardState(true);
 
-        if (this.badCellNumber > 0) {
-            final Event event = new OnDamaged();
-            EventManager.callEvent(event);
-        }
 
         if (isWin)
             winSound.play();
         else
             selectCell.play();
+
+        timePressBoard[row][col] = 0;
     }
 
     private void setColorGivenState(int state) {
@@ -254,6 +282,13 @@ public class NonogramBoard extends Board {
                     graphics.setColor(255, 123, 123);
                 else
                     graphics.setColor(255, 255, 255);
+            case 4:
+                if (!isWin)
+                    graphics.setColor(123, 255, 123);
+                else
+                    graphics.setColor(255, 255, 255);
+
+
         }
     }
 
@@ -364,6 +399,16 @@ public class NonogramBoard extends Board {
         this.posY += borderBoardSize / 2;
 
         super.OnPointerDown(x, y);
+
+        this.posX -= borderBoardSize / 2;
+        this.posY -= borderBoardSize / 2;
+    }
+    @Override
+    public void OnPointerUp(int x , int y){
+        this.posX += borderBoardSize / 2;
+        this.posY += borderBoardSize / 2;
+
+        super.OnPointerUp(x,y);
 
         this.posX -= borderBoardSize / 2;
         this.posY -= borderBoardSize / 2;
