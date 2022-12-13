@@ -6,6 +6,12 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
+import androidx.work.Constraints;
+import androidx.work.Data;
+import androidx.work.ExistingPeriodicWorkPolicy;
+import androidx.work.NetworkType;
+import androidx.work.PeriodicWorkRequest;
+import androidx.work.WorkManager;
 
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -15,6 +21,8 @@ import android.content.pm.ActivityInfo;
 import android.content.res.AssetManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.SurfaceView;
 import android.view.View;
@@ -31,6 +39,8 @@ import com.google.android.gms.ads.initialization.InitializationStatus;
 import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
 import com.google.android.gms.ads.interstitial.InterstitialAd;
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback;
+
+import java.util.concurrent.TimeUnit;
 
 public class MainActivity extends AppCompatActivity  {
 
@@ -96,16 +106,39 @@ public class MainActivity extends AppCompatActivity  {
                 // Set the intent that will fire when the user taps the notification
                 .setContentIntent(pendingIntent)
                 .setAutoCancel(true);
+        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
+        //MOSTRAR NOTIFICACION--------------------------------------------------
+        // notificationId is a unique int for each notification that you must define
+        notificationManager.notify(1, builder.build()); //notificationId
 
+        WorkManager workManager = WorkManager.getInstance(this); //application.applicationContext!!
+        //
+        //String ENDPOINT_REQUEST = "ENDPOINT_REQUEST, endPoint";
+        //Data data = new Data.Builder()
+         //       .putString(ENDPOINT_REQUEST, "ENDPOINT_REQUEST, endPoint");// ENDPOINT_REQUEST, endPoint
+        //Crear work
+        PeriodicWorkRequest work = new
+                PeriodicWorkRequest.Builder(NotificationWork.class, 10, TimeUnit.SECONDS)
+                .setConstraints(new Constraints.Builder()
+                        .setRequiresCharging(true)
+                        .build()
+                )
+                //.setInputData(data.build())
+                .build();
+        //enque work en workmanager
+        WorkManager.getInstance(this).enqueueUniquePeriodicWork(
+                "sendLogs",
+                ExistingPeriodicWorkPolicy.KEEP,
+                work);
+
+
+        //----------------------------------------------------------------------------------
         SurfaceView view = (SurfaceView) findViewById(R.id.surfaceView);
 
         this.androidEngine = new AEngine(this,view, assetManager, mAdView,mInterstitialAd);
 
 
-        //MOSTRAR NOTIFICACION
-        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
-        // notificationId is a unique int for each notification that you must define
-        notificationManager.notify(1, builder.build()); //notificationId
+
 
         //bloquea la orientacion del movil a vertical
         StartMenuLogic menuLogic = new StartMenuLogic(this.androidEngine);
@@ -152,6 +185,7 @@ public class MainActivity extends AppCompatActivity  {
     protected void onDestroy() {
         super.onDestroy();
         this.androidEngine.stop();
+        Log.i("Cosa ","DESTROY ");
     }
 
     @Override
