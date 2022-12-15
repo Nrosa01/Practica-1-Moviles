@@ -10,6 +10,8 @@ import com.example.gamelogic.entities.Button;
 import com.example.gamelogic.entities.Entity;
 import com.example.gamelogic.entities.IInteractableCallback;
 import com.example.gamelogic.entities.Pointer;
+import com.example.gamelogic.entities.Text;
+
 import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -23,6 +25,7 @@ public class SelectLevelLogic extends AbstractState {
     Button returnButton;
     int rows = 2, cols = 3;
     String[][] texts = {{"4x4", "5x5", "5x10"}, {"8x8", "10x10", "10x15"}};
+    Text selectText;
 
     public SelectLevelLogic(IEngine engine) {
         super(engine);
@@ -37,12 +40,14 @@ public class SelectLevelLogic extends AbstractState {
             fontBold = graphics.newFont(engine.getAssetsPath() + "fonts/Roboto-Regular.ttf", 24, true);
             font = graphics.newFont(engine.getAssetsPath() + "fonts/Roboto-Regular.ttf", 24, false);
             arrow = graphics.newImage(engine.getAssetsPath() + "images/arrow.png");
-            int buttonSize = LOGIC_WIDTH / 5;
+            int buttonSize = graphics.isPortrait() ? LOGIC_WIDTH / 5 : LOGIC_WIDTH / 8;
             int gapSize = buttonSize / 2;
 
             for (int row = 0; row < rows; row++) {
                 for (int col = 0; col < cols; col++) {
-                    Button button = new Button((gapSize + buttonSize) * (col + 1) - gapSize, 200 + (120 * (row + 1)), buttonSize, buttonSize, engine);
+                    int buttonY = graphics.isPortrait() ? 200 + (120 * (row + 1)) : 75 + (120 * (row + 1));
+                    int buttonX = graphics.isPortrait() ? (gapSize + buttonSize) * (col + 1) - gapSize : 110 + (gapSize + buttonSize) * (col + 1) - gapSize;
+                    Button button = new Button(buttonX, buttonY, buttonSize, buttonSize, engine);
                     button.setText(texts[row][col], fontBold);
                     final int finalRow = row;
                     final int finalCol = col;
@@ -56,13 +61,9 @@ public class SelectLevelLogic extends AbstractState {
                             }
                         }
                     });
-
-
                     addEntity(button);
                 }
             }
-
-
 
             returnButton = new Button(25, 25, 30, 30, engine);
             returnButton.setImage(arrow);
@@ -82,6 +83,9 @@ public class SelectLevelLogic extends AbstractState {
             });
 
             addEntity(returnButton);
+            int textY = graphics.isPortrait() ? 200 : 100;
+            selectText = new Text(engine, "Selecciona el tamaño del puzzle", font, LOGIC_WIDTH / 2, textY);
+            addEntity(selectText);
             return true;
         } catch (Exception e) {
             e.printStackTrace();
@@ -95,7 +99,6 @@ public class SelectLevelLogic extends AbstractState {
         graphics.drawImage(arrow, 25, 25);
         graphics.setScale(1, 1);
         graphics.drawText("Volver", 45, 35, font);
-        graphics.drawTextCentered("Selecciona el tamaño del puzzle", LOGIC_WIDTH / 2, 200, font);
 
         super.render();
     }

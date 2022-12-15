@@ -242,7 +242,7 @@ public class AEngine implements IEngine, Runnable {
 
         graphics.clear(255,255,255);
         this.stateManager.render();
-        graphics.renderBordersAndroid();
+        //graphics.renderBordersAndroid();
     }
 
     @Override
