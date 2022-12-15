@@ -42,7 +42,6 @@ public class NonogramBoard extends Board {
         this.initialWidth = width;
         setWidth(width);
         this.solvedPuzzle = solvedPuzzle;
-        init();
         borderColor = new Color();
 
         generateRowsText();
@@ -68,6 +67,7 @@ public class NonogramBoard extends Board {
     public void setWidth(int newWidth) {
         borderBoardSize = (int) (newWidth * borderBoardRatio);
         this.width = newWidth - borderBoardSize;
+        init();
     }
 
     private void generateRowsText() {

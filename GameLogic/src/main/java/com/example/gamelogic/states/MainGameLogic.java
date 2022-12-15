@@ -33,7 +33,6 @@ public class MainGameLogic extends AbstractState implements Listener {
     NonogramBoard board;
     Button returnButton;
     Button watchVid;
-    Button checkButton;
     Button winReturnButton;
     IFont font;
     IFont boardFont;
@@ -117,10 +116,17 @@ public class MainGameLogic extends AbstractState implements Listener {
             fullLive = graphics.newImage(engine.getAssetsPath() + "images/heart-full.png");
 
             int numLifes = 3;
-            int livesPanelWidth = LOGIC_WIDTH / 4;
+            int livesPanelWidth = Math.min(LOGIC_WIDTH, LOGIC_HEIGHT) / 4;
             int livesPanelHeight = livesPanelWidth / numLifes;
             int livesPanelYPos = (LOGIC_WIDTH - 20) / 2 + LOGIC_HEIGHT / 2 + livesPanelHeight;
             int livesPanelXPos = LOGIC_WIDTH - LOGIC_WIDTH / 25 - livesPanelWidth / 2;
+
+            if(!graphics.isPortrait())
+            {
+                livesPanelYPos = LOGIC_HEIGHT / 20 + livesPanelHeight / 2;
+                livesPanelXPos += 40;
+            }
+
             livesPanel = new LivesPanel(engine, livesPanelXPos, livesPanelYPos, livesPanelWidth, livesPanelHeight, numLifes, fullLive, emptyLive);
             addEntity(livesPanel);
 
@@ -140,20 +146,6 @@ public class MainGameLogic extends AbstractState implements Listener {
             watchVid.setHoverColor(205, 205, 205);
             watchVid.setCallback(watchVidCallback);
 
-            checkButton = new Button(LOGIC_WIDTH - 30 - graphics.getStringWidth("Comprobar", font), 25, 30, 30, engine);
-            checkButton.setImage(search);
-            checkButton.setPadding(10, 10);
-            checkButton.setBackgroundColor(0, 0, 0, 0);
-            checkButton.setBorderSize(0);
-            checkButton.setHoverColor(205, 205, 205);
-            checkButton.setPressedColor(150, 150, 150);
-            checkButton.setCallback(new IInteractableCallback() {
-                @Override
-                public void onInteractionOccur() {
-                    board.checkSolution();
-                }
-            });
-
             winReturnButton = new Button(LOGIC_WIDTH / 2, LOGIC_HEIGHT - 50, 100, 50, engine);
             winReturnButton.setText("Volver", font);
             winReturnButton.setBackgroundColor(0, 0, 0, 0);
@@ -165,7 +157,8 @@ public class MainGameLogic extends AbstractState implements Listener {
             if (level == null)
                 return false;
 
-            board = new NonogramBoard(engine, level, LOGIC_WIDTH - 20, 2, boardFont);
+            int boardWidth = Math.min(LOGIC_WIDTH, LOGIC_HEIGHT) - 20;
+            board = new NonogramBoard(engine, level, boardWidth, 2, boardFont);
             board.setPosX(LOGIC_WIDTH / 2);
             board.setPosY(LOGIC_HEIGHT / 2);
 
@@ -227,7 +220,11 @@ public class MainGameLogic extends AbstractState implements Listener {
         if (!board.getIsWin()) {
             returnButton.update(deltaTime);
         } else
+        {
+            int boardWidth = Math.min(LOGIC_WIDTH, LOGIC_HEIGHT)/2 - 20;
+            board.setWidth(boardWidth);
             winReturnButton.update(deltaTime);
+        }
         watchVid.update(deltaTime);
     }
 
@@ -237,18 +234,15 @@ public class MainGameLogic extends AbstractState implements Listener {
 
         graphics.setColor(0, 0, 0);
         if (!board.getIsWin()) {
-            graphics.drawText("Comprobar", LOGIC_WIDTH - graphics.getStringWidth("Comprobar", font) - 10, 33, font);
             graphics.drawText("Rendirse", 45, 33, font);
 
             returnButton.render();
-            checkButton.render();
             watchVid.render();
+            livesPanel.render();
         } else {
             graphics.drawTextCentered("¡Enhorabuena!", LOGIC_WIDTH / 2, 50, congratsFont);
             winReturnButton.render();
         }
-
-        livesPanel.render();
     }
 
     @Override
@@ -260,7 +254,6 @@ public class MainGameLogic extends AbstractState implements Listener {
             board.handleInput(proccesedX, proccesedY, inputEvent.type);
 
             if (!board.getIsWin()) {
-                checkButton.handleInput(proccesedX, proccesedY, inputEvent.type);
                 watchVid.handleInput(proccesedX,proccesedY,inputEvent.type);
                 returnButton.handleInput(proccesedX, proccesedY, inputEvent.type);
             } else
