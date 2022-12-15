@@ -11,7 +11,10 @@ import com.example.gamelogic.utilities.Event;
 import com.example.gamelogic.utilities.EventManager;
 import com.example.gamelogic.utilities.events.OnDamaged;
 
+import org.graalvm.compiler.replacements.Log;
+
 public class NonogramBoard extends Board {
+    private float timeLongPress = 1500;
     private final int numOfStates = 3;
     private int borderBoardSize;
     private Color borderColor;
@@ -152,24 +155,18 @@ public class NonogramBoard extends Board {
 
     private void calculateMaxRowAndMaxCol() {
         for (int row = 0; row < rows; row++) {
-            int count = 0;
-            for (int col = 0; col < rowsText[row].length(); col++) {
-                if (rowsText[row].charAt(col) != ' ') {
-                    count++;
-                }
-            }
+            String[] aux = rowsText[row].split(" ");
+            int count = aux.length;
+
             if (count > maxRow) {
                 maxRow = count;
             }
         }
 
         for (int col = 0; col < cols; col++) {
-            int count = 0;
-            for (int row = 0; row < colsText[col].length(); row++) {
-                if (colsText[col].charAt(row) != ' ') {
-                    count++;
-                }
-            }
+            String[] aux = colsText[col].split(" ");
+            int count = aux.length;
+
             if (count > maxCol) {
                 maxCol = count;
             }
@@ -183,14 +180,11 @@ public class NonogramBoard extends Board {
         // For each row, render character by character
         int rightestCellX = posX - width / 2 - areaWidth / 2;
         for (int row = 0; row < rows; row++) {
-            String rowText = rowsText[row];
+            String[] texts = rowsText[row].split(" ");
             int count = 0;
-            for (int character = rowText.length() - 1; character >= 0; character--) {
-                // If current character is not a space, we render it
-                if (rowText.charAt(character) != ' ') {
-                    graphics.drawTextCentered(rowText.charAt(character) + "", rightestCellX - areaWidth * count, getCellPosY(row), font);
-                    count++;
-                }
+            for (int character = texts.length - 1; character >= 0; character--) {
+                graphics.drawTextCentered(texts[character], rightestCellX - areaWidth * count, getCellPosY(row), font);
+                count++;
             }
         }
     }
@@ -201,13 +195,11 @@ public class NonogramBoard extends Board {
 
         int bottomestCellY = posY - height / 2 - areaHeight / 2;
         for (int col = 0; col < cols; col++) {
-            String colText = colsText[col];
+            String[] texts = colsText[col].split(" ");
             int count = 0;
-            for (int character = colText.length() - 1; character >= 0; character--) {
-                if (colText.charAt(character) != ' ') {
-                    graphics.drawTextCentered(colText.charAt(character) + "", getCellPosX(col), bottomestCellY - areaHeight * count, font);
-                    count++;
-                }
+            for (int character = texts.length - 1; character >= 0; character--) {
+                graphics.drawTextCentered(texts[character] + "", getCellPosX(col), bottomestCellY - areaHeight * count, font);
+                count++;
             }
         }
     }
@@ -225,20 +217,44 @@ public class NonogramBoard extends Board {
         if (isWin)
             return;
         //System.out.println("Clicked on cell: " + row + " " + col);
+        timePressBoard[row][col] = System.currentTimeMillis();
 
-        board[row][col] = Math.min(board[row][col] + 1, numOfStates) % numOfStates;
+       // System.out.println(row + " / "+ col);
+
+    }
+    @Override
+    protected void OnCellReleased(int row, int col) {
+        if (isWin)
+            return;
+        long releaseTime = System.currentTimeMillis();
+
+      /*  System.out.println(releaseTime);
+        System.out.println(timePressBoard[row][col]);*/
+        System.out.println(releaseTime- timePressBoard[row][col]);
+
+
+        if(System.currentTimeMillis()- timePressBoard[row][col] < timeLongPress) {
+            board[row][col] = Math.min(board[row][col] + 1, numOfStates) % numOfStates;
+
+            if (this.badCellNumber > 0) {
+                final Event event = new OnDamaged();
+                EventManager.callEvent(event);
+            }
+
+        }
+        else{
+
+            board[row][col] = 4;
+        }
         isWin = updateBoardState(true);
 
-        if(this.badCellNumber > 0)
-        {
-            final Event event = new OnDamaged();
-            EventManager.callEvent(event);
-        }
 
         if (isWin)
             winSound.play();
         else
             selectCell.play();
+
+        timePressBoard[row][col] = 0;
     }
 
     private void setColorGivenState(int state) {
@@ -266,6 +282,13 @@ public class NonogramBoard extends Board {
                     graphics.setColor(255, 123, 123);
                 else
                     graphics.setColor(255, 255, 255);
+            case 4:
+                if (!isWin)
+                    graphics.setColor(123, 255, 123);
+                else
+                    graphics.setColor(255, 255, 255);
+
+
         }
     }
 
@@ -376,6 +399,16 @@ public class NonogramBoard extends Board {
         this.posY += borderBoardSize / 2;
 
         super.OnPointerDown(x, y);
+
+        this.posX -= borderBoardSize / 2;
+        this.posY -= borderBoardSize / 2;
+    }
+    @Override
+    public void OnPointerUp(int x , int y){
+        this.posX += borderBoardSize / 2;
+        this.posY += borderBoardSize / 2;
+
+        super.OnPointerUp(x,y);
 
         this.posX -= borderBoardSize / 2;
         this.posY -= borderBoardSize / 2;

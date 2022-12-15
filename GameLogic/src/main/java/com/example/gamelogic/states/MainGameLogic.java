@@ -32,6 +32,7 @@ public class MainGameLogic extends AbstractState implements Listener {
     String level;
     NonogramBoard board;
     Button returnButton;
+    Button watchVid;
     Button checkButton;
     Button winReturnButton;
     IFont font;
@@ -46,6 +47,7 @@ public class MainGameLogic extends AbstractState implements Listener {
     boolean gameWin = false;
     boolean random = true;
     IInteractableCallback returnCallback;
+    IInteractableCallback watchVidCallback;
 
     public MainGameLogic(IEngine engine, String level) {
         super(engine);
@@ -58,11 +60,24 @@ public class MainGameLogic extends AbstractState implements Listener {
         this.random = random;
     }
 
-    public MainGameLogic(IEngine engine, String level, boolean random, IInteractableCallback returnCallabck) {
+    public MainGameLogic(final IEngine engine, String level, boolean random, IInteractableCallback returnCallabck) {
         super(engine);
         this.level = level;
         this.random = random;
         this.returnCallback = returnCallabck;
+
+        final IEngine engineAux = this.engine;
+        this.watchVidCallback = new IInteractableCallback() {
+            @Override
+            public void onInteractionOccur() {
+                try {
+                    livesPanel.restoreLive();
+                    engineAux.showVid();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        };
     }
 
     @EventHandler
@@ -116,6 +131,14 @@ public class MainGameLogic extends AbstractState implements Listener {
             returnButton.setBorderSize(0);
             returnButton.setHoverColor(205, 205, 205);
             returnButton.setCallback(returnCallback);
+
+            watchVid = new Button(25, LOGIC_HEIGHT-10, 30, 30, engine);
+            watchVid.setImage(arrow);
+            watchVid.setPadding(10, 10);
+            watchVid.setBackgroundColor(0, 0, 0, 0);
+            watchVid.setBorderSize(0);
+            watchVid.setHoverColor(205, 205, 205);
+            watchVid.setCallback(watchVidCallback);
 
             checkButton = new Button(LOGIC_WIDTH - 30 - graphics.getStringWidth("Comprobar", font), 25, 30, 30, engine);
             checkButton.setImage(search);
@@ -205,6 +228,7 @@ public class MainGameLogic extends AbstractState implements Listener {
             returnButton.update(deltaTime);
         } else
             winReturnButton.update(deltaTime);
+        watchVid.update(deltaTime);
     }
 
     @Override
@@ -218,6 +242,7 @@ public class MainGameLogic extends AbstractState implements Listener {
 
             returnButton.render();
             checkButton.render();
+            watchVid.render();
         } else {
             graphics.drawTextCentered("¡Enhorabuena!", LOGIC_WIDTH / 2, 50, congratsFont);
             winReturnButton.render();
@@ -236,7 +261,7 @@ public class MainGameLogic extends AbstractState implements Listener {
 
             if (!board.getIsWin()) {
                 checkButton.handleInput(proccesedX, proccesedY, inputEvent.type);
-
+                watchVid.handleInput(proccesedX,proccesedY,inputEvent.type);
                 returnButton.handleInput(proccesedX, proccesedY, inputEvent.type);
             } else
                 winReturnButton.handleInput(proccesedX, proccesedY, inputEvent.type);

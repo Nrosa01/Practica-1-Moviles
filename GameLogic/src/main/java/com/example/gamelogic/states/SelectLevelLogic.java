@@ -31,6 +31,9 @@ public class SelectLevelLogic extends AbstractState {
     @Override
     public boolean init() {
         try {
+
+            engine.enableBanner(false);
+
             fontBold = graphics.newFont(engine.getAssetsPath() + "fonts/Roboto-Regular.ttf", 24, true);
             font = graphics.newFont(engine.getAssetsPath() + "fonts/Roboto-Regular.ttf", 24, false);
             arrow = graphics.newImage(engine.getAssetsPath() + "images/arrow.png");
@@ -58,6 +61,8 @@ public class SelectLevelLogic extends AbstractState {
                     addEntity(button);
                 }
             }
+
+
 
             returnButton = new Button(25, 25, 30, 30, engine);
             returnButton.setImage(arrow);

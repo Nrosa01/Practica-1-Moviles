@@ -70,6 +70,11 @@ public class AGraphics extends AbstractGraphics {
         this.logicSizeY = ySize;
         calculateScaleFactor();
     }
+    void setScreenSize(int width,int height){
+        this.screenWidth = width;
+        this.screenHeight = height;
+        calculateScaleFactor();
+    }
 
     void calculateScaleFactor() {
         //calculo el factor de escalado

@@ -1,17 +1,30 @@
 package com.example.androidengine;
 
+import static android.content.ContentValues.TAG;
+
 import com.example.engine.*;
 
+import android.app.Activity;
 import android.content.res.AssetManager;
 import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceView;
+import android.view.View;
+
+import androidx.annotation.NonNull;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
+
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.LoadAdError;
+import com.google.android.gms.ads.interstitial.InterstitialAd;
+import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback;
 
 public class AEngine implements IEngine, Runnable {
 
@@ -28,13 +41,28 @@ public class AEngine implements IEngine, Runnable {
 
     private AGraphics graphics;
     private AInput inputManager;
+
+    private AdView mAdView;
+    private InterstitialAd mInterstitialAd;
+
+    private Activity activity;
+
     AAudio audio;
 
-    public AEngine(SurfaceView context, AssetManager assetManager) {
+    public AEngine( Activity act, SurfaceView context, AssetManager assetManager, AdView adView, InterstitialAd mInterstitialAd) {
 
+        //this.mInterstitialAd = mInterstitialAd;
+
+        this.mAdView = adView;
+        this.activity = act;
+
+        this.cargarVideoAnuncio();
+
+        enableBanner(true);
         this.paint = new Paint();
         this.paint.setColor(0xFF000000);
         this.view = context;
+
         this.assetManager = assetManager;
 
         //obtengo el alto y el alto de la zona usable de pantalla
@@ -48,8 +76,54 @@ public class AEngine implements IEngine, Runnable {
 
         audio = new AAudio(assetManager);
 
+
+        final AGraphics graph = this.graphics;
+        this.view.addOnLayoutChangeListener((view, i, i1, i2, i3, i4, i5, i6, i7) -> graph.setScreenSize(view.getWidth(),view.getHeight()));
+
         view.setOnTouchListener((view1, motionEvent) ->
                 onTouchEvent(motionEvent));
+
+       /* view.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                return false;
+            }
+        });*/
+    }
+
+    private void cargarVideoAnuncio(){
+        AdRequest adRequest = new AdRequest.Builder().build();
+
+        InterstitialAd.load(this.activity,"ca-app-pub-3940256099942544/1033173712", adRequest,
+                new InterstitialAdLoadCallback() {
+                    @Override
+                    public void onAdLoaded(@NonNull InterstitialAd interstitialAd) {
+                        // The mInterstitialAd reference will be null until
+                        // an ad is loaded.
+                        mInterstitialAd = interstitialAd;
+                        if(!videoAd()) setAd(mInterstitialAd);
+                        Log.i(TAG, "onAdLoaded");
+                    }
+
+                    @Override
+                    public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
+                        // Handle the error
+                        Log.d(TAG, loadAdError.toString());
+                        mInterstitialAd = null;
+                    }
+                });
+    }
+
+    @Override
+    public void enableBanner(boolean enable){
+        this.activity.runOnUiThread(() -> {
+            if (enable)
+                mAdView.setVisibility(View.VISIBLE);
+            else {
+                mAdView.setVisibility(View.GONE);
+                mAdView.clearAnimation();
+            }
+        });
     }
 
     public boolean onTouchEvent(MotionEvent event) {
@@ -65,8 +139,10 @@ public class AEngine implements IEngine, Runnable {
     //cambio de estado de logica
     @Override
     public void setState(IState state) throws Exception {
+        //si esta en un hilo que no es el principal manda la accion a que la realice el principal
 
-        this.stateManager.setState(state);
+        stateManager.setState(state);
+
         inputManager.clear();
     }
 
@@ -101,6 +177,8 @@ public class AEngine implements IEngine, Runnable {
 
     @Override
     public void run() {
+
+
         if (renderThread != Thread.currentThread()) {
             // Evita que cualquiera que no sea esta clase llame a este Runnable en un Thread
             // Programación defensiva
@@ -201,6 +279,27 @@ public class AEngine implements IEngine, Runnable {
         return "";
     }
 
+    public boolean videoAd() {
+        return mInterstitialAd != null;
+    }
+
+    public void setAd(InterstitialAd mInterstitialAd) {
+        this.mInterstitialAd = mInterstitialAd;
+    }
+    @Override
+    public void showVid(){
+        this.activity.runOnUiThread(() -> {
+            try {
+                if (mInterstitialAd != null) {
+                    mInterstitialAd.show(this.activity);
+                    cargarVideoAnuncio();
+                }
+            }
+            catch (Exception e){
+                e.printStackTrace();
+            }
+        });
+    }
     @Override
     public InputStream openFile(String filename) {
         try {

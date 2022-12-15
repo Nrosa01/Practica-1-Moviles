@@ -19,6 +19,7 @@ public class StartMenuLogic extends AbstractState {
     @Override
     public boolean init() {
         try {
+            engine.enableBanner(true);
             int separation = 35;
             mainFont = graphics.newFont(engine.getAssetsPath() + "fonts/Roboto-Regular.ttf", 36, true);
             secondaryFont = graphics.newFont(engine.getAssetsPath() + "fonts/Roboto-Regular.ttf", 24, false);
@@ -60,6 +61,8 @@ public class StartMenuLogic extends AbstractState {
             ISound sound = audio.newMusic(engine.getAssetsPath() + "audio/bgMusic.wav", "musicBg");
             sound.setVolume(1f);
             sound.play(); //It only plays if it's not alrady playing
+          
+
             return true;
         } catch (Exception e) {
             e.printStackTrace();

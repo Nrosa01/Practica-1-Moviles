@@ -4,8 +4,11 @@ import com.example.engine.IEngine;
 import com.example.engine.IImage;
 import com.example.gamelogic.utilities.Color;
 
+import java.sql.Time;
+
 public abstract class Board extends Entity {
     protected int[][] board;
+    protected long[][] timePressBoard;
     protected int rows, cols, gapSize;
     protected int paddingHorizontal, paddingVertical = 0;
     private Color boardBackgroundColor;
@@ -16,6 +19,7 @@ public abstract class Board extends Entity {
     public Board(IEngine engine, int rows, int cols, int width, int gapSize) {
         super(engine);
         board = new int[rows][cols];
+        timePressBoard = new long[rows][cols];
         this.rows = rows;
         this.cols = cols;
         this.width = width;
@@ -84,6 +88,7 @@ public abstract class Board extends Entity {
     }
 
     protected abstract void OnCellClicked(int row, int col);
+    protected abstract void OnCellReleased(int row, int col) ;
 
     protected abstract void OnCellRender(int row, int col);
 
@@ -123,8 +128,11 @@ public abstract class Board extends Entity {
 
     @Override
     public void OnPointerUp(int x, int y) {
-
+        int[] cell = pointToCell(x, y);
+        if (cell != null)
+            OnCellReleased(cell[0], cell[1]);
     }
+
 
     @Override
     public void OnPointerMove(int x, int y) {
