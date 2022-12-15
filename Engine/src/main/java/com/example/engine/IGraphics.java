@@ -23,6 +23,7 @@ public interface IGraphics {
     int getHeight();
     int getLogicWidth();
     int getLogicHeight();
+    boolean isPortrait();
 
     void setGraphicsAlpha(int alpha);
 

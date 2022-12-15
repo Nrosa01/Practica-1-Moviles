@@ -250,7 +250,7 @@ public class AGraphics extends AbstractGraphics {
     //se pintan los bordes necesarios para mantener la relacion de aspecto deseada
     public void renderBordersAndroid()
     {
-        paint.setARGB((int)(255), 255, 255, 255); //BLANCO
+        paint.setARGB((int)(0), 0, 0, 255); //BLANCO
 
         // Tener en cuenta scale factor para el ancho
         int scaledBarWidth = (int)Math.ceil(borderBarWidth / scaleFactor);
@@ -327,12 +327,12 @@ public class AGraphics extends AbstractGraphics {
 
     @Override
     public int getWidth() {
-        return this.logicSizeX;
+        return this.screenWidth;
     }
 
     @Override
     public int getHeight() {
-        return this.logicSizeY;
+        return this.screenHeight;
     }
 
     @Override
@@ -344,6 +344,11 @@ public class AGraphics extends AbstractGraphics {
     @Override
     public int getLogicHeight() {
         return this.logicSizeY;
+    }
+
+    @Override
+    public boolean isPortrait() {
+        return screenHeight > screenWidth;
     }
 
     //hay transiciones pero no van con int

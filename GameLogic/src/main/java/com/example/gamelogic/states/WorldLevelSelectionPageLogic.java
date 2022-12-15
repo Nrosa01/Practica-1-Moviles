@@ -120,7 +120,7 @@ public class WorldLevelSelectionPageLogic extends AbstractState {
         IImage bg = graphics.newImage("images/" + text.toLowerCase() + ".png");
         int wWidth = graphics.getWidth();
         int wHeiht = graphics.getHeight();
-        int maximum = Math.max(wWidth, wHeiht);
+        int maximum = Math.min(wWidth, wHeiht);
         backgroundImg = new SizedImage(engine, bg, LOGIC_WIDTH / 2, LOGIC_HEIGHT / 2, maximum, maximum);
     }
 

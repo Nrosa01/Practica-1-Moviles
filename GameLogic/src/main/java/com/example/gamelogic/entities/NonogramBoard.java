@@ -282,11 +282,11 @@ public class NonogramBoard extends Board {
                     graphics.setColor(255, 123, 123);
                 else
                     graphics.setColor(255, 255, 255);
-            case 4:
-                if (!isWin)
-                    graphics.setColor(123, 255, 123);
-                else
-                    graphics.setColor(255, 255, 255);
+//            case 4:
+//                if (!isWin)
+//                    graphics.setColor(123, 255, 123);
+//                elses
+//                    graphics.setColor(255, 255, 255);
 
 
         }
