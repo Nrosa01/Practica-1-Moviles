@@ -16,8 +16,8 @@ public abstract class AbstractState implements IState {
     protected IGraphics graphics;
     protected IAudio audio;
 
-    protected static final int LOGIC_WIDTH = 400;
-    protected static final int LOGIC_HEIGHT = 600;
+    protected static int LOGIC_WIDTH = 400;
+    protected static int LOGIC_HEIGHT = 600;
 
     private List<Entity> entities;
     private Pointer pointer;
@@ -28,6 +28,12 @@ public abstract class AbstractState implements IState {
         this.graphics = engine.getGraphics();
         this.audio = engine.getAudio();
         this.entities = new ArrayList<>();
+
+        if(!graphics.isPortrait())
+        {
+            LOGIC_WIDTH = 600;
+            LOGIC_HEIGHT = 400;
+        }
 
         if (!engine.supportsTouch())
             pointer = new Pointer(engine);

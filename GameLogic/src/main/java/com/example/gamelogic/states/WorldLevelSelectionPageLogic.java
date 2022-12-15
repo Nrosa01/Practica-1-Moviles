@@ -32,7 +32,8 @@ public class WorldLevelSelectionPageLogic extends AbstractState {
     public boolean init() {
         try {
             tittleFont = graphics.newFont(engine.getAssetsPath() + "fonts/Roboto-Regular.ttf", 24, true);
-            tittleText = new Text(engine, text, tittleFont, LOGIC_WIDTH / 2, (LOGIC_HEIGHT / 2) - 100);
+            int textY = graphics.isPortrait() ? (LOGIC_HEIGHT / 2) - 100 :  (LOGIC_HEIGHT / 2) - 125;
+            tittleText = new Text(engine, text, tittleFont, LOGIC_WIDTH / 2, textY);
             tittleText.setBackgroundColor(new Color(255,255,255,169));
             tittleText.setBackgruondSize(LOGIC_WIDTH, -1);
             lockedImg = graphics.newImage(engine.getAssetsPath() + "images/lock.png");
@@ -43,12 +44,16 @@ public class WorldLevelSelectionPageLogic extends AbstractState {
             addEntity(backgroundImg);
             addEntity(tittleText);
 
-            int xPos = 0;
-            int yPos = 100;
+            int xPos;
+            int yPos;
 
             width = (LOGIC_WIDTH - (5 * 10)) / 5;
+            if(!graphics.isPortrait())
+                width /= 2;
             height = width;
             int spacing = (LOGIC_WIDTH - (5 * width)) / 6;
+            if(!graphics.isPortrait())
+                spacing /= 4;
 
             levels = new Button[4][5];
             for (int i = 0; i < 4; i++) {
@@ -56,6 +61,12 @@ public class WorldLevelSelectionPageLogic extends AbstractState {
                     // Calculate the x and y position of the button
                     xPos = (j * width) + ((j + 1) * spacing) + width / 2;
                     yPos = (i * height) + ((i + 1) * spacing) + (LOGIC_HEIGHT / 2);
+
+                    if(!graphics.isPortrait())
+                    {
+                        xPos += LOGIC_WIDTH / 5.5;
+                        yPos -= LOGIC_HEIGHT / 8 + 20;
+                    }
 
                     // Create the button
                     levels[i][j] = new Button(xPos, yPos, width, height, engine);
@@ -120,7 +131,7 @@ public class WorldLevelSelectionPageLogic extends AbstractState {
         IImage bg = graphics.newImage("images/" + text.toLowerCase() + ".png");
         int wWidth = graphics.getWidth();
         int wHeiht = graphics.getHeight();
-        int maximum = Math.max(wWidth, wHeiht);
+        int maximum = Math.min(wWidth, wHeiht);
         backgroundImg = new SizedImage(engine, bg, LOGIC_WIDTH / 2, LOGIC_HEIGHT / 2, maximum, maximum);
     }
 
