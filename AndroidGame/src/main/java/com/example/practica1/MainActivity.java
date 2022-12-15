@@ -19,6 +19,7 @@ import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.res.AssetManager;
+import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -40,6 +41,7 @@ import com.google.android.gms.ads.initialization.OnInitializationCompleteListene
 import com.google.android.gms.ads.interstitial.InterstitialAd;
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback;
 
+import java.io.FileOutputStream;
 import java.util.concurrent.TimeUnit;
 
 public class MainActivity extends AppCompatActivity  {
@@ -193,6 +195,45 @@ public class MainActivity extends AppCompatActivity  {
         super.onPause();
         this.androidEngine.pause();
     }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+
+        //FileOutputStream file = new FileOutputStream("completedLevels");
+
+    }
+
+    @Override
+    public void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig)
+    {
+        //newConfig.orientation = 2 ( landscape )
+
+        Log.d("tag", "config changed");
+        super.onConfigurationChanged(newConfig);
+
+        int orientation = newConfig.orientation;
+        if (orientation == Configuration.ORIENTATION_PORTRAIT)
+            Log.d("tag", "Portrait");
+        else if (orientation == Configuration.ORIENTATION_LANDSCAPE)
+            Log.d("tag", "Landscape");
+        else
+            Log.w("tag", "other: " + orientation);
+
+
+    }
+
+
+
+}
+
 
 }
 
