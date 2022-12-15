@@ -16,8 +16,10 @@ import android.view.View;
 
 import androidx.annotation.NonNull;
 
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.ObjectOutputStream;
 import java.util.List;
 
 import com.google.android.gms.ads.AdRequest;
@@ -25,6 +27,8 @@ import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.LoadAdError;
 import com.google.android.gms.ads.interstitial.InterstitialAd;
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback;
+
+
 
 public class AEngine implements IEngine, Runnable {
 
@@ -48,6 +52,8 @@ public class AEngine implements IEngine, Runnable {
     private Activity activity;
 
     AAudio audio;
+
+
 
     public AEngine( Activity act, SurfaceView context, AssetManager assetManager, AdView adView, InterstitialAd mInterstitialAd) {
 
@@ -252,6 +258,10 @@ public class AEngine implements IEngine, Runnable {
         inputManager.clear();
 
         this.stateManager.handleInput(events);
+    }
+
+    public void saveProgress(){
+
     }
 
     public void stop()

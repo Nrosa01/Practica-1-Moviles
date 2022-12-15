@@ -17,6 +17,7 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.res.AssetManager;
 import android.content.res.Configuration;
@@ -190,9 +191,22 @@ public class MainActivity extends AppCompatActivity  {
         Log.i("Cosa ","DESTROY ");
     }
 
+    private String sharedPrefFile = "com.example.android.hellosharedprefs";
+
     @Override
     protected void onPause() {
         super.onPause();
+
+        SharedPreferences mPreferences;
+
+
+        mPreferences = getSharedPreferences(sharedPrefFile, MODE_PRIVATE);
+// MODE_WORLD_WRITEABLE and MODE_WORLD_READABLE están deprecados desde API 17
+
+
+        SharedPreferences.Editor preferencesEditor = mPreferences.edit();
+        this.androidEngine.saveProgress();
+
         this.androidEngine.pause();
     }
 
@@ -214,7 +228,9 @@ public class MainActivity extends AppCompatActivity  {
     @Override
     public void onConfigurationChanged(Configuration newConfig)
     {
-        //newConfig.orientation = 2 ( landscape )
+        //newConfig.orientation = 2
+        //( landscape )
+
 
         Log.d("tag", "config changed");
         super.onConfigurationChanged(newConfig);
@@ -235,5 +251,5 @@ public class MainActivity extends AppCompatActivity  {
 }
 
 
-}
+
 
