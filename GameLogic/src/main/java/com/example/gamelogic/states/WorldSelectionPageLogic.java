@@ -10,10 +10,7 @@ import com.example.gamelogic.entities.WorldCard;
 import com.example.gamelogic.levels.WorldLevelType;
 
 public class WorldSelectionPageLogic extends AbstractState {
-    WorldCard forest;
-    WorldCard sea;
-    WorldCard city;
-    WorldCard animal;
+    WorldCard levels[];
     IFont textFont;
     IImage cardHolder;
     IImage tape;
@@ -49,65 +46,29 @@ public class WorldSelectionPageLogic extends AbstractState {
         int heightStep = buttonSize + 25;
         int yStart = 250;
 
-        int i = 0;
-        int j = 0;
-        this.forest =  new WorldCard(engine, margin + i * (gapSize + buttonSize / 2) + i * (buttonSize / 2), yStart + (heightStep * j), buttonSize, buttonSize,
-                "0/20", "Bosque", cardHolder, forestImg, tape,textFont);
-        this.forest.setCallback(new IInteractableCallback() {
-            @Override
-            public void onInteractionOccur() {
-                try {
-                    engine.setState(new WorldLevelSelectionPageLogic(engine, WorldLevelType.Forest));
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        });
+        levels = new WorldCard[4];
+        String texts[] = new String[]{"Bosque", "Mar", "Ciudad", "Animales"};
+        IImage images[] = new IImage[]{forestImg, seaImg, cityImg, animalImg};
+        final WorldLevelType levelTypes[] = new WorldLevelType[]{WorldLevelType.Forest, WorldLevelType.Sea, WorldLevelType.City, WorldLevelType.Animals};
 
-        i = 1;
-        j = 0;
-        this.sea =   new WorldCard(engine, margin + i * (gapSize + buttonSize / 2) + i * (buttonSize / 2), yStart + (heightStep * j), buttonSize, buttonSize,
-                "0/20", "Mar", cardHolder, seaImg, tape,textFont);
-        this.sea.setCallback(new IInteractableCallback() {
-            @Override
-            public void onInteractionOccur() {
-                try {
-                    engine.setState(new WorldLevelSelectionPageLogic(engine, WorldLevelType.Sea));
-                } catch (Exception e) {
-                    e.printStackTrace();
+        for (int i = 0; i < 4; i++) {
+            int j = i > 1 ? 1 : 0;
+            int buttonX = margin + i % 2 * (gapSize + buttonSize / 2) + i % 2 * (buttonSize / 2);
+            int buttonY = yStart + (heightStep * j);
+            levels[i] = new WorldCard(engine, buttonX, buttonY, buttonSize, buttonSize,
+                    "0/20", texts[i], cardHolder, images[i], tape, textFont);
+            final int index = i;
+            levels[i].setCallback(new IInteractableCallback() {
+                @Override
+                public void onInteractionOccur() {
+                    try {
+                        engine.setState(new WorldLevelSelectionPageLogic(engine, levelTypes[index]));
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
-            }
-        });
-
-        i = 0;
-        j = 1;
-        this.city =  new WorldCard(engine, margin + i * (gapSize + buttonSize / 2) + i * (buttonSize / 2), yStart + (heightStep * j), buttonSize, buttonSize,
-                "0/20", "Ciudad", cardHolder, cityImg, tape,textFont);
-        this.city.setCallback(new IInteractableCallback() {
-            @Override
-            public void onInteractionOccur() {
-                try {
-                    engine.setState(new WorldLevelSelectionPageLogic(engine, WorldLevelType.City));
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-
-        i = 1;
-        j = 1;
-        this.animal =  new WorldCard(engine, margin + i * (gapSize + buttonSize / 2) + i * (buttonSize / 2), yStart + (heightStep * j), buttonSize, buttonSize,
-                "0/20", "Animales", cardHolder, animalImg, tape,textFont);
-        this.animal.setCallback(new IInteractableCallback() {
-            @Override
-            public void onInteractionOccur() {
-                try {
-                    engine.setState(new WorldLevelSelectionPageLogic(engine, WorldLevelType.Animals));
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        });
+            });
+        }
 
         returnButton = new Button(25, 25, 30, 30, engine);
         returnButton.setImage(arrow);
@@ -129,10 +90,9 @@ public class WorldSelectionPageLogic extends AbstractState {
         addEntity(returnButton);
 
 
-        addEntity(this.forest);
-        addEntity(this.sea);
-        addEntity(this.city);
-        addEntity(this.animal);
+        for (int i = 0; i < levels.length; i++)
+            addEntity(levels[i]);
+
         return true;
     }
 }
