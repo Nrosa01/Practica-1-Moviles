@@ -59,7 +59,7 @@ public class MainActivity extends AppCompatActivity  {
         Intent intentParam = getIntent();
         if (intentParam != null){
             int a = intentParam.getIntExtra("someKey", 0);
-            Log.i("Cosa ","ramon "+a);
+            Log.i("Cosa ","Intent cargado onCreate: "+a);
         }
 
         cargarBanner();
@@ -88,8 +88,8 @@ public class MainActivity extends AppCompatActivity  {
 
 
         //Log.i("Cosa ","BBBBBBBBBB");
-        Constraints constraints = new Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build();
-        PeriodicWorkRequest build = new PeriodicWorkRequest.Builder(NotificationWork.class, 300, TimeUnit.SECONDS)
+        Constraints constraints = new Constraints.Builder().build();
+        PeriodicWorkRequest build = new PeriodicWorkRequest.Builder(NotificationWork.class, 15, TimeUnit.MINUTES)
                 .addTag("TAG")
                 .setConstraints(constraints)
                 .build();

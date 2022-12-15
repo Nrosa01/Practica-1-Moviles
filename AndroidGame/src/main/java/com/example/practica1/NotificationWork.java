@@ -34,7 +34,7 @@ public class NotificationWork extends Worker {
 
         // CREAR INTENT: Create an explicit intent for an Activity in your app
         Intent intent = new Intent(getApplicationContext(), MainActivity.class); //triple
-        intent.putExtra("someKey", 115);
+        intent.putExtra("someKey", 666);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), 0, intent, PendingIntent.FLAG_IMMUTABLE);
 
@@ -43,7 +43,7 @@ public class NotificationWork extends Worker {
         builder = new NotificationCompat.Builder(getApplicationContext(),  "My Notification") //CHANNEL_ID
                 .setSmallIcon(R.drawable.bell) //R.drawable.notification_icon
                 .setContentTitle("Notificación del Nonograma")
-                .setContentText("Eres un grande!")
+                .setContentText("¿Te apetece echarte una partidita?")
                 // Si quieres que ocupe mas de 1 linea la notificacion
                 //.setStyle(NotificationCompat.BigTextStyle()
                 //      .bigText("Much longer text that cannot fit one line..."))
@@ -52,9 +52,8 @@ public class NotificationWork extends Worker {
                 // Set the intent that will fire when the user taps the notification
                 .setContentIntent(pendingIntent)
                 .setAutoCancel(true);
-        notificationManager = NotificationManagerCompat.from(getApplicationContext());
-        //MOSTRAR NOTIFICACION--------------------------------------------------
-        // notificationId is a unique int for each notification that you must define
+
+
 
     }
 
@@ -63,7 +62,10 @@ public class NotificationWork extends Worker {
     public Result doWork() {
         //NotificationManagerCompat notificationManager = getInputData().getInt(NOTI_MGR, 0);
         //notificationManager.notify(1, builder.build()); //notificationId
-        Log.i("Cosa ","aaaaaaaaaaaaaaaa");
+        Log.i("Cosa ","Mostrando notificacion");
+        //MOSTRAR NOTIFICACION--------------------------------------------------
+        // notificationId is a unique int for each notification that you must define
+        notificationManager = NotificationManagerCompat.from(getApplicationContext());
         notificationManager.notify(1, builder.build()); //notificationId
         //Log.e(TAG, "doWork: Work is done.");
         return Result.success();
