@@ -40,9 +40,9 @@ public class WorldSelectionPageLogic extends AbstractState {
         tittle = new Text(engine, "Elige la categoría a la que quieres jugar", tittleFont, LOGIC_WIDTH / 2, (int) (LOGIC_HEIGHT * 0.2));
         addEntity(tittle);
 
-        int buttonSize = graphics.isPortrait() ? (int) (LOGIC_WIDTH / 2.5) : (int) (LOGIC_WIDTH / 5);
+        int buttonSize = graphics.isLandscape() ? (int) (LOGIC_WIDTH / 2.5) : (int) (LOGIC_WIDTH / 5);
         int gapSize = buttonSize / 8;
-        int margin = graphics.isPortrait() ? (int) (LOGIC_WIDTH / 3.5) : (int) (LOGIC_WIDTH / 6.5);
+        int margin = graphics.isLandscape() ? (int) (LOGIC_WIDTH / 3.5) : (int) (LOGIC_WIDTH / 6.5);
         int heightStep = buttonSize + 25;
         int yStart = 250;
 
@@ -54,7 +54,7 @@ public class WorldSelectionPageLogic extends AbstractState {
         for (int i = 0; i < 4; i++) {
             int j = i > 1 ? 1 : 0;
             int pos = i;
-            if (!graphics.isPortrait())
+            if (!graphics.isLandscape())
                 j = 0;
             else
                 pos %= 2;
