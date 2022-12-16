@@ -30,6 +30,7 @@ import android.view.SurfaceView;
 import android.view.View;
 
 import com.example.androidengine.AEngine;
+import com.example.engine.IState;
 import com.example.gamelogic.states.StartMenuLogic;
 
 import com.google.android.gms.ads.AdListener;
@@ -43,6 +44,8 @@ import com.google.android.gms.ads.interstitial.InterstitialAd;
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback;
 
 import java.io.FileOutputStream;
+import java.io.Serializable;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 public class MainActivity extends AppCompatActivity  {
@@ -55,7 +58,15 @@ public class MainActivity extends AppCompatActivity  {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_main);
+
+
+        SharedPreferences mPreferences = getSharedPreferences(sharedPrefFile,
+                MODE_PRIVATE);
+        Map<String, Object> savedValuesMap  = (Map<String, Object>) mPreferences.getAll();
+
+
         Intent intentParam = getIntent();
         if (intentParam != null){
             int a = intentParam.getIntExtra("someKey", 0);
@@ -103,7 +114,7 @@ public class MainActivity extends AppCompatActivity  {
         //----------------------------------------------------------------------------------
         SurfaceView view = (SurfaceView) findViewById(R.id.surfaceView);
 
-        this.androidEngine = new AEngine(this,view, assetManager, mAdView,mInterstitialAd);
+        this.androidEngine = new AEngine(this,view, assetManager, mAdView,mInterstitialAd,savedValuesMap);
 
 
 
@@ -163,7 +174,7 @@ public class MainActivity extends AppCompatActivity  {
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-
+        outState.putSerializable("escena", this.androidEngine.getCurrentSceneState());
 
         //FileOutputStream file = new FileOutputStream("completedLevels");
 
@@ -172,29 +183,15 @@ public class MainActivity extends AppCompatActivity  {
     @Override
     public void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
-
+        Serializable state = savedInstanceState.getSerializable("escena");
+        try {
+            this.androidEngine.setState((IState) state);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
-    @Override
-    public void onConfigurationChanged(Configuration newConfig)
-    {
-        //newConfig.orientation = 2
-        //( landscape )
 
-
-        Log.d("tag", "config changed");
-        super.onConfigurationChanged(newConfig);
-
-        int orientation = newConfig.orientation;
-        if (orientation == Configuration.ORIENTATION_PORTRAIT)
-            Log.d("tag", "Portrait");
-        else if (orientation == Configuration.ORIENTATION_LANDSCAPE)
-            Log.d("tag", "Landscape");
-        else
-            Log.w("tag", "other: " + orientation);
-
-
-    }
 
 
 

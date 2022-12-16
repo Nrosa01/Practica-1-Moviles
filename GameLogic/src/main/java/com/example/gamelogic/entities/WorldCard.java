@@ -11,16 +11,18 @@ public class WorldCard extends Entity{
     private SizedImage cardHolder;
     private SizedImage cardImage;
     private IFont textFont;
+    int completedLevels;
     String completedText;
     String titeText;
 
-    public WorldCard(IEngine engine, int x, int y, int width, int height, String completedText, String titleText, IImage cardHolder, IImage cardImage, IImage tape, IFont textFont) {
+    public WorldCard(IEngine engine, int x, int y, int width, int height, int completedLevels, String titleText, IImage cardHolder, IImage cardImage, IImage tape, IFont textFont) {
         super(engine);
         this.width = width;
         this.height = height;
         this.posX = x;
         this.posY = y;
-        this.completedText = completedText;
+        this.completedLevels = completedLevels;
+        this.completedText = completedLevels+ "/20";
         this.titeText = titleText;
         this.cardHolder = new SizedImage(engine, cardHolder, x, y, width, height);
         this.cardImage = new SizedImage(engine, cardImage, x, y - (int) (height * 0.05f), (int) (height * 0.8f), (int) (height*0.8f));

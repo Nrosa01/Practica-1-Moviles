@@ -14,6 +14,7 @@ import com.example.gamelogic.entities.LivesPanel;
 import com.example.gamelogic.entities.NonogramBoard;
 import com.example.gamelogic.entities.Pointer;
 import com.example.gamelogic.levels.NonogramGenerator;
+import com.example.gamelogic.levels.WorldLevelType;
 import com.example.gamelogic.utilities.Event;
 import com.example.gamelogic.utilities.EventHandler;
 import com.example.gamelogic.utilities.EventManager;
@@ -34,6 +35,7 @@ public class MainGameLogic extends AbstractState implements Listener {
     Button returnButton;
     Button watchVid;
     Button winReturnButton;
+    Button nextLevelButton;
     IFont font;
     IFont boardFont;
     IFont congratsFont;
@@ -48,10 +50,13 @@ public class MainGameLogic extends AbstractState implements Listener {
     IInteractableCallback returnCallback;
     IInteractableCallback watchVidCallback;
 
+
     public MainGameLogic(IEngine engine, String level) {
         super(engine);
         this.level = level;
     }
+
+
 
     public MainGameLogic(IEngine engine, String level, boolean random) {
         super(engine);
@@ -72,12 +77,16 @@ public class MainGameLogic extends AbstractState implements Listener {
                 try {
                     livesPanel.restoreLive();
                     engineAux.showVid();
+
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
         };
+
     }
+
+
 
     @EventHandler
     public void onDamaged(OnDamaged eventArgs)
@@ -153,6 +162,16 @@ public class MainGameLogic extends AbstractState implements Listener {
             winReturnButton.setHoverColor(205, 205, 205);
             winReturnButton.setCallback(returnCallback);
 
+
+            nextLevelButton = new Button(LOGIC_WIDTH / 2+40, LOGIC_HEIGHT - 50, 100, 50, engine);
+            nextLevelButton.setText("Siguiente Nivel", font);
+            nextLevelButton.setBackgroundColor(0, 0, 0, 0);
+            nextLevelButton.setBorderSize(0);
+            nextLevelButton.setHoverColor(205, 205, 205);
+            nextLevelButton.setCallback(returnCallback);
+
+
+
             int[][] level = loadLevel();
             if (level == null)
                 return false;
@@ -224,6 +243,7 @@ public class MainGameLogic extends AbstractState implements Listener {
             int boardWidth = Math.min(LOGIC_WIDTH, LOGIC_HEIGHT)/2 - 20;
             board.setWidth(boardWidth);
             winReturnButton.update(deltaTime);
+            engine.setSavedValue("Forest" , 2);
         }
         watchVid.update(deltaTime);
     }
@@ -261,4 +281,7 @@ public class MainGameLogic extends AbstractState implements Listener {
 
         }
     }
+
+
+
 }

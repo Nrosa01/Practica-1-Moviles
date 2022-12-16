@@ -20,7 +20,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
 
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
@@ -52,10 +54,9 @@ public class AEngine implements IEngine, Runnable {
     private Activity activity;
 
     AAudio audio;
+    Map<String, Object> savedValuesMap;
 
-
-
-    public AEngine( Activity act, SurfaceView context, AssetManager assetManager, AdView adView, InterstitialAd mInterstitialAd) {
+    public AEngine( Activity act, SurfaceView context, AssetManager assetManager, AdView adView, InterstitialAd mInterstitialAd, Map<String, Object> map) {
 
         //this.mInterstitialAd = mInterstitialAd;
 
@@ -63,6 +64,8 @@ public class AEngine implements IEngine, Runnable {
         this.activity = act;
 
         this.cargarVideoAnuncio();
+
+        this.savedValuesMap = map;
 
         enableBanner(true);
         this.paint = new Paint();
@@ -260,10 +263,6 @@ public class AEngine implements IEngine, Runnable {
         this.stateManager.handleInput(events);
     }
 
-    public void saveProgress(){
-
-    }
-
     public void stop()
     {
         audio.freeResources();
@@ -310,6 +309,37 @@ public class AEngine implements IEngine, Runnable {
             }
         });
     }
+
+
+
+    public Serializable getCurrentSceneState(){
+        return this.stateManager.getState();
+    }
+
+    public void saveProgress(){
+
+    }
+
+
+    public <T> Boolean hasSavedValue(String key){
+        return savedValuesMap.containsKey(key);
+    }
+
+    //                                              cant be primitive types
+    public  <T> T getSavedValue(String key, Class<T> classType){
+            Object o = savedValuesMap.get(key);
+            T retVal = classType.cast(o);
+            return retVal;
+
+    }
+
+    public <T> void setSavedValue(String key, T value){
+            savedValuesMap.put(key, value);
+    }
+
+
+
+
     @Override
     public InputStream openFile(String filename) {
         try {
