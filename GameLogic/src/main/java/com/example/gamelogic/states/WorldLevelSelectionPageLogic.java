@@ -98,8 +98,8 @@ public class WorldLevelSelectionPageLogic extends AbstractState {
 
 
 
-                    final int numLevel = i * 5 +j;
-                    final int nextNumLevel = numLevel+1;
+                    final int numLevel = i * 5 +j ;
+                   // final int nextNumLevel = numLevel+1;
                     levels[i][j].setCallback(new IInteractableCallback() {
                         @Override
                         public void onInteractionOccur() {

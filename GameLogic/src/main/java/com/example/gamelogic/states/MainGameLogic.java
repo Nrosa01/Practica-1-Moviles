@@ -8,6 +8,7 @@ import com.example.engine.IState;
 import com.example.engine.InputEvent;
 import com.example.gamelogic.entities.Board;
 import com.example.gamelogic.entities.Button;
+import com.example.gamelogic.entities.Callback;
 import com.example.gamelogic.entities.Entity;
 import com.example.gamelogic.entities.IInteractableCallback;
 import com.example.gamelogic.entities.LivesPanel;
@@ -165,7 +166,7 @@ public class MainGameLogic extends AbstractState implements Listener {
                                 }
                             }
                         });
-                        DataToAccess.getInstance().changeInt(type.toString(), Math.max(DataToAccess.getInstance().getInt(type.toString()), ++numLevel));
+
                         engine.setState(logic);
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -235,8 +236,15 @@ public class MainGameLogic extends AbstractState implements Listener {
             if (level == null)
                 return false;
 
+            final int numDesbloq = numLevel+= 2;
             int boardWidth = Math.min(LOGIC_WIDTH, LOGIC_HEIGHT) - 20;
-            board = new NonogramBoard(engine, level, boardWidth, 2, boardFont);
+            board = new NonogramBoard(engine, level, boardWidth, 2, boardFont, new Callback() {
+                @Override
+                public void callback() {
+                    if(numLevel+1 > 10) DataToAccess.getInstance().changeBool(type.toString()+ "Palette", true);
+                    DataToAccess.getInstance().changeInt(type.toString(), Math.max(DataToAccess.getInstance().getInt(type.toString()), numDesbloq));
+                }
+            });
             board.setPosX(LOGIC_WIDTH / 2);
             board.setPosY(LOGIC_HEIGHT / 2);
 
