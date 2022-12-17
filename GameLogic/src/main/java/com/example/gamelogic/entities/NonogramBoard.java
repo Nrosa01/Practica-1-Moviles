@@ -49,6 +49,13 @@ public class NonogramBoard extends Board {
             coloresDesbloqueados ++;
     }
 
+    private Color backgroundColor = new Color(255, 255, 255);
+    private Color defaultColor = new Color(123, 123, 123);
+    private Color freeColor = new Color(123, 123, 255);
+    private Color figureColor = new Color(255, 123, 123);
+
+
+
     public NonogramBoard(IEngine engine, int[][] solvedPuzzle, int width, int gapSize, IFont font) {
         super(engine, solvedPuzzle.length, solvedPuzzle[0].length, width, gapSize);
 
@@ -131,8 +138,7 @@ public class NonogramBoard extends Board {
 
     @Override
     public void render() {
-        Color color = coloresDesbloqueables[coloresDesbloqueados][0];
-        setBoardBackgroundColor(color.r, color.g, color.b); //NO FUNCA ==> NEGRO??
+        setBoardBackgroundColor(backgroundColor.r, backgroundColor.g, backgroundColor.b); //NO FUNCA ==> NEGRO??
         setBoardBackgroundColor(255, 0, 0); //NO FUNCA ==> AMARILLO?
 
         this.posX += borderBoardSize / 2;
@@ -160,8 +166,7 @@ public class NonogramBoard extends Board {
 
     private void RenderTextArea() {
         // Render text background
-        Color color = coloresDesbloqueables[coloresDesbloqueados][0];
-        graphics.setColor(color.r, color.g, color.b); //255, 255, 255
+        graphics.setColor(backgroundColor.r, backgroundColor.g, backgroundColor.b); //255, 255, 255
         graphics.fillRectangle(posX - width / 2 - borderBoardSize / 2, posY, borderBoardSize, height);
         graphics.fillRectangle(posX, posY - height / 2 - borderBoardSize / 2, width, borderBoardSize);
 
@@ -282,13 +287,13 @@ public class NonogramBoard extends Board {
             //DEFUALT COLOR ==> WASN'T PRESSED
             case 0:
                 if (!isWin)
-                    graphics.setColor(coloresDesbloqueables[coloresDesbloqueados][1].r, coloresDesbloqueables[coloresDesbloqueados][1].g, coloresDesbloqueables[coloresDesbloqueados][1].b); //Gray
+                    graphics.setColor(defaultColor.r, defaultColor.g, defaultColor.b); //Gray
                 else
                     graphics.setColor(255, 255, 255);
                 break;
             // FREE SQUARE WAS PRESSED
             case 1:
-                graphics.setColor(coloresDesbloqueables[coloresDesbloqueados][2].r, coloresDesbloqueables[coloresDesbloqueados][2].g, coloresDesbloqueables[coloresDesbloqueados][2].b); //Light Blue
+                graphics.setColor(freeColor.r, freeColor.g, freeColor.b); //Light Blue
                 break;
             // ?????????????????????????????
             case 2:
@@ -301,7 +306,7 @@ public class NonogramBoard extends Board {
             // FIGURE SQUARE WAS PRESSED
             case 3:
                 if (!isWin)
-                    graphics.setColor(coloresDesbloqueables[coloresDesbloqueados][3].r, coloresDesbloqueables[coloresDesbloqueados][3].g, coloresDesbloqueables[coloresDesbloqueados][3].b); //Light red
+                    graphics.setColor(figureColor.r, figureColor.g, figureColor.b); //Light red
                 else
                     graphics.setColor(255, 255, 255);
 //            case 4:

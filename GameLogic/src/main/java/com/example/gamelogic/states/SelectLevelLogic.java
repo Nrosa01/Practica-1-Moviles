@@ -95,11 +95,12 @@ public class SelectLevelLogic extends AbstractState {
 
     @Override
     public void render() {
+        super.render();
         graphics.setScale(0.05, 0.05);
         graphics.drawImage(arrow, 25, 25);
         graphics.setScale(1, 1);
         graphics.drawText("Volver", 45, 35, font);
 
-        super.render();
+
     }
 }

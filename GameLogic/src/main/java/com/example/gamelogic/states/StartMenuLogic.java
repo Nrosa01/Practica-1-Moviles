@@ -11,6 +11,7 @@ public class StartMenuLogic extends AbstractState {
     IFont secondaryFont;
     Button quickGame;
     Button historyMode;
+    Button themeSelectButton;
 
     public StartMenuLogic(IEngine engine) {
         super(engine);
@@ -23,21 +24,6 @@ public class StartMenuLogic extends AbstractState {
             int separation = 35;
             mainFont = graphics.newFont(engine.getAssetsPath() + "fonts/Roboto-Regular.ttf", 36, true);
             secondaryFont = graphics.newFont(engine.getAssetsPath() + "fonts/Roboto-Regular.ttf", 24, false);
-            quickGame = new Button(LOGIC_WIDTH / 2, LOGIC_HEIGHT / 2 + separation, 300, 35, engine);
-            quickGame.setText("Partida Rápida", secondaryFont);
-            quickGame.setBackgroundColor(0, 0, 0, 0);
-            quickGame.setBorderSize(0);
-            quickGame.setHoverColor(200, 200, 200);
-            quickGame.setCallback(new IInteractableCallback() {
-                @Override
-                public void onInteractionOccur() {
-                    try {
-                        engine.setState(new SelectLevelLogic(engine));
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-            });
 
             historyMode = new Button(LOGIC_WIDTH / 2, LOGIC_HEIGHT / 2 - separation, 300, 35, engine);
             historyMode.setText("Modo Historia", secondaryFont);
@@ -55,8 +41,43 @@ public class StartMenuLogic extends AbstractState {
                 }
             });
 
+            quickGame = new Button(LOGIC_WIDTH / 2, LOGIC_HEIGHT / 2 + separation, 300, 35, engine);
+            quickGame.setText("Partida Rápida", secondaryFont);
+            quickGame.setBackgroundColor(0, 0, 0, 0);
+            quickGame.setBorderSize(0);
+            quickGame.setHoverColor(200, 200, 200);
+            quickGame.setCallback(new IInteractableCallback() {
+                @Override
+                public void onInteractionOccur() {
+                    try {
+                        engine.setState(new SelectLevelLogic(engine));
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+
+            themeSelectButton = new Button(LOGIC_WIDTH / 2, LOGIC_HEIGHT / 2 + 3* separation, 300, 35, engine);
+            themeSelectButton.setText("Seleccionar Tema", secondaryFont);
+            themeSelectButton.setBackgroundColor(0, 0, 0, 0);
+            themeSelectButton.setBorderSize(0);
+            themeSelectButton.setHoverColor(200, 200, 200);
+            themeSelectButton.setCallback(new IInteractableCallback() {
+                @Override
+                public void onInteractionOccur() {
+                    try {
+                        engine.setState(new SelectThemeState(engine));
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+
+
+
             addEntity(quickGame);
             addEntity(historyMode);
+            addEntity(themeSelectButton);
 
             ISound sound = audio.newMusic(engine.getAssetsPath() + "audio/bgMusic.wav", "musicBg");
             sound.setVolume(1f);
@@ -72,7 +93,7 @@ public class StartMenuLogic extends AbstractState {
 
     @Override
     public void render() {
-        graphics.drawTextCentered("Nonogramas", LOGIC_WIDTH / 2, 90, mainFont);
         super.render();
+        graphics.drawTextCentered("Nonogramas", LOGIC_WIDTH / 2, 90, mainFont);
     }
 }

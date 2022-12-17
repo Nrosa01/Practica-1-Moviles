@@ -240,7 +240,8 @@ public class AEngine implements IEngine, Runnable {
     public void render() {
         // "Borramos" el fondo.
 
-        graphics.clear(255,255,255);
+        //graphics.clear(255,255,255);
+        graphics.clear();
         this.stateManager.render();
         //graphics.renderBordersAndroid();
     }

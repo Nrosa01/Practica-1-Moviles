@@ -30,6 +30,9 @@ public class AGraphics extends AbstractGraphics {
     int r = 255;
     int g = 255;
     int b = 255;
+    int r_clear = 255;
+    int g_clear = 255;
+    int b_clear = 255;
     float alphaMultiplier = 1;
 
     public AGraphics(SurfaceHolder holder, Paint paint, AssetManager assetManager, AEngine engine, int sWidth, int sHeight){
@@ -156,10 +159,23 @@ public class AGraphics extends AbstractGraphics {
         canvas.drawPaint(paint);
 
         paint.setARGB(255,this.r,this.g,this.b);
-
     }
 
+    @Override
+    public void clear() {
+        Canvas canvas = engine.getCurrentCanvas();
+        //PINTAR EL FONDO EN BLANCO-----------------
+        paint.setStyle(Paint.Style.FILL); //DEFAULT VALUE
+        paint.setARGB(255,this.r_clear,this.g_clear,this.b_clear);
+        canvas.drawPaint(paint);
+    }
 
+    @Override
+    public void setClearColor(int r, int g, int b){
+        this.r_clear = r;
+        this.g_clear = g;
+        this.b_clear = b;
+    }
 
     @Override
     public void drawImage(IImage image, int x, int y) {

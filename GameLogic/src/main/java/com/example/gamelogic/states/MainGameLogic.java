@@ -230,6 +230,7 @@ public class MainGameLogic extends AbstractState implements Listener {
 
     @Override
     public void render() {
+        super.render();
         board.render();
 
         graphics.setColor(0, 0, 0);
