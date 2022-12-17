@@ -48,6 +48,7 @@ public class AEngine implements IEngine, Runnable {
     private AGraphics graphics;
     private AInput inputManager;
 
+
     private AdView mAdView;
     private InterstitialAd mInterstitialAd;
 
@@ -60,12 +61,14 @@ public class AEngine implements IEngine, Runnable {
 
         //this.mInterstitialAd = mInterstitialAd;
 
+
+        this.savedValuesMap = map;
         this.mAdView = adView;
         this.activity = act;
 
         this.cargarVideoAnuncio();
 
-        this.savedValuesMap = map;
+
 
         enableBanner(true);
         this.paint = new Paint();
@@ -153,6 +156,11 @@ public class AEngine implements IEngine, Runnable {
         stateManager.setState(state);
 
         inputManager.clear();
+    }
+
+    @Override
+    public Map<String, Object> getData() {
+        return savedValuesMap;
     }
 
     public void resume() {
@@ -263,6 +271,21 @@ public class AEngine implements IEngine, Runnable {
         this.stateManager.handleInput(events);
     }
 
+   /* @Override
+    public <T> void setSavedValue(String key, T value) {
+
+    }
+
+    @Override
+    public <T> Boolean hasSavedValue(String key) {
+        return null;
+    }
+
+    @Override
+    public <T> T getSavedValue(String key, Class<T> classType) {
+        return null;
+    }*/
+
     public void stop()
     {
         audio.freeResources();
@@ -320,8 +343,8 @@ public class AEngine implements IEngine, Runnable {
 
     }
 
-
-    public <T> Boolean hasSavedValue(String key){
+    // soy completamente inutil
+    /*public <T> Boolean hasSavedValue(String key){
         return savedValuesMap.containsKey(key);
     }
 
@@ -335,7 +358,7 @@ public class AEngine implements IEngine, Runnable {
 
     public <T> void setSavedValue(String key, T value){
             savedValuesMap.put(key, value);
-    }
+    }*/
 
 
 

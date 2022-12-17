@@ -31,8 +31,10 @@ import android.view.View;
 
 import com.example.androidengine.AEngine;
 import com.example.engine.IState;
+import com.example.gamelogic.states.GetDataState;
 import com.example.gamelogic.states.StartMenuLogic;
 
+import com.example.gamelogic.utilities.DataToAccess;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
@@ -65,6 +67,7 @@ public class MainActivity extends AppCompatActivity  {
         SharedPreferences mPreferences = getSharedPreferences(sharedPrefFile,
                 MODE_PRIVATE);
         Map<String, Object> savedValuesMap  = (Map<String, Object>) mPreferences.getAll();
+
 
 
         Intent intentParam = getIntent();
@@ -121,7 +124,7 @@ public class MainActivity extends AppCompatActivity  {
 
         //bloquea la orientacion del movil a vertical
         StartMenuLogic menuLogic = new StartMenuLogic(this.androidEngine);
-
+        //GetDataState dataState = new GetDataState(this.androidEngine);
         try {
             this.androidEngine.setState(menuLogic);
         } catch (Exception e) {
@@ -166,7 +169,17 @@ public class MainActivity extends AppCompatActivity  {
 
 
         SharedPreferences.Editor preferencesEditor = mPreferences.edit();
-        this.androidEngine.saveProgress();
+        DataToAccess data = DataToAccess.getInstance();
+        Map<String, Integer> levels = data.getMapInt();
+        Map<String, Boolean> palettes = data.getMapBool();
+        for (Map.Entry<String, Integer> entry: levels.entrySet()             ) {
+            preferencesEditor.putInt(entry.getKey(), entry.getValue());
+        }
+        for (Map.Entry<String, Boolean> entry: palettes.entrySet()             ) {
+            preferencesEditor.putBoolean(entry.getKey(), entry.getValue());
+        }
+        preferencesEditor.commit();
+
 
         this.androidEngine.pause();
     }
@@ -174,7 +187,7 @@ public class MainActivity extends AppCompatActivity  {
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putSerializable("escena", this.androidEngine.getCurrentSceneState());
+        //outState.putSerializable("escena", this.androidEngine.getCurrentSceneState());
 
         //FileOutputStream file = new FileOutputStream("completedLevels");
 
@@ -183,12 +196,12 @@ public class MainActivity extends AppCompatActivity  {
     @Override
     public void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
-        Serializable state = savedInstanceState.getSerializable("escena");
+      /*  Serializable state = savedInstanceState.getSerializable("escena");
         try {
             this.androidEngine.setState((IState) state);
         } catch (Exception e) {
             e.printStackTrace();
-        }
+        }*/
     }
 
 

@@ -244,7 +244,7 @@ public class NonogramBoard extends Board {
         }
         else{
 
-            board[row][col] = 4;
+            board[row][col] = 2;
         }
         isWin = updateBoardState(true);
 

@@ -9,6 +9,9 @@ import com.example.gamelogic.entities.SizedImage;
 import com.example.gamelogic.entities.Text;
 import com.example.gamelogic.levels.WorldLevelType;
 import com.example.gamelogic.utilities.Color;
+import com.example.gamelogic.utilities.DataToAccess;
+
+import javax.xml.crypto.Data;
 
 import jdk.tools.jmod.Main;
 
@@ -39,10 +42,8 @@ public class WorldLevelSelectionPageLogic extends AbstractState {
     public boolean init() {
         try {
 
-
-            //no se que devuelve en caso de que no exista la key, algunos lados dicen null y otros que devuelve una excepcion
-            if(engine.hasSavedValue(type.toString()))
-                unlockedLevels = engine.getSavedValue(type.toString(), Integer.class) ;
+            //if(DataToAccess.getInstance().getInt(type.toString()))
+            unlockedLevels = DataToAccess.getInstance().getInt(type.toString()) ;
 
 
             tittleFont = graphics.newFont(engine.getAssetsPath() + "fonts/Roboto-Regular.ttf", 24, true);
@@ -93,21 +94,17 @@ public class WorldLevelSelectionPageLogic extends AbstractState {
                     levels[i][j].setPadding(5, 5);
                     levels[i][j].setImage(unlockedImg);
 
-                    final String level = getLevelName(type, (i * 5) + j, i);
-                    final String nextLevel;
-                    if(j+1 < 5)
-                         nextLevel = getLevelName(type, (i * 5) + j+1, i);
-                    else if(i +1<4)
-                        nextLevel = getLevelName(type, ((i+1) *5) ,i);
-                    else nextLevel = getLevelName(type, (i * 5) + j, i);
 
 
 
+
+                    final int numLevel = i * 5 +j;
+                    final int nextNumLevel = numLevel+1;
                     levels[i][j].setCallback(new IInteractableCallback() {
                         @Override
                         public void onInteractionOccur() {
                             try {
-                                MainGameLogic logic = new MainGameLogic(engine,level,false, new IInteractableCallback() {
+                                MainGameLogic logic = new MainGameLogic(engine,numLevel,type,false, new IInteractableCallback() {
                                     @Override
                                     public void onInteractionOccur() {
                                         try {
@@ -117,6 +114,7 @@ public class WorldLevelSelectionPageLogic extends AbstractState {
                                         }
                                     }
                                 });
+
                                 engine.setState(logic);
                             } catch (Exception e) {
                                 e.printStackTrace();
@@ -148,8 +146,6 @@ public class WorldLevelSelectionPageLogic extends AbstractState {
                     levels[i][j].setBackgroundColor(0, 0, 0, 169);
                     levels[i][j].setPadding(5, 5);
                     levels[i][j].setImage(lockedImg);
-
-                    final String level = getLevelName(type, (i * 5) + j, i);
 
                     addEntity(levels[i][j]);
                 }
@@ -190,10 +186,7 @@ public class WorldLevelSelectionPageLogic extends AbstractState {
         backgroundImg = new SizedImage(engine, bg, LOGIC_WIDTH / 2, LOGIC_HEIGHT / 2, maximum, maximum);
     }
 
-    private String getLevelName(WorldLevelType type, int index, int i) {
-        int cells = (i + 1) * 5;
-        String typeToLower = type.toString().toLowerCase();
-        String filename = typeToLower + cells + "x" + cells + "-" + ((index % 5) + 1) + ".txt";
-        return "levels/" + typeToLower + "/" + filename;
-    }
+
+
+
 }
