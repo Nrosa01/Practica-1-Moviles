@@ -2,27 +2,19 @@ package com.example.gamelogic.states;
 
 import com.example.engine.IEngine;
 import com.example.engine.IFont;
-import com.example.engine.IGraphics;
 import com.example.engine.IImage;
-import com.example.engine.IState;
 import com.example.engine.InputEvent;
-import com.example.gamelogic.entities.Board;
 import com.example.gamelogic.entities.Button;
-import com.example.gamelogic.entities.Entity;
 import com.example.gamelogic.entities.IInteractableCallback;
 import com.example.gamelogic.entities.LivesPanel;
 import com.example.gamelogic.entities.NonogramBoard;
-import com.example.gamelogic.entities.Pointer;
 import com.example.gamelogic.levels.NonogramGenerator;
-import com.example.gamelogic.utilities.Event;
 import com.example.gamelogic.utilities.EventHandler;
 import com.example.gamelogic.utilities.EventManager;
 import com.example.gamelogic.utilities.Listener;
-import com.example.gamelogic.utilities.events.DefaultEvent;
 import com.example.gamelogic.utilities.events.OnDamaged;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.List;
@@ -121,7 +113,7 @@ public class MainGameLogic extends AbstractState implements Listener {
             int livesPanelYPos = (LOGIC_WIDTH - 20) / 2 + LOGIC_HEIGHT / 2 + livesPanelHeight;
             int livesPanelXPos = LOGIC_WIDTH - LOGIC_WIDTH / 25 - livesPanelWidth / 2;
 
-            if(!graphics.isPortrait())
+            if(!graphics.isLandscape())
             {
                 livesPanelYPos = LOGIC_HEIGHT / 20 + livesPanelHeight / 2;
                 livesPanelXPos += 40;

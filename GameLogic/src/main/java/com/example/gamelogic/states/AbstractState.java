@@ -29,7 +29,7 @@ public abstract class AbstractState implements IState {
         this.audio = engine.getAudio();
         this.entities = new ArrayList<>();
 
-        if(!graphics.isPortrait())
+        if(!graphics.isLandscape())
         {
             LOGIC_WIDTH = 600;
             LOGIC_HEIGHT = 400;
