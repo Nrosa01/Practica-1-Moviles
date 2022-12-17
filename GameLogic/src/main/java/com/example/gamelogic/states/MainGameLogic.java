@@ -1,5 +1,6 @@
 package com.example.gamelogic.states;
 
+import com.example.engine.AnchorPoint;
 import com.example.engine.IEngine;
 import com.example.engine.IFont;
 import com.example.engine.IImage;
@@ -72,11 +73,9 @@ public class MainGameLogic extends AbstractState implements Listener {
     }
 
     @EventHandler
-    public void onDamaged(OnDamaged eventArgs)
-    {
+    public void onDamaged(OnDamaged eventArgs) {
         livesPanel.takeLive();
-        if(!livesPanel.isAlive())
-        {
+        if (!livesPanel.isAlive()) {
             board.clear();
             livesPanel.restoreLives();
         }
@@ -85,7 +84,7 @@ public class MainGameLogic extends AbstractState implements Listener {
     @Override
     public boolean init() {
         try {
-            if(returnCallback == null)
+            if (returnCallback == null)
                 returnCallback = new IInteractableCallback() {
                     @Override
                     public void onInteractionOccur() {
@@ -110,16 +109,13 @@ public class MainGameLogic extends AbstractState implements Listener {
             int numLifes = 3;
             int livesPanelWidth = Math.min(LOGIC_WIDTH, LOGIC_HEIGHT) / 4;
             int livesPanelHeight = livesPanelWidth / numLifes;
-            int livesPanelYPos = (LOGIC_WIDTH - 20) / 2 + LOGIC_HEIGHT / 2 + livesPanelHeight;
-            int livesPanelXPos = LOGIC_WIDTH - LOGIC_WIDTH / 25 - livesPanelWidth / 2;
+            int livesPanelYPos = -livesPanelHeight / 2 - 10;
+            int livesPanelXPos = -livesPanelWidth / 2 - 10;
 
-            if(!graphics.isLandscape())
-            {
-                livesPanelYPos = LOGIC_HEIGHT / 20 + livesPanelHeight / 2;
-                livesPanelXPos += 40;
-            }
 
             livesPanel = new LivesPanel(engine, livesPanelXPos, livesPanelYPos, livesPanelWidth, livesPanelHeight, numLifes, fullLive, emptyLive);
+            livesPanel.setAnchorPoint(AnchorPoint.DownRight);
+
             addEntity(livesPanel);
 
             returnButton = new Button(25, 25, 30, 30, engine);
@@ -128,14 +124,16 @@ public class MainGameLogic extends AbstractState implements Listener {
             returnButton.setBackgroundColor(0, 0, 0, 0);
             returnButton.setBorderSize(0);
             returnButton.setHoverColor(205, 205, 205);
+            returnButton.setAnchorPoint(AnchorPoint.UpperLeft);
             returnButton.setCallback(returnCallback);
 
-            watchVid = new Button(25, LOGIC_HEIGHT-10, 30, 30, engine);
+            watchVid = new Button(25, -10, 30, 30, engine);
             watchVid.setImage(arrow);
             watchVid.setPadding(10, 10);
             watchVid.setBackgroundColor(0, 0, 0, 0);
             watchVid.setBorderSize(0);
             watchVid.setHoverColor(205, 205, 205);
+            watchVid.setAnchorPoint(AnchorPoint.DownLeft);
             watchVid.setCallback(watchVidCallback);
 
             winReturnButton = new Button(LOGIC_WIDTH / 2, LOGIC_HEIGHT - 50, 100, 50, engine);
@@ -211,9 +209,8 @@ public class MainGameLogic extends AbstractState implements Listener {
 
         if (!board.getIsWin()) {
             returnButton.update(deltaTime);
-        } else
-        {
-            int boardWidth = Math.min(LOGIC_WIDTH, LOGIC_HEIGHT)/2 - 20;
+        } else {
+            int boardWidth = Math.min(LOGIC_WIDTH, LOGIC_HEIGHT) / 2 - 20;
             board.setWidth(boardWidth);
             winReturnButton.update(deltaTime);
         }
@@ -226,7 +223,9 @@ public class MainGameLogic extends AbstractState implements Listener {
 
         graphics.setColor(0, 0, 0);
         if (!board.getIsWin()) {
+            graphics.setAnchorPoint(AnchorPoint.UpperLeft);
             graphics.drawText("Rendirse", 45, 33, font);
+            graphics.setAnchorPoint(AnchorPoint.None);
 
             returnButton.render();
             watchVid.render();
@@ -246,7 +245,7 @@ public class MainGameLogic extends AbstractState implements Listener {
             board.handleInput(proccesedX, proccesedY, inputEvent.type);
 
             if (!board.getIsWin()) {
-                watchVid.handleInput(proccesedX,proccesedY,inputEvent.type);
+                watchVid.handleInput(proccesedX, proccesedY, inputEvent.type);
                 returnButton.handleInput(proccesedX, proccesedY, inputEvent.type);
             } else
                 winReturnButton.handleInput(proccesedX, proccesedY, inputEvent.type);

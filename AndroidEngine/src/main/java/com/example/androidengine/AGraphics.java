@@ -171,8 +171,7 @@ public class AGraphics extends AbstractGraphics {
 
         Canvas canvas = engine.getCurrentCanvas();
 
-        int coordinates[] = new int[]{x, y};
-        this.transformCoordinatesToAnchor(coordinates);
+        int coordinates[] = getAnchoredPosition(x,y,this.anchorPoint);
         x = coordinates[0];
         y = coordinates[1];
 
@@ -199,8 +198,7 @@ public class AGraphics extends AbstractGraphics {
 
     @Override
     public void drawRectangle(int x, int y, int width, int height, int lineWidth) {
-        int coordinates[] = new int[]{x, y};
-        this.transformCoordinatesToAnchor(coordinates);
+        int coordinates[] = getAnchoredPosition(x,y,this.anchorPoint);
         x = coordinates[0];
         y = coordinates[1];
 
@@ -235,8 +233,7 @@ public class AGraphics extends AbstractGraphics {
 
     @Override
     public void fillRectangle(int x, int y, int width, int height) {
-        int coordinates[] = new int[]{x, y};
-        this.transformCoordinatesToAnchor(coordinates);
+        int coordinates[] = getAnchoredPosition(x,y,this.anchorPoint);
         x = coordinates[0];
         y = coordinates[1];
 
@@ -285,13 +282,11 @@ public class AGraphics extends AbstractGraphics {
 
     @Override
     public void drawLine(int fromX, int fromY, int toX, int toY) {
-        int coordinates[] = new int[]{fromX, fromY};
-        this.transformCoordinatesToAnchor(coordinates);
+        int coordinates[] = getAnchoredPosition(fromX,fromY,this.anchorPoint);
         fromX = coordinates[0];
         fromY = coordinates[1];
 
-        coordinates = new int[]{toX, toY};
-        this.transformCoordinatesToAnchor(coordinates);
+        coordinates = getAnchoredPosition(toX, toY, this.anchorPoint);
         toX = coordinates[0];
         toY = coordinates[1];
 
@@ -326,11 +321,9 @@ public class AGraphics extends AbstractGraphics {
         paint.setStyle(Paint.Style.FILL); //DEFAULT VALUE
         paint.setTextSize((float) (((AFont) font).getSize() * scaleFactor * scaleX));
 
-        int coordinates[] = new int[]{x, y};
-        x = logicXPositionToWindowsXPosition(x);
-        y = logicYPositionToWindowsYPosition(y);
-
-        this.transformCoordinatesToAnchor(coordinates);
+        int coordinates[] = getAnchoredPosition(x,y,this.anchorPoint);
+        x = logicXPositionToWindowsXPosition(coordinates[0]);
+        y = logicYPositionToWindowsYPosition(coordinates[1]);
 
         canvas.drawText(text, x, y, paint);
         //paint.reset();
@@ -345,8 +338,7 @@ public class AGraphics extends AbstractGraphics {
         //calculo la posicion a partir de la que tengo que pintar para que este centrado el texto respecto a x,y
         int halfSwidth = (int) (((int) (getStringWidth(text, font))) / 2);
         int halfSheight = (int) (((int) (getFontHeight(font))) / 2);
-        int coordinates[] = new int[]{x, y};
-        this.transformCoordinatesToAnchor(coordinates);
+        int coordinates[] = getAnchoredPosition(x,y,this.anchorPoint);
         int processedX = logicXPositionToWindowsXPosition(coordinates[0] - halfSwidth);
         int processedY = logicYPositionToWindowsYPosition(coordinates[1] + halfSheight);
 
@@ -380,39 +372,41 @@ public class AGraphics extends AbstractGraphics {
         return screenHeight > screenWidth;
     }
 
-    //0: x, 1: y
-    private void transformCoordinatesToAnchor(int[] coordinates) {
-        assert (coordinates.length == 2); // Prerequisito
+    @Override
+    public void setAnchorPoint(AnchorPoint anchor) {
+        this.anchorPoint = anchor;
+    }
 
-        switch (this.anchorPoint) {
+    @Override
+    public int[] getAnchoredPosition(int x, int y, AnchorPoint anchor) {
+        int[] coordinates = new int[]{x,y};
+
+        switch (anchor) {
             case None:
                 break;
             case UpperLeft:
-                coordinates[0] -= this.borderBarWidth;
-                coordinates[1] -= this.topBarHeight/2;
+                coordinates[0] -= this.borderBarWidth / scaleFactor;
+                coordinates[1] -= this.topBarHeight / scaleFactor;
                 break;
             case DownLeft:
-                coordinates[0] -= this.borderBarWidth;
-                coordinates[1] += logicSizeY + topBarHeight/2;
+                coordinates[0] -= this.borderBarWidth/ scaleFactor;
+                coordinates[1] += logicSizeY + topBarHeight / scaleFactor;
                 break;
             case UpperRight:
-                coordinates[0] += this.borderBarWidth + logicSizeX;
-                coordinates[1] -= this.topBarHeight/2;
+                coordinates[0] += this.borderBarWidth / scaleFactor + logicSizeX;
+                coordinates[1] -= this.topBarHeight / scaleFactor;
                 break;
             case DownRight:
-                coordinates[0] += this.borderBarWidth + logicSizeX;
-                coordinates[1] += logicSizeY + topBarHeight/2;
+                coordinates[0] += this.borderBarWidth / scaleFactor + logicSizeX;
+                coordinates[1] += logicSizeY + topBarHeight / scaleFactor;
                 break;
             case Middle:
                 coordinates[0] += logicSizeX / 2;
                 coordinates[1] += logicSizeY / 2;
                 break;
         }
-    }
 
-    @Override
-    public void setAnchorPoint(AnchorPoint anchor) {
-        this.anchorPoint = anchor;
+        return coordinates;
     }
 
     //hay transiciones pero no van con int
