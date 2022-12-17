@@ -1,5 +1,6 @@
 package com.example.gamelogic.entities;
 
+import com.example.engine.AnchorPoint;
 import com.example.engine.IEngine;
 import com.example.engine.IFont;
 import com.example.gamelogic.utilities.Color;
@@ -44,10 +45,12 @@ public class Text extends Entity{
 
     @Override
     public void render() {
+        graphics.setAnchorPoint(this.anchorPoint);
         graphics.setColor(backgroundColor.r, backgroundColor.g, backgroundColor.b, backgroundColor.a);
         graphics.fillRectangle(posX, posY, bgWidth, bgHeight);
         graphics.setColor(0,0,0,255);
         graphics.drawTextCentered(text, posX, posY, font);
+        graphics.setAnchorPoint(AnchorPoint.None);
     }
 
     @Override

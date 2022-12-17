@@ -10,6 +10,7 @@ import android.graphics.Rect;
 import android.view.SurfaceHolder;
 
 import com.example.engine.AbstractGraphics;
+import com.example.engine.AnchorPoint;
 import com.example.engine.IFont;
 import com.example.engine.IImage;
 
@@ -20,6 +21,7 @@ public class AGraphics extends AbstractGraphics {
     private Paint paint;
     private AEngine engine;
     AssetManager assetManager;
+    AnchorPoint anchorPoint;
     //dimensiones de pantalla
     int screenWidth;
     int screenHeight;
@@ -32,16 +34,18 @@ public class AGraphics extends AbstractGraphics {
     int b = 255;
     float alphaMultiplier = 1;
 
-    public AGraphics(SurfaceHolder holder, Paint paint, AssetManager assetManager, AEngine engine, int sWidth, int sHeight){
+    public AGraphics(SurfaceHolder holder, Paint paint, AssetManager assetManager, AEngine engine, int sWidth, int sHeight) {
         this.holder = holder;
         this.paint = paint;
-        setColor(r,g,b,255); //LO PONEMOS A BLANCO POR DEFECTO
+        setColor(r, g, b, 255); //LO PONEMOS A BLANCO POR DEFECTO
         this.assetManager = assetManager;
         this.engine = engine;
 
         screenWidth = sWidth;
         screenHeight = sHeight;
-        setLogicSize(sWidth,sHeight);
+        setLogicSize(sWidth, sHeight);
+
+        this.anchorPoint = AnchorPoint.None;
     }
 
     //creacion de imagen (bitmap)
@@ -49,17 +53,18 @@ public class AGraphics extends AbstractGraphics {
     public IImage newImage(String pathToImage) {
         IImage image = null;
         try {
-            image = new AImage(pathToImage,this.assetManager);
+            image = new AImage(pathToImage, this.assetManager);
         } catch (IOException e) {
             e.printStackTrace();
         }
         return image;
     }
+
     //creacion de fuente (Typeface)
     @Override
     public IFont newFont(String pathToFont, int size, boolean isBold) {
         IFont font;
-        font = new AFont(pathToFont,assetManager,size,isBold);
+        font = new AFont(pathToFont, assetManager, size, isBold);
         return font;
     }
 
@@ -70,7 +75,8 @@ public class AGraphics extends AbstractGraphics {
         this.logicSizeY = ySize;
         calculateScaleFactor();
     }
-    void setScreenSize(int width,int height){
+
+    void setScreenSize(int width, int height) {
         this.screenWidth = width;
         this.screenHeight = height;
         calculateScaleFactor();
@@ -90,7 +96,7 @@ public class AGraphics extends AbstractGraphics {
         this.g = g;
         this.b = b;
 
-        paint.setColor( Color.argb((int)(255 * alphaMultiplier), this.r, this.g, this.b) );
+        paint.setColor(Color.argb((int) (255 * alphaMultiplier), this.r, this.g, this.b));
     }
 
 
@@ -101,20 +107,20 @@ public class AGraphics extends AbstractGraphics {
         this.g = g;
         this.b = b;
 
-        paint.setColor( Color.argb((int) (a * alphaMultiplier),this.r, this.g, this.b) );
+        paint.setColor(Color.argb((int) (a * alphaMultiplier), this.r, this.g, this.b));
     }
 
     //set de la fuente actual
     @Override
     public void setFont(IFont font) {
-        paint.setTypeface(((AFont)font).getFont());
+        paint.setTypeface(((AFont) font).getFont());
     }
 
     //calculo el ancho del rectangulo que podria contener al texto
     @Override
     public int getStringWidth(String text, IFont font) {
 
-        paint.setTextSize((float)(((AFont)font).getSize() * scaleFactor * scaleX));
+        paint.setTextSize((float) (((AFont) font).getSize() * scaleFactor * scaleX));
 
         Rect bounds = new Rect();
         setFont(font);
@@ -122,14 +128,15 @@ public class AGraphics extends AbstractGraphics {
 
         int width = bounds.width();
 
-        return (int)(width / scaleFactor);
+        return (int) (width / scaleFactor);
     }
+
     //calculo el alto del rectangulo que podria contener al texto
     @Override
     public int getFontHeight(IFont font) {
         String ran = "a";
 
-        paint.setTextSize((float)(((AFont)font).getSize() * scaleFactor * scaleX));
+        paint.setTextSize((float) (((AFont) font).getSize() * scaleFactor * scaleX));
 
         Rect bounds = new Rect();
         setFont(font);
@@ -137,7 +144,7 @@ public class AGraphics extends AbstractGraphics {
 
         int height = bounds.height();
 
-        return  (int)(height / scaleFactor);
+        return (int) (height / scaleFactor);
     }
 
     @Override
@@ -152,13 +159,11 @@ public class AGraphics extends AbstractGraphics {
         Canvas canvas = engine.getCurrentCanvas();
         //PINTAR EL FONDO EN BLANCO-----------------
         paint.setStyle(Paint.Style.FILL); //DEFAULT VALUE
-        paint.setARGB(255,r,g,b);
+        paint.setARGB(255, r, g, b);
         canvas.drawPaint(paint);
 
-        paint.setARGB(255,this.r,this.g,this.b);
-
+        paint.setARGB(255, this.r, this.g, this.b);
     }
-
 
 
     @Override
@@ -166,35 +171,43 @@ public class AGraphics extends AbstractGraphics {
 
         Canvas canvas = engine.getCurrentCanvas();
 
+        int coordinates[] = new int[]{x, y};
+        this.transformCoordinatesToAnchor(coordinates);
+        x = coordinates[0];
+        y = coordinates[1];
+
         //calculo de coordenadas fisicas desde coordenadas logicas
-        int uLy = logicYPositionToWindowsYPosition(y );
-        int uLx = logicXPositionToWindowsXPosition(x );
+        int uLy = logicYPositionToWindowsYPosition(y);
+        int uLx = logicXPositionToWindowsXPosition(x);
 
-        int imageWidth = (int)(((AImage)image).getWidth() * scaleX * scaleFactor);
-        int  imageHeight = (int)(((AImage)image).getHeight() * scaleY * scaleFactor);
+        int imageWidth = (int) (((AImage) image).getWidth() * scaleX * scaleFactor);
+        int imageHeight = (int) (((AImage) image).getHeight() * scaleY * scaleFactor);
 
-        uLx -= imageWidth/ 2;
-        uLy -=   imageHeight/  2;
+        uLx -= imageWidth / 2;
+        uLy -= imageHeight / 2;
 
         int dRx = imageWidth + uLx;
         int dRy = imageHeight + uLy;
-        Rect rect = new Rect(uLx,uLy, dRx,dRy);
+        Rect rect = new Rect(uLx, uLy, dRx, dRy);
 
         //controlamos que la imagen se pinte con el color correcto(que el paint no tenga otro color)
-        paint.setARGB((int)(alphaMultiplier * 255), 255, 255, 255);
-        canvas.drawBitmap(((AImage)image).getBitmap(), null,rect,paint);
+        paint.setARGB((int) (alphaMultiplier * 255), 255, 255, 255);
+        canvas.drawBitmap(((AImage) image).getBitmap(), null, rect, paint);
         //reseteamos el color
-        paint.setARGB((int)(alphaMultiplier * 255), this.r, this.g, this.b);
-
+        paint.setARGB((int) (alphaMultiplier * 255), this.r, this.g, this.b);
     }
 
     @Override
-    public void drawRectangle(int x, int y, int width, int height,int lineWidth )  {
+    public void drawRectangle(int x, int y, int width, int height, int lineWidth) {
+        int coordinates[] = new int[]{x, y};
+        this.transformCoordinatesToAnchor(coordinates);
+        x = coordinates[0];
+        y = coordinates[1];
 
         //calculo de coordenadas fisicas desde coordenadas logicas
         int upperLeftX, upperLeftY, lowerRightX, lowerRightY;
-        width*= scaleX;
-        height*= scaleY;
+        width *= scaleX;
+        height *= scaleY;
         upperLeftX = x - (width / 2);
         upperLeftY = y - (height / 2);
         lowerRightX = x + (width / 2);
@@ -210,7 +223,7 @@ public class AGraphics extends AbstractGraphics {
 
         //pintado con lineas
         paint.setStyle(Paint.Style.STROKE);
-        paint.setStrokeWidth((int)(lineWidth * scaleFactor));
+        paint.setStrokeWidth((int) (lineWidth * scaleFactor));
         //draw
         canvas.drawRect(uLx, uLy, lRx, lRy, paint);
 
@@ -222,10 +235,14 @@ public class AGraphics extends AbstractGraphics {
 
     @Override
     public void fillRectangle(int x, int y, int width, int height) {
+        int coordinates[] = new int[]{x, y};
+        this.transformCoordinatesToAnchor(coordinates);
+        x = coordinates[0];
+        y = coordinates[1];
 
         //calculo de coordenadas fisicas desde coordenadas logicas
         int upperLeftX, upperLeftY, lowerRightX, lowerRightY;
-        width*= scaleX;
+        width *= scaleX;
         height *= scaleY;
         upperLeftX = x - (width / 2);
         upperLeftY = y - (height / 2);
@@ -244,33 +261,39 @@ public class AGraphics extends AbstractGraphics {
 
         //draw
         canvas.drawRect(uLx, uLy, lRx, lRy, paint);
-
     }
 
     //se pintan los bordes necesarios para mantener la relacion de aspecto deseada
-    public void renderBordersAndroid()
-    {
-        paint.setARGB((int)(0), 0, 0, 255); //BLANCO
+    public void renderBordersAndroid() {
+        paint.setARGB((int) (0), 0, 0, 255); //BLANCO
 
         // Tener en cuenta scale factor para el ancho
-        int scaledBarWidth = (int)Math.ceil(borderBarWidth / scaleFactor);
-        int scaledTopHeight = (int)Math.ceil(topBarHeight / scaleFactor);
+        int scaledBarWidth = (int) Math.ceil(borderBarWidth / scaleFactor);
+        int scaledTopHeight = (int) Math.ceil(topBarHeight / scaleFactor);
 
         // Barra izquierda y derecha
-        fillRectangle(-scaledBarWidth/2, logicSizeY/2, scaledBarWidth, logicSizeY);
-        fillRectangle(scaledBarWidth/2 + logicSizeX, logicSizeY/2, scaledBarWidth, logicSizeY);
+        fillRectangle(-scaledBarWidth / 2, logicSizeY / 2, scaledBarWidth, logicSizeY);
+        fillRectangle(scaledBarWidth / 2 + logicSizeX, logicSizeY / 2, scaledBarWidth, logicSizeY);
 
         // Barras arriba y abajo
-        fillRectangle(logicSizeX/2, -( scaledTopHeight/2 ) , logicSizeX, scaledTopHeight);
-        fillRectangle(logicSizeX/2, scaledTopHeight/2 + logicSizeY, logicSizeX, scaledTopHeight);
+        fillRectangle(logicSizeX / 2, -(scaledTopHeight / 2), logicSizeX, scaledTopHeight);
+        fillRectangle(logicSizeX / 2, scaledTopHeight / 2 + logicSizeY, logicSizeX, scaledTopHeight);
 
         //RESET
-        paint.setARGB((int)(alphaMultiplier * 255), this.r, this.g, this.b);
-
+        paint.setARGB((int) (alphaMultiplier * 255), this.r, this.g, this.b);
     }
 
     @Override
     public void drawLine(int fromX, int fromY, int toX, int toY) {
+        int coordinates[] = new int[]{fromX, fromY};
+        this.transformCoordinatesToAnchor(coordinates);
+        fromX = coordinates[0];
+        fromY = coordinates[1];
+
+        coordinates = new int[]{toX, toY};
+        this.transformCoordinatesToAnchor(coordinates);
+        toX = coordinates[0];
+        toY = coordinates[1];
 
         //current canvas displayed
         Canvas canvas = engine.getCurrentCanvas();
@@ -301,10 +324,13 @@ public class AGraphics extends AbstractGraphics {
         setFont(font);
 
         paint.setStyle(Paint.Style.FILL); //DEFAULT VALUE
-        paint.setTextSize((float)(((AFont)font).getSize() * scaleFactor * scaleX));
+        paint.setTextSize((float) (((AFont) font).getSize() * scaleFactor * scaleX));
 
-         x = logicXPositionToWindowsXPosition(x);
-         y = logicYPositionToWindowsYPosition(y );
+        int coordinates[] = new int[]{x, y};
+        x = logicXPositionToWindowsXPosition(x);
+        y = logicYPositionToWindowsYPosition(y);
+
+        this.transformCoordinatesToAnchor(coordinates);
 
         canvas.drawText(text, x, y, paint);
         //paint.reset();
@@ -313,14 +339,17 @@ public class AGraphics extends AbstractGraphics {
     @Override
     public void drawTextCentered(String text, int x, int y, IFont font) {
         Canvas canvas = engine.getCurrentCanvas();
-     
+
         paint.setStyle(Paint.Style.FILL); //DEFAULT VALUE
 
         //calculo la posicion a partir de la que tengo que pintar para que este centrado el texto respecto a x,y
-        int halfSwidth = (int)(((int)(getStringWidth(text, font))  )/ 2);
-        int halfSheight = (int)(((int)(getFontHeight(font) )  ) / 2);
-        int processedX = logicXPositionToWindowsXPosition(x- halfSwidth);
-        int processedY = logicYPositionToWindowsYPosition(y + halfSheight  );
+        int halfSwidth = (int) (((int) (getStringWidth(text, font))) / 2);
+        int halfSheight = (int) (((int) (getFontHeight(font))) / 2);
+        int coordinates[] = new int[]{x, y};
+        this.transformCoordinatesToAnchor(coordinates);
+        int processedX = logicXPositionToWindowsXPosition(coordinates[0] - halfSwidth);
+        int processedY = logicYPositionToWindowsYPosition(coordinates[1] + halfSheight);
+
 
         canvas.drawText(text, processedX, processedY, paint);
     }
@@ -351,11 +380,46 @@ public class AGraphics extends AbstractGraphics {
         return screenHeight > screenWidth;
     }
 
+    //0: x, 1: y
+    private void transformCoordinatesToAnchor(int[] coordinates) {
+        assert (coordinates.length == 2); // Prerequisito
+
+        switch (this.anchorPoint) {
+            case None:
+                break;
+            case UpperLeft:
+                coordinates[0] -= this.borderBarWidth;
+                coordinates[1] -= this.topBarHeight/2;
+                break;
+            case DownLeft:
+                coordinates[0] -= this.borderBarWidth;
+                coordinates[1] += logicSizeY + topBarHeight/2;
+                break;
+            case UpperRight:
+                coordinates[0] += this.borderBarWidth + logicSizeX;
+                coordinates[1] -= this.topBarHeight/2;
+                break;
+            case DownRight:
+                coordinates[0] += this.borderBarWidth + logicSizeX;
+                coordinates[1] += logicSizeY + topBarHeight/2;
+                break;
+            case Middle:
+                coordinates[0] += logicSizeX / 2;
+                coordinates[1] += logicSizeY / 2;
+                break;
+        }
+    }
+
+    @Override
+    public void setAnchorPoint(AnchorPoint anchor) {
+        this.anchorPoint = anchor;
+    }
+
     //hay transiciones pero no van con int
     @Override
     public void setGraphicsAlpha(int alpha) {
         paint.setAlpha(alpha);
-        alphaMultiplier = ((float) alpha/255);
+        alphaMultiplier = ((float) alpha / 255);
     }
 
     @Override
@@ -375,24 +439,24 @@ public class AGraphics extends AbstractGraphics {
 
     @Override
     public int logicXPositionToWindowsXPosition(int x) {
-        return (int) (((x + (int) (borderBarWidth / scaleFactor) ) ) * scaleFactor);
+        return (int) (((x + (int) (borderBarWidth / scaleFactor))) * scaleFactor);
 
     }
 
     @Override
     public int logicYPositionToWindowsYPosition(int y) {
-        return (int) (((y + (int) (topBarHeight / scaleFactor) ))* scaleFactor);
+        return (int) (((y + (int) (topBarHeight / scaleFactor))) * scaleFactor);
 
     }
 
     @Override
     public int windowsXPositionToLogicXPosition(int x) {
-        return (int) (((x - borderBarWidth  ) / scaleFactor));
+        return (int) (((x - borderBarWidth) / scaleFactor));
     }
 
     @Override
     public int windowsYPositionToLogicYPosition(int y) {
-        return (int) (((y - topBarHeight  ) / scaleFactor));
+        return (int) (((y - topBarHeight) / scaleFactor));
     }
 
     @Override

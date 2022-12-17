@@ -1,5 +1,6 @@
 package com.example.gamelogic.entities;
 
+import com.example.engine.AnchorPoint;
 import com.example.engine.IEngine;
 import com.example.engine.IFont;
 import com.example.engine.IImage;
@@ -143,6 +144,7 @@ public class Button extends UIElement {
 
     @Override
     public void render() {
+        graphics.setAnchorPoint(this.anchorPoint);
         graphics.setScale(scale, scale);
 
         renderBorders();
@@ -151,6 +153,7 @@ public class Button extends UIElement {
         renderText();
 
         graphics.setScale(1, 1);
+        graphics.setAnchorPoint(AnchorPoint.None);
     }
 
     @Override
