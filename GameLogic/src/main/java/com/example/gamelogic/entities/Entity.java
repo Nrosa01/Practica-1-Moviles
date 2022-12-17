@@ -1,5 +1,6 @@
 package com.example.gamelogic.entities;
 
+import com.example.engine.AnchorPoint;
 import com.example.engine.IAudio;
 import com.example.engine.IEngine;
 import com.example.engine.IGraphics;
@@ -10,11 +11,13 @@ public abstract class Entity implements IInputHandler{
     IEngine engine;
     protected IGraphics graphics;
     protected IAudio audio;
+    protected AnchorPoint anchorPoint;
 
     public Entity(IEngine engine) {
         this.engine = engine;
         graphics = engine.getGraphics();
         audio = engine.getAudio();
+        this.anchorPoint = AnchorPoint.None;
     }
 
     public void setWidth(int width){
@@ -66,6 +69,11 @@ public abstract class Entity implements IInputHandler{
 
         else if(touchType == IInput.InputTouchType.TOUCH_UP)
             this.OnPointerUp(x,y);
+    }
+
+    public void setAnchorPoint(AnchorPoint anchor)
+    {
+        this.anchorPoint = anchor;
     }
 
     public abstract void OnPointerDown(int x, int y);

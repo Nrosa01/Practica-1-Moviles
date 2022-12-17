@@ -1,5 +1,6 @@
 package com.example.gamelogic.states;
 
+import com.example.engine.AnchorPoint;
 import com.example.engine.IEngine;
 import com.example.engine.IFont;
 import com.example.engine.IImage;
@@ -63,6 +64,7 @@ public class SelectLevelLogic extends AbstractState {
             returnButton.setBackgroundColor(0, 0, 0, 0);
             returnButton.setBorderSize(0);
             returnButton.setHoverColor(205, 205, 205);
+            returnButton.setAnchorPoint(AnchorPoint.UpperLeft);
             returnButton.setCallback(new IInteractableCallback() {
                 @Override
                 public void onInteractionOccur() {
@@ -80,21 +82,14 @@ public class SelectLevelLogic extends AbstractState {
             int textY = graphics.isLandscape() ? 200 : 100;
             selectText = new Text(engine, "Selecciona el tamaño del puzzle", font, LOGIC_WIDTH / 2, textY);
             addEntity(selectText);
+
+            Text returnText = new Text(engine, "Volver", font, 75, 25);
+            returnText.setAnchorPoint(AnchorPoint.UpperLeft);
+            addEntity(returnText);
             return true;
         } catch (Exception e) {
             e.printStackTrace();
             return false;
         }
-    }
-
-    @Override
-    public void render() {
-        super.render();
-        graphics.setScale(0.05, 0.05);
-        graphics.drawImage(arrow, 25, 25);
-        graphics.setScale(1, 1);
-        graphics.drawText("Volver", 45, 35, font);
-
-
     }
 }

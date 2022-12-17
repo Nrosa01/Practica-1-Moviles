@@ -26,6 +26,8 @@ public interface IGraphics {
     int getLogicWidth();
     int getLogicHeight();
     boolean isLandscape();
+    void setAnchorPoint(AnchorPoint anchor);
+    int[] getAnchoredPosition(int x, int y, AnchorPoint anchor);
 
     void setGraphicsAlpha(int alpha);
 

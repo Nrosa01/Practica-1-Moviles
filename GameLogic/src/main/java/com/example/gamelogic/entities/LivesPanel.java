@@ -1,5 +1,6 @@
 package com.example.gamelogic.entities;
 
+import com.example.engine.AnchorPoint;
 import com.example.engine.IEngine;
 import com.example.engine.IImage;
 
@@ -51,9 +52,11 @@ public class LivesPanel extends Entity{
 
     @Override
     public void render() {
+        graphics.setAnchorPoint(this.anchorPoint);
         for (int i = 0; i < numLives; i++) {
             icons[i].render();
         }
+        graphics.setAnchorPoint(AnchorPoint.None);
 
         //graphics.drawRectangle(posX, posY, width, height, 4);
     }

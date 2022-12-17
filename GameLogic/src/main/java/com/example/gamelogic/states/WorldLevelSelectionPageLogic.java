@@ -1,5 +1,6 @@
 package com.example.gamelogic.states;
 
+import com.example.engine.AnchorPoint;
 import com.example.engine.IEngine;
 import com.example.engine.IFont;
 import com.example.engine.IImage;
@@ -112,6 +113,7 @@ public class WorldLevelSelectionPageLogic extends AbstractState {
             returnButton.setBackgroundColor(0, 0, 0, 0);
             returnButton.setBorderSize(0);
             returnButton.setHoverColor(205, 205, 205);
+            returnButton.setAnchorPoint(AnchorPoint.UpperLeft);
             returnButton.setCallback(new IInteractableCallback() {
                 @Override
                 public void onInteractionOccur() {
@@ -137,7 +139,7 @@ public class WorldLevelSelectionPageLogic extends AbstractState {
         IImage bg = graphics.newImage("images/" + text.toLowerCase() + ".png");
         int wWidth = graphics.getWidth();
         int wHeiht = graphics.getHeight();
-        int maximum = Math.min(wWidth, wHeiht);
+        int maximum = (int) (Math.min(wWidth, wHeiht) * 1.5f); // Asegurar que cuber toda la pantalla
         backgroundImg = new SizedImage(engine, bg, LOGIC_WIDTH / 2, LOGIC_HEIGHT / 2, maximum, maximum);
     }
 
