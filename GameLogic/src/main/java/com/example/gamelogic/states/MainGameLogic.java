@@ -90,7 +90,9 @@ public class MainGameLogic extends AbstractState implements Listener {
                     @Override
                     public void onInteractionOccur() {
                         try {
-                            engine.setState(new SelectLevelLogic(engine));
+                            SelectLevelLogic selectLogic = new SelectLevelLogic(engine);
+                            selectLogic.setColors(backgroundColor, defaultColor, freeColor, figureColor);
+                            engine.setState(selectLogic);
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -151,6 +153,7 @@ public class MainGameLogic extends AbstractState implements Listener {
 
             int boardWidth = Math.min(LOGIC_WIDTH, LOGIC_HEIGHT) - 20;
             board = new NonogramBoard(engine, level, boardWidth, 2, boardFont);
+            board.setColors(backgroundColor, defaultColor, freeColor, figureColor);
             board.setPosX(LOGIC_WIDTH / 2);
             board.setPosY(LOGIC_HEIGHT / 2);
 

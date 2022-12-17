@@ -38,23 +38,18 @@ public class NonogramBoard extends Board {
 
     // Cada fila es un desbloqueable
     // cada columna es un color (background, not pressed, free, figure)
-    protected int NUM_DESBLOQUEABLES = 1;
-    protected int coloresDesbloqueados = 1;
-    protected Color[][] coloresDesbloqueables = {
-            {new Color(255, 255, 255),new Color(123, 123, 123), new Color(123, 123, 255), new Color(255, 123, 123)},
-            {new Color(0, 255, 0),new Color(123, 123, 123), new Color(123, 123, 255), new Color(255, 123, 123)}};
-
-    public void DesbloquearColor(){
-        if(coloresDesbloqueados < NUM_DESBLOQUEABLES)
-            coloresDesbloqueados ++;
-    }
 
     private Color backgroundColor = new Color(255, 255, 255);
     private Color defaultColor = new Color(123, 123, 123);
     private Color freeColor = new Color(123, 123, 255);
     private Color figureColor = new Color(255, 123, 123);
 
-
+    public void setColors(Color c, Color c1, Color c2, Color c3){
+        backgroundColor = c;
+        defaultColor = c1;
+        freeColor = c2;
+        figureColor = c3;
+    }
 
     public NonogramBoard(IEngine engine, int[][] solvedPuzzle, int width, int gapSize, IFont font) {
         super(engine, solvedPuzzle.length, solvedPuzzle[0].length, width, gapSize);

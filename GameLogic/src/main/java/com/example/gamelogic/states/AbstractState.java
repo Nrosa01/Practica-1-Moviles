@@ -7,6 +7,7 @@ import com.example.engine.IState;
 import com.example.engine.InputEvent;
 import com.example.gamelogic.entities.Entity;
 import com.example.gamelogic.entities.Pointer;
+import com.example.gamelogic.utilities.Color;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,6 +22,18 @@ public abstract class AbstractState implements IState {
 
     private List<Entity> entities;
     private Pointer pointer;
+
+    protected Color backgroundColor = new Color(255, 255, 255);
+    protected Color defaultColor = new Color(123, 123, 123);
+    protected Color freeColor = new Color(123, 123, 255);
+    protected Color figureColor = new Color(255, 123, 123);
+
+    public void setColors(Color c, Color c1, Color c2, Color c3){
+        backgroundColor = c;
+        defaultColor = c1;
+        freeColor = c2;
+        figureColor = c3;
+    }
 
     protected AbstractState(IEngine engine)
     {

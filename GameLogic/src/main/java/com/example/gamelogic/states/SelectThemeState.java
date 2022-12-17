@@ -15,8 +15,17 @@ public class SelectThemeState extends AbstractState{
 
     Button returnButton;
 
-    private int NUM_THEMES = 3;
-    private Color[] themes = {new Color(255, 255, 255), new Color(0, 255, 0), new Color(255, 0, 0)};
+    protected int NUM_THEMES = 3;
+    protected int unlockedThemes = 0; //123, 123, 123
+    protected Color[][] themes = {
+            {new Color(255, 255, 255),new Color(123, 123, 123), new Color(123, 123, 255), new Color(255, 123, 123)},
+            {new Color(0, 255, 0),new Color(255, 255, 0), new Color(123, 123, 255), new Color(255, 123, 123)},
+            {new Color(255, 0, 0),new Color(0, 255, 255), new Color(123, 123, 255), new Color(255, 123, 123)}};
+
+    public void DesbloquearColor(){
+        if(unlockedThemes < NUM_THEMES - 1)
+            unlockedThemes ++;
+    }
 
     public SelectThemeState(IEngine engine) {
         super(engine);
@@ -42,7 +51,9 @@ public class SelectThemeState extends AbstractState{
                 @Override
                 public void onInteractionOccur() {
                     try {
-                        engine.setState(new StartMenuLogic(engine));
+                        StartMenuLogic startMenu = new StartMenuLogic(engine);
+                        startMenu.setColors(backgroundColor, defaultColor, freeColor, figureColor);
+                        engine.setState(startMenu);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -51,12 +62,12 @@ public class SelectThemeState extends AbstractState{
             addEntity(returnButton);
 
             //BOTONES DE SELECCION
-            int buttonSize = graphics.isPortrait() ? LOGIC_WIDTH / 5 : LOGIC_WIDTH / 8;
+            int buttonSize = graphics.isLandscape() ? LOGIC_WIDTH / 5 : LOGIC_WIDTH / 8;
             int gapSize = buttonSize / 2;
 
             for (int col = 0; col < NUM_THEMES; col++) {
-                int buttonY = graphics.isPortrait() ? 320 : 195;
-                int buttonX = graphics.isPortrait() ? (gapSize + buttonSize) * (col + 1) - gapSize : 110 + (gapSize + buttonSize) * (col + 1) - gapSize;
+                int buttonY = graphics.isLandscape() ? 320 : 195;
+                int buttonX = graphics.isLandscape() ? (gapSize + buttonSize) * (col + 1) - gapSize : 110 + (gapSize + buttonSize) * (col + 1) - gapSize;
                 Button button = new Button(buttonX, buttonY, buttonSize, buttonSize, engine);
                 //button.setText(texts[row][col], fontBold);
                 //final int finalRow = row;
@@ -66,7 +77,8 @@ public class SelectThemeState extends AbstractState{
                     public void onInteractionOccur() {
                         try {
                             //engine.setState(new MainGameLogic(engine, texts[finalRow][finalCol]));
-                            graphics.setClearColor(themes[finalCol].r, themes[finalCol].g, themes[finalCol].b);
+                            setColors(themes[finalCol][0], themes[finalCol][1], themes[finalCol][2], themes[finalCol][3]);
+                            graphics.setClearColor(themes[finalCol][0].r, themes[finalCol][0].g, themes[finalCol][0].b);
                         } catch (Exception e) {
                             e.printStackTrace();
                         }

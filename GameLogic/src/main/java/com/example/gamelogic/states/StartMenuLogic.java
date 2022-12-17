@@ -34,7 +34,9 @@ public class StartMenuLogic extends AbstractState {
                 @Override
                 public void onInteractionOccur() {
                     try {
-                        engine.setState(new WorldSelectionPageLogic(engine));
+                        WorldSelectionPageLogic worldSelectionPageLogic = new WorldSelectionPageLogic(engine);
+                        worldSelectionPageLogic.setColors(backgroundColor, defaultColor, freeColor, figureColor);
+                        engine.setState(worldSelectionPageLogic);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -50,7 +52,10 @@ public class StartMenuLogic extends AbstractState {
                 @Override
                 public void onInteractionOccur() {
                     try {
-                        engine.setState(new SelectLevelLogic(engine));
+                        SelectLevelLogic levelLogic = new SelectLevelLogic(engine);
+                        levelLogic.setColors(backgroundColor, defaultColor, freeColor, figureColor);
+                        engine.setState(levelLogic);
+
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -66,7 +71,9 @@ public class StartMenuLogic extends AbstractState {
                 @Override
                 public void onInteractionOccur() {
                     try {
-                        engine.setState(new SelectThemeState(engine));
+                        SelectThemeState themeState = new SelectThemeState(engine);
+                        themeState.setColors(backgroundColor, defaultColor, freeColor, figureColor);
+                        engine.setState(themeState);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }

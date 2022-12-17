@@ -70,7 +70,9 @@ public class WorldSelectionPageLogic extends AbstractState {
                 @Override
                 public void onInteractionOccur() {
                     try {
-                        engine.setState(new WorldLevelSelectionPageLogic(engine, levelTypes[index]));
+                        WorldLevelSelectionPageLogic worldSelectionPageLogic = new WorldLevelSelectionPageLogic(engine, levelTypes[index]);
+                        worldSelectionPageLogic.setColors(backgroundColor, defaultColor, freeColor, figureColor);
+                        engine.setState(worldSelectionPageLogic);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -88,7 +90,9 @@ public class WorldSelectionPageLogic extends AbstractState {
             @Override
             public void onInteractionOccur() {
                 try {
-                    engine.setState(new StartMenuLogic(engine));
+                    StartMenuLogic startMenu = new StartMenuLogic(engine);
+                    startMenu.setColors(backgroundColor, defaultColor, freeColor, figureColor);
+                    engine.setState(startMenu);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
