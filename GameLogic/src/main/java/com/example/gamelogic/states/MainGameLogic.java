@@ -13,8 +13,10 @@ import com.example.gamelogic.entities.LivesPanel;
 import com.example.gamelogic.entities.NonogramBoard;
 import com.example.gamelogic.levels.NonogramGenerator;
 import com.example.gamelogic.levels.WorldLevelType;
+import com.example.gamelogic.utilities.DataToAccess;
 import com.example.gamelogic.utilities.EventHandler;
 import com.example.gamelogic.utilities.EventManager;
+import com.example.gamelogic.utilities.Listener;
 import com.example.gamelogic.utilities.events.OnDamaged;
 
 import java.io.BufferedReader;

@@ -136,7 +136,7 @@ public class WorldLevelSelectionPageLogic extends AbstractState {
                     xPos = (j * width) + ((j + 1) * spacing) + width / 2;
                     yPos = (i * height) + ((i + 1) * spacing) + (LOGIC_HEIGHT / 2);
 
-                    if(!graphics.isPortrait())
+                    if(!graphics.isLandscape())
                     {
                         xPos += LOGIC_WIDTH / 5.5;
                         yPos -= LOGIC_HEIGHT / 8 + 20;
