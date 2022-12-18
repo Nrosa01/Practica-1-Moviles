@@ -107,9 +107,9 @@ public class WorldLevelSelectionPageLogic extends AbstractState {
                                     @Override
                                     public void onInteractionOccur() {
                                         try {
-                                            WorldSelectionPageLogic worldSelectionPageLogic = new WorldSelectionPageLogic(engine);
-                                            worldSelectionPageLogic.setColors(backgroundColor, defaultColor, freeColor, figureColor);
-                                            engine.setState(worldSelectionPageLogic);
+                                            WorldLevelSelectionPageLogic levelSelection = new WorldLevelSelectionPageLogic(engine, type);
+                                            levelSelection.setColors(backgroundColor, defaultColor, freeColor, figureColor);
+                                            engine.setState(levelSelection);
                                            
                                         } catch (Exception e) {
                                             e.printStackTrace();
