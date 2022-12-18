@@ -12,7 +12,6 @@ import com.example.engine.IImage;
 import com.example.engine.InputEvent;
 import com.example.gamelogic.entities.Button;
 import com.example.gamelogic.entities.Callback;
-import com.example.gamelogic.entities.Entity;
 import com.example.gamelogic.entities.IInteractableCallback;
 import com.example.gamelogic.entities.LivesPanel;
 import com.example.gamelogic.entities.NonogramBoard;
@@ -28,8 +27,6 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.List;
-
-import javax.xml.crypto.Data;
 
 public class MainGameLogic extends AbstractState implements Listener {
 
@@ -56,14 +53,13 @@ public class MainGameLogic extends AbstractState implements Listener {
 
     int numLevel;
     WorldLevelType type;
-    int row ;
+    int row;
 
 
     public MainGameLogic(IEngine engine, String level) {
         super(engine);
         this.level = level;
     }
-
 
 
     public MainGameLogic(IEngine engine, String level, boolean random) {
@@ -94,13 +90,12 @@ public class MainGameLogic extends AbstractState implements Listener {
 
     }*/
 
-    public MainGameLogic(final IEngine engine, int numLevel,WorldLevelType type,  boolean random, IInteractableCallback returnCallabck) {
+    public MainGameLogic(final IEngine engine, int numLevel, WorldLevelType type, boolean random, IInteractableCallback returnCallabck) {
         super(engine);
         this.row = numLevel / 5;
         this.numLevel = numLevel;
         this.type = type;
-        this.level = getLevelName(numLevel,row);
-
+        this.level = getLevelName(numLevel, row);
 
 
         this.random = random;
@@ -123,7 +118,6 @@ public class MainGameLogic extends AbstractState implements Listener {
     }
 
 
-
     @EventHandler
     public void onDamaged(OnDamaged eventArgs) {
         livesPanel.takeLive();
@@ -141,7 +135,7 @@ public class MainGameLogic extends AbstractState implements Listener {
                     @Override
                     public void onInteractionOccur() {
                         try {
-                            WorldLevelSelectionPageLogic selectLogic = new WorldLevelSelectionPageLogic(engine,type);
+                            WorldLevelSelectionPageLogic selectLogic = new WorldLevelSelectionPageLogic(engine, type);
 
                             engine.setState(selectLogic);
 
@@ -157,7 +151,7 @@ public class MainGameLogic extends AbstractState implements Listener {
                 public void onInteractionOccur() {
                     try {
 
-                        MainGameLogic logic = new MainGameLogic(engine,++numLevel,type,false, new IInteractableCallback() {
+                        MainGameLogic logic = new MainGameLogic(engine, ++numLevel, type, false, new IInteractableCallback() {
                             @Override
                             public void onInteractionOccur() {
                                 try {
@@ -231,30 +225,26 @@ public class MainGameLogic extends AbstractState implements Listener {
             nextLevelButton.setCallback(nextLevelCallback);
 
 
-
             int[][] level = loadLevel();
             if (level == null)
                 return false;
 
-            final int numDesbloq = numLevel+= 2;
+            final int numDesbloq = numLevel += 2;
             int boardWidth = Math.min(LOGIC_WIDTH, LOGIC_HEIGHT) - 20;
-        
+
             board = new NonogramBoard(engine, level, boardWidth, 2, boardFont, new Callback() {
                 @Override
                 public void callback() {
-                    if(numLevel+1 > 1) {
-                        DataToAccess.getInstance().setBool(type.toString()+ "Palette", true);
-                        if(type ==  Forest){
+                    if (numLevel + 1 > 1) {
+                        DataToAccess.getInstance().setBool(type.toString() + "Palette", true);
+                        if (type == Forest) {
                             unlockedThemes[1] = true;
-                          //  Log.i("Cosa", "Bosque desbloqueado");
-                        }
-                        else if (type == Sea){
+                            //  Log.i("Cosa", "Bosque desbloqueado");
+                        } else if (type == Sea) {
                             unlockedThemes[2] = true;
-                        }
-                        else if (type == City){
+                        } else if (type == City) {
                             unlockedThemes[3] = true;
-                        }
-                        else if (type == Animals){
+                        } else if (type == Animals) {
                             unlockedThemes[4] = true;
                         }
                     }
@@ -323,8 +313,11 @@ public class MainGameLogic extends AbstractState implements Listener {
         if (!board.getIsWin()) {
             returnButton.update(deltaTime);
         } else {
-            int boardWidth = Math.min(LOGIC_WIDTH, LOGIC_HEIGHT) / 2 - 20;
-            board.setWidth(boardWidth);
+            if (!graphics.isPortrait()) {
+                int boardWidth = Math.min(LOGIC_WIDTH, LOGIC_HEIGHT) / 2 - 20;
+                board.setWidth(boardWidth);
+            }
+
             winReturnButton.update(deltaTime);
             nextLevelButton.update(deltaTime);
         }
@@ -365,13 +358,13 @@ public class MainGameLogic extends AbstractState implements Listener {
                 returnButton.handleInput(proccesedX, proccesedY, inputEvent.type);
             } else {
                 winReturnButton.handleInput(proccesedX, proccesedY, inputEvent.type);
-                nextLevelButton.handleInput(proccesedX,proccesedY,inputEvent.type);
+                nextLevelButton.handleInput(proccesedX, proccesedY, inputEvent.type);
             }
 
         }
     }
 
-    private String getLevelName( int index, int i) {
+    private String getLevelName(int index, int i) {
         int cells = (i + 1) * 5;
         String typeToLower = type.toString().toLowerCase();
         String filename = typeToLower + cells + "x" + cells + "-" + ((index % 5) + 1) + ".txt";

@@ -12,10 +12,6 @@ import com.example.gamelogic.levels.WorldLevelType;
 import com.example.gamelogic.utilities.Color;
 import com.example.gamelogic.utilities.DataToAccess;
 
-import javax.xml.crypto.Data;
-
-import jdk.tools.jmod.Main;
-
 public class WorldLevelSelectionPageLogic extends AbstractState {
     Button returnButton;
     IImage arrow;
@@ -46,7 +42,7 @@ public class WorldLevelSelectionPageLogic extends AbstractState {
 
 
             tittleFont = graphics.newFont(engine.getAssetsPath() + "fonts/Roboto-Regular.ttf", 24, true);
-            int textY = graphics.isLandscape() ? (LOGIC_HEIGHT / 2) - 100 :  (LOGIC_HEIGHT / 2) - 125;
+            int textY = graphics.isPortrait() ? (LOGIC_HEIGHT / 2) - 100 :  (LOGIC_HEIGHT / 2) - 125;
             tittleText = new Text(engine, text, tittleFont, LOGIC_WIDTH / 2, textY);
             tittleText.setBackgroundColor(new Color(255,255,255,169));
             tittleText.setBackgruondSize(LOGIC_WIDTH, -1);
@@ -62,11 +58,11 @@ public class WorldLevelSelectionPageLogic extends AbstractState {
             int yPos;
 
             width = (LOGIC_WIDTH - (5 * 10)) / 5;
-            if(!graphics.isLandscape())
+            if(!graphics.isPortrait())
                 width /= 2;
             height = width;
             int spacing = (LOGIC_WIDTH - (5 * width)) / 6;
-            if(!graphics.isLandscape())
+            if(!graphics.isPortrait())
                 spacing /= 4;
 
             levels = new Button[4][5];
@@ -79,7 +75,7 @@ public class WorldLevelSelectionPageLogic extends AbstractState {
                     xPos = (j * width) + ((j + 1) * spacing) + width / 2;
                     yPos = (i * height) + ((i + 1) * spacing) + (LOGIC_HEIGHT / 2);
 
-                    if(!graphics.isLandscape())
+                    if(!graphics.isPortrait())
                     {
                         xPos += LOGIC_WIDTH / 5.5;
                         yPos -= LOGIC_HEIGHT / 8 + 20;
@@ -134,7 +130,7 @@ public class WorldLevelSelectionPageLogic extends AbstractState {
                     xPos = (j * width) + ((j + 1) * spacing) + width / 2;
                     yPos = (i * height) + ((i + 1) * spacing) + (LOGIC_HEIGHT / 2);
 
-                    if(!graphics.isLandscape())
+                    if(!graphics.isPortrait())
                     {
                         xPos += LOGIC_WIDTH / 5.5;
                         yPos -= LOGIC_HEIGHT / 8 + 20;

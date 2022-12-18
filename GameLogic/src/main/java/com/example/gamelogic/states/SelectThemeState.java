@@ -64,15 +64,15 @@ public class SelectThemeState extends AbstractState{
             addEntity(returnButton);
 
             //BOTONES DE SELECCION
-            int buttonSize = graphics.isLandscape() ? LOGIC_WIDTH / 5 : LOGIC_WIDTH / 8;
+            int buttonSize = graphics.isPortrait() ? LOGIC_WIDTH / 5 : LOGIC_WIDTH / 8;
             int gapSize = buttonSize / 2;
             IImage unlockedImg = graphics.newImage(engine.getAssetsPath() + "images/unlock.png");
             IImage lockedImg = graphics.newImage(engine.getAssetsPath() + "images/lock.png");
 
             for (int row = 0; row < rows; row++) {
                 for (int col = 0; col < cols && row == 0 || col < cols - 1 && row == 1; col++) {
-                    int buttonY = graphics.isLandscape() ? 200 + (120 * (row + 1)) : 75 + (120 * (row + 1));
-                    int buttonX = graphics.isLandscape() ? (gapSize + buttonSize) * (col + 1) - gapSize : 110 + (gapSize + buttonSize) * (col + 1) - gapSize;
+                    int buttonY = graphics.isPortrait() ? 200 + (120 * (row + 1)) : 75 + (120 * (row + 1));
+                    int buttonX = graphics.isPortrait() ? (gapSize + buttonSize) * (col + 1) - gapSize : 110 + (gapSize + buttonSize) * (col + 1) - gapSize;
                     Button button = new Button(buttonX, buttonY, buttonSize, buttonSize, engine);
                     final int finalCol = col + row * (rows+1);
 
