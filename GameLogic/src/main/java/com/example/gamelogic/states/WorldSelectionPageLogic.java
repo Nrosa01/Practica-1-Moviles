@@ -6,6 +6,7 @@ import com.example.engine.IFont;
 import com.example.engine.IImage;
 import com.example.gamelogic.entities.Button;
 import com.example.gamelogic.entities.IInteractableCallback;
+import com.example.gamelogic.entities.SizedImage;
 import com.example.gamelogic.entities.Text;
 import com.example.gamelogic.entities.WorldCard;
 import com.example.gamelogic.levels.WorldLevelType;
@@ -13,6 +14,7 @@ import com.example.gamelogic.utilities.DataToAccess;
 
 public class WorldSelectionPageLogic extends AbstractState {
     WorldCard levels[];
+    WorldCard specialWorld;
     IFont textFont;
     IImage cardHolder;
     IImage tape;
@@ -39,14 +41,16 @@ public class WorldSelectionPageLogic extends AbstractState {
 
         IFont tittleFont = graphics.newFont(engine.getAssetsPath() + "fonts/Roboto-Black.ttf", 20, false);
 
-        tittle = new Text(engine, "Elige la categoría a la que quieres jugar", tittleFont, LOGIC_WIDTH / 2, (int) (LOGIC_HEIGHT * 0.2));
+        tittle = new Text(engine, "Elige la categoría a la que quieres jugar", tittleFont, LOGIC_WIDTH / 2, (int) (LOGIC_HEIGHT * 0.1));
+        if(graphics.isPortrait())
+            tittle.setPosY(0);
         addEntity(tittle);
 
         int buttonSize = graphics.isPortrait() ? (int) (LOGIC_WIDTH / 2.5) : (int) (LOGIC_WIDTH / 5);
         int gapSize = buttonSize / 8;
         int margin = graphics.isPortrait() ? (int) (LOGIC_WIDTH / 3.5) : (int) (LOGIC_WIDTH / 6.5);
         int heightStep = buttonSize + 25;
-        int yStart = 250;
+        int yStart = 150;
 
         levels = new WorldCard[4];
         String texts[] = new String[]{"Bosque", "Mar", "Ciudad", "Animales"};
@@ -80,6 +84,24 @@ public class WorldSelectionPageLogic extends AbstractState {
                 }
             });
         }
+
+        int j = !graphics.isPortrait() ? 1 : 2;
+        float pos = graphics.isPortrait() ? 0.5f : 1.5f;
+
+        int buttonX = (int) (margin + pos * (gapSize + buttonSize / 2) + pos * (buttonSize / 2));
+        int buttonY = yStart + (heightStep * j);
+        boolean isDay = engine.getLumens() > 50;
+        String text = isDay ? "Day" : "Night";
+        int completedLecels = DataToAccess.getInstance().getInt(text);
+        IImage specialImage = engine.getGraphics().newImage(engine.getAssetsPath() + (isDay ? "images/sun.png" : "images/moon.png"));
+        IImage specialBg = engine.getGraphics().newImage(engine.getAssetsPath() + (isDay ? "images/lightGradient.png" : "images/darkGradient.png"));
+        int imageHeight = specialBg.getHeight();
+        SizedImage specialBgImage = new SizedImage(engine, specialImage, LOGIC_WIDTH/2, -imageHeight/2, LOGIC_WIDTH, 0);
+        specialBgImage.setAnchorPoint(AnchorPoint.DownLeft);
+        addEntity(specialBgImage);
+
+        specialWorld = new WorldCard(engine, buttonX, buttonY, buttonSize, buttonSize, completedLecels, text, cardHolder, specialImage, tape, textFont);
+        addEntity(specialWorld);
 
         returnButton = new Button(25, 25, 30, 30, engine);
         returnButton.setImage(arrow);

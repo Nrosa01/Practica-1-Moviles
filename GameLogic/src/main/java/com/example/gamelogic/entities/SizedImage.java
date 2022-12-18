@@ -1,5 +1,6 @@
 package com.example.gamelogic.entities;
 
+import com.example.engine.AnchorPoint;
 import com.example.engine.IEngine;
 import com.example.engine.IImage;
 
@@ -37,10 +38,12 @@ public class SizedImage extends Entity {
             scaleFactor = imageHeightRatio;
         }
 
+        graphics.setAnchorPoint(this.anchorPoint);
         graphics.setScale(scaleFactor, scaleFactor);
         graphics.drawImage(image, posX, posY);
 
         graphics.setScale(scale, scale);
+        graphics.setAnchorPoint(AnchorPoint.None);
     }
 
     @Override
