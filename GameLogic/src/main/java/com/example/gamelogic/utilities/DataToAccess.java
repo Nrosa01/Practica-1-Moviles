@@ -10,14 +10,25 @@ public class DataToAccess {
 
     private static DataToAccess instance;
 
-    String[] keysOfLevelData = {"Forest", "City", "Animals", "Sea"};
-    String[] keysOfPaletteData = {"ForestPalette", "CityPalette", "AnimalsPalette", "SeaPalette"};
+   /* String[] keysOfLevelData = {"Forest", "City", "Animals", "Sea"};
+    String[] keysOfPaletteData = {"ForestPalette", "CityPalette", "AnimalsPalette", "SeaPalette"};*/
 
+    String[] keysOfLevelData ;
+    String[] keysOfPaletteData;
     Map<String, Integer> levelData;
     Map<String, Boolean> paletteData;
 
     IEngine engine;
     private DataToAccess(Map<String, Object> dat ) {
+
+        int worlds = WorldLevelType.values().length;
+        keysOfLevelData = new String[worlds];
+        keysOfPaletteData = new String[worlds];
+        for (int i = 0 ; i < worlds; i++){
+            keysOfLevelData[i] = WorldLevelType.values()[i].toString();
+            keysOfPaletteData[i] = WorldLevelType.values()[i].toString() + "Palette";
+        }
+
 
         levelData = new HashMap<>();
         paletteData = new HashMap<>();
