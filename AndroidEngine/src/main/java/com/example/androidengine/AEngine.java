@@ -20,7 +20,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
 
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
@@ -46,23 +48,26 @@ public class AEngine implements IEngine, Runnable {
     private AGraphics graphics;
     private AInput inputManager;
 
+
     private AdView mAdView;
     private InterstitialAd mInterstitialAd;
 
     private Activity activity;
 
     AAudio audio;
+    Map<String, Object> savedValuesMap;
+
+    public AEngine( Activity act, SurfaceView context, AssetManager assetManager, AdView adView, Map<String, Object> map) {
 
 
 
-    public AEngine( Activity act, SurfaceView context, AssetManager assetManager, AdView adView, InterstitialAd mInterstitialAd) {
-
-        //this.mInterstitialAd = mInterstitialAd;
-
+        this.savedValuesMap = map;
         this.mAdView = adView;
         this.activity = act;
 
         this.cargarVideoAnuncio();
+
+
 
         enableBanner(true);
         this.paint = new Paint();
@@ -89,12 +94,6 @@ public class AEngine implements IEngine, Runnable {
         view.setOnTouchListener((view1, motionEvent) ->
                 onTouchEvent(motionEvent));
 
-       /* view.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View view) {
-                return false;
-            }
-        });*/
     }
 
     private void cargarVideoAnuncio(){
@@ -150,6 +149,11 @@ public class AEngine implements IEngine, Runnable {
         stateManager.setState(state);
 
         inputManager.clear();
+    }
+
+    @Override
+    public Map<String, Object> getData() {
+        return savedValuesMap;
     }
 
     public void resume() {
@@ -261,9 +265,6 @@ public class AEngine implements IEngine, Runnable {
         this.stateManager.handleInput(events);
     }
 
-    public void saveProgress(){
-
-    }
 
     public void stop()
     {
@@ -311,6 +312,18 @@ public class AEngine implements IEngine, Runnable {
             }
         });
     }
+
+
+
+    public Serializable getCurrentSceneState(){
+        return this.stateManager.getState();
+    }
+
+    public void saveProgress(){
+
+    }
+
+
     @Override
     public InputStream openFile(String filename) {
         try {

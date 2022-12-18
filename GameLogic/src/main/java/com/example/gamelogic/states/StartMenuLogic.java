@@ -6,6 +6,7 @@ import com.example.engine.IFont;
 import com.example.engine.ISound;
 import com.example.gamelogic.entities.Button;
 import com.example.gamelogic.entities.IInteractableCallback;
+import com.example.gamelogic.utilities.DataToAccess;
 
 public class StartMenuLogic extends AbstractState {
     IFont mainFont;
@@ -21,6 +22,7 @@ public class StartMenuLogic extends AbstractState {
     @Override
     public boolean init() {
         try {
+            DataToAccess.Init(engine);
             engine.enableBanner(true);
             int separation = 35;
             mainFont = graphics.newFont(engine.getAssetsPath() + "fonts/Roboto-Regular.ttf", 36, true);

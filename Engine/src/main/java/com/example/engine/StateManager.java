@@ -64,4 +64,8 @@ public class StateManager implements IState {
         } else
             throw new Exception("State didn't init correctly");
     }
+
+    public IState getState(){
+        return this.currentState;
+    }
 }
