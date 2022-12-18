@@ -1,5 +1,10 @@
 package com.example.gamelogic.states;
 
+import static com.example.gamelogic.levels.WorldLevelType.Animals;
+import static com.example.gamelogic.levels.WorldLevelType.City;
+import static com.example.gamelogic.levels.WorldLevelType.Forest;
+import static com.example.gamelogic.levels.WorldLevelType.Sea;
+
 import com.example.engine.AnchorPoint;
 import com.example.engine.IEngine;
 import com.example.engine.IFont;
@@ -237,7 +242,22 @@ public class MainGameLogic extends AbstractState implements Listener {
             board = new NonogramBoard(engine, level, boardWidth, 2, boardFont, new Callback() {
                 @Override
                 public void callback() {
-                    if(numLevel+1 > 10) DataToAccess.getInstance().setBool(type.toString()+ "Palette", true);
+                    if(numLevel+1 > 1) {
+                        DataToAccess.getInstance().setBool(type.toString()+ "Palette", true);
+                        if(type ==  Forest){
+                            unlockedThemes[1] = true;
+                          //  Log.i("Cosa", "Bosque desbloqueado");
+                        }
+                        else if (type == Sea){
+                            unlockedThemes[2] = true;
+                        }
+                        else if (type == City){
+                            unlockedThemes[3] = true;
+                        }
+                        else if (type == Animals){
+                            unlockedThemes[4] = true;
+                        }
+                    }
                     DataToAccess.getInstance().setMaxLevel(type.toString(), numDesbloq);
                 }
             });

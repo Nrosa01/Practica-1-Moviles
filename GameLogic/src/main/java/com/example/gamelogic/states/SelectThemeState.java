@@ -17,24 +17,6 @@ public class SelectThemeState extends AbstractState{
 
     private int rows = 2;
     private int cols = 3;
-    protected int NUM_THEMES = 5;
-    private boolean[] unlockedThemes = {true, true, true, true, true}; //el primero esta desbloqueado por defecto
-    protected Color[][] themes = {
-            //DEFUALT
-            {new Color(255, 255, 255),new Color(123, 123, 123), new Color(123, 123, 255), new Color(255, 123, 123)},
-            //BOSQUE
-            {new Color(105, 190, 40),new Color(101, 67, 33), new Color(123, 123, 255), new Color(255, 123, 123)},
-            //SEA
-            {new Color(61, 183, 255),new Color(242, 225, 174), new Color(123, 123, 255), new Color(255, 123, 123)},
-            //CIUDAD
-            {new Color(211, 211, 211),new Color(123, 123, 123), new Color(123, 123, 255), new Color(255, 123, 123)},
-            //ANIMALES
-            {new Color(155, 103, 60),new Color(245, 155, 105), new Color(123, 123, 255), new Color(255, 90, 90)}};
-
-    public void DesbloquearColor(int i){
-        if(i < NUM_THEMES) // 2 < 3
-            unlockedThemes[i] = true;
-    }
 
     public SelectThemeState(IEngine engine) {
         super(engine);
