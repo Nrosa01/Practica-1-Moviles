@@ -108,7 +108,6 @@ public class WorldLevelSelectionPageLogic extends AbstractState {
                                     public void onInteractionOccur() {
                                         try {
                                             WorldLevelSelectionPageLogic levelSelection = new WorldLevelSelectionPageLogic(engine, type);
-                                            levelSelection.setColors(backgroundColor, defaultColor, freeColor, figureColor);
                                             engine.setState(levelSelection);
                                            
                                         } catch (Exception e) {
@@ -116,7 +115,6 @@ public class WorldLevelSelectionPageLogic extends AbstractState {
                                         }
                                     }
                                 });
-                                logic.setColors(backgroundColor, defaultColor, freeColor, figureColor);
 
                                 engine.setState(logic);
                             } catch (Exception e) {
@@ -168,7 +166,6 @@ public class WorldLevelSelectionPageLogic extends AbstractState {
                 public void onInteractionOccur() {
                     try {
                         WorldSelectionPageLogic worldSelectionPageLogic = new WorldSelectionPageLogic(engine);
-                        worldSelectionPageLogic.setColors(backgroundColor, defaultColor, freeColor, figureColor);
                         engine.setState(worldSelectionPageLogic);
                     } catch (Exception e) {
                         e.printStackTrace();

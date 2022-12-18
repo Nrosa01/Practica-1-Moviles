@@ -23,35 +23,17 @@ public abstract class AbstractState implements IState {
     private List<Entity> entities;
     private Pointer pointer;
 
-    protected Color backgroundColor = new Color(255, 255, 255);
-    protected Color defaultColor = new Color(123, 123, 123);
-    protected Color freeColor = new Color(123, 123, 255);
-    protected Color figureColor = new Color(255, 123, 123);
+    static protected Color backgroundColor = new Color(255, 255, 255);
+    static protected Color defaultColor = new Color(123, 123, 123);
+    static protected Color freeColor = new Color(123, 123, 255);
+    static protected Color figureColor = new Color(255, 123, 123);
 
     protected int NUM_THEMES = 5;
     static protected boolean[] unlockedThemes = {true, false, false, false, false}; //el primero esta desbloqueado por defecto
-    protected Color[][] themes = {
-            //DEFUALT
-            {new Color(255, 255, 255),new Color(123, 123, 123), new Color(123, 123, 255), new Color(255, 123, 123)},
-            //BOSQUE
-            {new Color(105, 190, 40),new Color(101, 67, 33), new Color(123, 123, 255), new Color(255, 123, 123)},
-            //SEA
-            {new Color(61, 183, 255),new Color(242, 225, 174), new Color(123, 123, 255), new Color(255, 123, 123)},
-            //CIUDAD
-            {new Color(211, 211, 211),new Color(123, 123, 123), new Color(123, 123, 255), new Color(255, 123, 123)},
-            //ANIMALES
-            {new Color(155, 103, 60),new Color(245, 155, 105), new Color(123, 123, 255), new Color(255, 90, 90)}};
 
     public void DesbloquearColor(int i){
         if(i < NUM_THEMES) // 2 < 3
             unlockedThemes[i] = true;
-    }
-
-    public void setColors(Color c, Color c1, Color c2, Color c3){
-        backgroundColor = c;
-        defaultColor = c1;
-        freeColor = c2;
-        figureColor = c3;
     }
 
     protected AbstractState(IEngine engine)

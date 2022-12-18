@@ -142,7 +142,7 @@ public class MainGameLogic extends AbstractState implements Listener {
                     public void onInteractionOccur() {
                         try {
                             WorldLevelSelectionPageLogic selectLogic = new WorldLevelSelectionPageLogic(engine,type);
-                            selectLogic.setColors(backgroundColor, defaultColor, freeColor, figureColor);
+
                             engine.setState(selectLogic);
 
                             //engine.setState(new WorldLevelSelectionPageLogic(engine,type));

@@ -47,7 +47,6 @@ public class SelectLevelLogic extends AbstractState {
                         public void onInteractionOccur() {
                             try {
                                 MainGameLogic mainGameLogic = new MainGameLogic(engine, texts[finalRow][finalCol]);
-                                mainGameLogic.setColors(backgroundColor, defaultColor, freeColor, figureColor);
                                 engine.setState(mainGameLogic);
                             } catch (Exception e) {
                                 e.printStackTrace();
@@ -70,7 +69,6 @@ public class SelectLevelLogic extends AbstractState {
                 public void onInteractionOccur() {
                     try {
                         StartMenuLogic startMenu = new StartMenuLogic(engine);
-                        startMenu.setColors(backgroundColor, defaultColor, freeColor, figureColor);
                         engine.setState(startMenu);
                     } catch (Exception e) {
                         e.printStackTrace();
