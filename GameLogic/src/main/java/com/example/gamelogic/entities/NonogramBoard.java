@@ -13,6 +13,9 @@ import com.example.gamelogic.utilities.events.OnDamaged;
 
 import org.graalvm.compiler.replacements.Log;
 
+import jdk.nashorn.internal.objects.annotations.Function;
+import jdk.vm.ci.code.site.Call;
+
 public class NonogramBoard extends Board {
     private float timeLongPress = 1500;
     private final int numOfStates = 3;
@@ -35,6 +38,7 @@ public class NonogramBoard extends Board {
     IImage blockedCell;
     ISound winSound;
     ISound selectCell;
+    Callback winCallBack;
 
     // Cada fila es un desbloqueable
     // cada columna es un color (background, not pressed, free, figure)
@@ -51,8 +55,11 @@ public class NonogramBoard extends Board {
         figureColor = c3;
     }
 
-    public NonogramBoard(IEngine engine, int[][] solvedPuzzle, int width, int gapSize, IFont font) {
+   
+    public NonogramBoard(IEngine engine, int[][] solvedPuzzle, int width, int gapSize, IFont font,Callback winCallback) {
         super(engine, solvedPuzzle.length, solvedPuzzle[0].length, width, gapSize);
+
+        this.winCallBack = winCallback;
 
         this.initialWidth = width;
         setWidth(width);
@@ -262,7 +269,7 @@ public class NonogramBoard extends Board {
         }
         else{
 
-            board[row][col] = 4;
+            board[row][col] = 2;
         }
         isWin = updateBoardState(true);
 
@@ -352,6 +359,7 @@ public class NonogramBoard extends Board {
         }
 
         if (win) {
+            winCallBack.callback();
             for (int row = 0; row < rows; row++) {
                 for (int col = 0; col < cols; col++) {
                     if (solvedPuzzle[row][col] != 1) {

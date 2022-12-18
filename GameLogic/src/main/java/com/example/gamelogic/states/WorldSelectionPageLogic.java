@@ -9,6 +9,7 @@ import com.example.gamelogic.entities.IInteractableCallback;
 import com.example.gamelogic.entities.Text;
 import com.example.gamelogic.entities.WorldCard;
 import com.example.gamelogic.levels.WorldLevelType;
+import com.example.gamelogic.utilities.DataToAccess;
 
 public class WorldSelectionPageLogic extends AbstractState {
     WorldCard levels[];
@@ -62,10 +63,10 @@ public class WorldSelectionPageLogic extends AbstractState {
 
             int buttonX = margin + pos * (gapSize + buttonSize / 2) + pos * (buttonSize / 2);
             int buttonY = yStart + (heightStep * j);
-
-
+            int completedLevels = 0;
+            completedLevels = DataToAccess.getInstance().getInt(texts[i]);
             levels[i] = new WorldCard(engine, buttonX, buttonY, buttonSize, buttonSize,
-                    "0/20", texts[i], cardHolder, images[i], tape, textFont);
+                    completedLevels, texts[i], cardHolder, images[i], tape, textFont);
             final int index = i;
             levels[i].setCallback(new IInteractableCallback() {
                 @Override

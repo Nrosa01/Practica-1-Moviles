@@ -6,10 +6,14 @@ import com.example.engine.IFont;
 import com.example.engine.IImage;
 import com.example.engine.InputEvent;
 import com.example.gamelogic.entities.Button;
+import com.example.gamelogic.entities.Callback;
+import com.example.gamelogic.entities.Entity;
 import com.example.gamelogic.entities.IInteractableCallback;
 import com.example.gamelogic.entities.LivesPanel;
 import com.example.gamelogic.entities.NonogramBoard;
 import com.example.gamelogic.levels.NonogramGenerator;
+import com.example.gamelogic.levels.WorldLevelType;
+import com.example.gamelogic.utilities.DataToAccess;
 import com.example.gamelogic.utilities.EventHandler;
 import com.example.gamelogic.utilities.EventManager;
 import com.example.gamelogic.utilities.Listener;
@@ -20,6 +24,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.List;
 
+import javax.xml.crypto.Data;
+
 public class MainGameLogic extends AbstractState implements Listener {
 
     String level;
@@ -27,6 +33,7 @@ public class MainGameLogic extends AbstractState implements Listener {
     Button returnButton;
     Button watchVid;
     Button winReturnButton;
+    Button nextLevelButton;
     IFont font;
     IFont boardFont;
     IFont congratsFont;
@@ -40,11 +47,19 @@ public class MainGameLogic extends AbstractState implements Listener {
     boolean random = true;
     IInteractableCallback returnCallback;
     IInteractableCallback watchVidCallback;
+    IInteractableCallback nextLevelCallback;
+
+    int numLevel;
+    WorldLevelType type;
+    int row ;
+
 
     public MainGameLogic(IEngine engine, String level) {
         super(engine);
         this.level = level;
     }
+
+
 
     public MainGameLogic(IEngine engine, String level, boolean random) {
         super(engine);
@@ -52,7 +67,7 @@ public class MainGameLogic extends AbstractState implements Listener {
         this.random = random;
     }
 
-    public MainGameLogic(final IEngine engine, String level, boolean random, IInteractableCallback returnCallabck) {
+    /*public MainGameLogic(final IEngine engine, String level, boolean random, IInteractableCallback returnCallabck) {
         super(engine);
         this.level = level;
         this.random = random;
@@ -65,12 +80,44 @@ public class MainGameLogic extends AbstractState implements Listener {
                 try {
                     livesPanel.restoreLive();
                     engineAux.showVid();
+
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
         };
+
+    }*/
+
+    public MainGameLogic(final IEngine engine, int numLevel,WorldLevelType type,  boolean random, IInteractableCallback returnCallabck) {
+        super(engine);
+        this.row = numLevel / 5;
+        this.numLevel = numLevel;
+        this.type = type;
+        this.level = getLevelName(numLevel,row);
+
+
+
+        this.random = random;
+        this.returnCallback = returnCallabck;
+
+        final IEngine engineAux = this.engine;
+        this.watchVidCallback = new IInteractableCallback() {
+            @Override
+            public void onInteractionOccur() {
+                try {
+                    livesPanel.restoreLive();
+                    engineAux.showVid();
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+
     }
+
+
 
     @EventHandler
     public void onDamaged(OnDamaged eventArgs) {
@@ -89,14 +136,39 @@ public class MainGameLogic extends AbstractState implements Listener {
                     @Override
                     public void onInteractionOccur() {
                         try {
-                            SelectLevelLogic selectLogic = new SelectLevelLogic(engine);
+                            WorldLevelSelectionPageLogic selectLogic = new WorldLevelSelectionPageLogic(engine,type);
                             selectLogic.setColors(backgroundColor, defaultColor, freeColor, figureColor);
                             engine.setState(selectLogic);
+
+                            //engine.setState(new WorldLevelSelectionPageLogic(engine,type));
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
                     }
                 };
+
+            nextLevelCallback = new IInteractableCallback() {
+                @Override
+                public void onInteractionOccur() {
+                    try {
+
+                        MainGameLogic logic = new MainGameLogic(engine,++numLevel,type,false, new IInteractableCallback() {
+                            @Override
+                            public void onInteractionOccur() {
+                                try {
+                                    engine.setState(new WorldLevelSelectionPageLogic(engine, type));
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        });
+
+                        engine.setState(logic);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            };
 
             EventManager.register(this);
 
@@ -145,12 +217,30 @@ public class MainGameLogic extends AbstractState implements Listener {
             winReturnButton.setHoverColor(205, 205, 205);
             winReturnButton.setCallback(returnCallback);
 
+
+            nextLevelButton = new Button(LOGIC_WIDTH / 2, LOGIC_HEIGHT - 15, 100, 50, engine);
+            nextLevelButton.setText("Siguiente Nivel", font);
+            nextLevelButton.setBackgroundColor(0, 0, 0, 0);
+            nextLevelButton.setBorderSize(0);
+            nextLevelButton.setHoverColor(205, 205, 205);
+            nextLevelButton.setCallback(nextLevelCallback);
+
+
+
             int[][] level = loadLevel();
             if (level == null)
                 return false;
 
+            final int numDesbloq = numLevel+= 2;
             int boardWidth = Math.min(LOGIC_WIDTH, LOGIC_HEIGHT) - 20;
-            board = new NonogramBoard(engine, level, boardWidth, 2, boardFont);
+        
+            board = new NonogramBoard(engine, level, boardWidth, 2, boardFont, new Callback() {
+                @Override
+                public void callback() {
+                    if(numLevel+1 > 10) DataToAccess.getInstance().setBool(type.toString()+ "Palette", true);
+                    DataToAccess.getInstance().setMaxLevel(type.toString(), numDesbloq);
+                }
+            });
             board.setColors(backgroundColor, defaultColor, freeColor, figureColor);
             board.setPosX(LOGIC_WIDTH / 2);
             board.setPosY(LOGIC_HEIGHT / 2);
@@ -216,6 +306,7 @@ public class MainGameLogic extends AbstractState implements Listener {
             int boardWidth = Math.min(LOGIC_WIDTH, LOGIC_HEIGHT) / 2 - 20;
             board.setWidth(boardWidth);
             winReturnButton.update(deltaTime);
+            nextLevelButton.update(deltaTime);
         }
         watchVid.update(deltaTime);
     }
@@ -237,6 +328,7 @@ public class MainGameLogic extends AbstractState implements Listener {
         } else {
             graphics.drawTextCentered("¡Enhorabuena!", LOGIC_WIDTH / 2, 50, congratsFont);
             winReturnButton.render();
+            nextLevelButton.render();
         }
     }
 
@@ -251,9 +343,39 @@ public class MainGameLogic extends AbstractState implements Listener {
             if (!board.getIsWin()) {
                 watchVid.handleInput(proccesedX, proccesedY, inputEvent.type);
                 returnButton.handleInput(proccesedX, proccesedY, inputEvent.type);
-            } else
+            } else {
                 winReturnButton.handleInput(proccesedX, proccesedY, inputEvent.type);
+                nextLevelButton.handleInput(proccesedX,proccesedY,inputEvent.type);
+            }
 
         }
     }
+
+    private String getLevelName( int index, int i) {
+        int cells = (i + 1) * 5;
+        String typeToLower = type.toString().toLowerCase();
+        String filename = typeToLower + cells + "x" + cells + "-" + ((index % 5) + 1) + ".txt";
+        return "levels/" + typeToLower + "/" + filename;
+    }
+
+    /*private String getNextLevel(){
+         String nextLevel;
+         int nextLevelNum = ++numLevel;
+
+         int i = nextLevelNum / 5;
+         int j  = nextLevelNum % 5;
+
+        nextLevel = getLevelName( (i * 5) + j, i);
+
+       *//*  if(j+1 < 5)
+             nextLevel = getLevelName( (i * 5) + j+1, i);
+         else if(i +1<4)
+             nextLevel = getLevelName( ((i+1) *5) ,i);
+         else
+             nextLevel = getLevelName( (i * 5) + j, i);*//*
+
+        return  nextLevel;
+    }*/
+
+
 }

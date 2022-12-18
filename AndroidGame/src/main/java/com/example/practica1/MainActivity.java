@@ -30,8 +30,11 @@ import android.view.SurfaceView;
 import android.view.View;
 
 import com.example.androidengine.AEngine;
+import com.example.engine.IState;
+import com.example.gamelogic.states.GetDataState;
 import com.example.gamelogic.states.StartMenuLogic;
 
+import com.example.gamelogic.utilities.DataToAccess;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
@@ -43,19 +46,33 @@ import com.google.android.gms.ads.interstitial.InterstitialAd;
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback;
 
 import java.io.FileOutputStream;
+import java.io.Serializable;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
+
+
 
 public class MainActivity extends AppCompatActivity  {
 
     private AEngine androidEngine;
     private AssetManager assetManager;
     private AdView mAdView;
-    private InterstitialAd mInterstitialAd;
+
+
+    private String sharedPrefFile = "com.example.android.hellosharedprefs";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        //cargado de datos de preferencias
+        SharedPreferences mPreferences = getSharedPreferences(sharedPrefFile,
+                MODE_PRIVATE);
+        Map<String, Object> savedValuesMap  = (Map<String, Object>) mPreferences.getAll();
+
+
+
         Intent intentParam = getIntent();
         if (intentParam != null){
             int a = intentParam.getIntExtra("someKey", 0);
@@ -64,37 +81,23 @@ public class MainActivity extends AppCompatActivity  {
 
         cargarBanner();
 
-        MobileAds.initialize(this, new OnInitializationCompleteListener() {
-            @Override
-            public void onInitializationComplete(InitializationStatus initializationStatus) {}
-        });
-
-        //cargarVideoAnuncio();
-
         assetManager = getAssets();
 
 
-        //anuncios--------------
-        /*MobileAds.initialize(this, new OnInitializationCompleteListener() {
-            @Override
-            public void onInitializationComplete(InitializationStatus initializationStatus) {
-            }
-        });*/
+
         mAdView = findViewById(R.id.adView);
         AdRequest adRequest = new AdRequest.Builder().build();
         mAdView.loadAd(adRequest);
 
 
 
-
-        //Log.i("Cosa ","BBBBBBBBBB");
         Constraints constraints = new Constraints.Builder().build();
         PeriodicWorkRequest build = new PeriodicWorkRequest.Builder(NotificationWork.class, 15, TimeUnit.MINUTES)
                 .addTag("TAG")
                 .setConstraints(constraints)
                 .build();
 
-        WorkManager instance = WorkManager.getInstance();
+        WorkManager instance = WorkManager.getInstance(this);
         if (instance != null) {
             instance.enqueueUniquePeriodicWork("TAG", ExistingPeriodicWorkPolicy.REPLACE, build);
         }
@@ -103,9 +106,7 @@ public class MainActivity extends AppCompatActivity  {
         //----------------------------------------------------------------------------------
         SurfaceView view = (SurfaceView) findViewById(R.id.surfaceView);
 
-        this.androidEngine = new AEngine(this,view, assetManager, mAdView,mInterstitialAd);
-
-
+        this.androidEngine = new AEngine(this,view, assetManager, mAdView,savedValuesMap);
 
 
         //bloquea la orientacion del movil a vertical
@@ -141,7 +142,7 @@ public class MainActivity extends AppCompatActivity  {
         Log.i("Cosa ","DESTROY ");
     }
 
-    private String sharedPrefFile = "com.example.android.hellosharedprefs";
+
 
     @Override
     protected void onPause() {
@@ -149,13 +150,24 @@ public class MainActivity extends AppCompatActivity  {
 
         SharedPreferences mPreferences;
 
-
+        // MODE_WORLD_WRITEABLE and MODE_WORLD_READABLE están deprecados desde API 17
         mPreferences = getSharedPreferences(sharedPrefFile, MODE_PRIVATE);
-// MODE_WORLD_WRITEABLE and MODE_WORLD_READABLE están deprecados desde API 17
 
 
         SharedPreferences.Editor preferencesEditor = mPreferences.edit();
-        this.androidEngine.saveProgress();
+
+        DataToAccess data = DataToAccess.getInstance();
+        Map<String, Integer> levels = data.getMapInt();
+        Map<String, Boolean> palettes = data.getMapBool();
+
+        for (Map.Entry<String, Integer> entry: levels.entrySet())
+            preferencesEditor.putInt(entry.getKey(), entry.getValue());
+
+        for (Map.Entry<String, Boolean> entry: palettes.entrySet())
+            preferencesEditor.putBoolean(entry.getKey(), entry.getValue());
+
+        if(!preferencesEditor.commit())
+            Log.i(TAG, "fallo al guardar datos");
 
         this.androidEngine.pause();
     }
@@ -163,7 +175,8 @@ public class MainActivity extends AppCompatActivity  {
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-
+        //Serializable serializable = this.androidEngine.getSerializableState();
+        //outState.putSerializable("escena", this.androidEngine.getCurrentSceneState());
 
         //FileOutputStream file = new FileOutputStream("completedLevels");
 
@@ -172,29 +185,15 @@ public class MainActivity extends AppCompatActivity  {
     @Override
     public void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
-
+      /*  Serializable state = savedInstanceState.getSerializable("escena");
+        try {
+            this.androidEngine.setState((IState) state);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }*/
     }
 
-    @Override
-    public void onConfigurationChanged(Configuration newConfig)
-    {
-        //newConfig.orientation = 2
-        //( landscape )
 
-
-        Log.d("tag", "config changed");
-        super.onConfigurationChanged(newConfig);
-
-        int orientation = newConfig.orientation;
-        if (orientation == Configuration.ORIENTATION_PORTRAIT)
-            Log.d("tag", "Portrait");
-        else if (orientation == Configuration.ORIENTATION_LANDSCAPE)
-            Log.d("tag", "Landscape");
-        else
-            Log.w("tag", "other: " + orientation);
-
-
-    }
 
 
 
