@@ -50,20 +50,23 @@ import java.io.Serializable;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+
+
 public class MainActivity extends AppCompatActivity  {
 
     private AEngine androidEngine;
     private AssetManager assetManager;
     private AdView mAdView;
-    private InterstitialAd mInterstitialAd;
+
+
+    private String sharedPrefFile = "com.example.android.hellosharedprefs";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_main);
 
-
+        //cargado de datos de preferencias
         SharedPreferences mPreferences = getSharedPreferences(sharedPrefFile,
                 MODE_PRIVATE);
         Map<String, Object> savedValuesMap  = (Map<String, Object>) mPreferences.getAll();
@@ -78,37 +81,23 @@ public class MainActivity extends AppCompatActivity  {
 
         cargarBanner();
 
-        MobileAds.initialize(this, new OnInitializationCompleteListener() {
-            @Override
-            public void onInitializationComplete(InitializationStatus initializationStatus) {}
-        });
-
-        //cargarVideoAnuncio();
-
         assetManager = getAssets();
 
 
-        //anuncios--------------
-        /*MobileAds.initialize(this, new OnInitializationCompleteListener() {
-            @Override
-            public void onInitializationComplete(InitializationStatus initializationStatus) {
-            }
-        });*/
+
         mAdView = findViewById(R.id.adView);
         AdRequest adRequest = new AdRequest.Builder().build();
         mAdView.loadAd(adRequest);
 
 
 
-
-        //Log.i("Cosa ","BBBBBBBBBB");
         Constraints constraints = new Constraints.Builder().build();
         PeriodicWorkRequest build = new PeriodicWorkRequest.Builder(NotificationWork.class, 15, TimeUnit.MINUTES)
                 .addTag("TAG")
                 .setConstraints(constraints)
                 .build();
 
-        WorkManager instance = WorkManager.getInstance();
+        WorkManager instance = WorkManager.getInstance(this);
         if (instance != null) {
             instance.enqueueUniquePeriodicWork("TAG", ExistingPeriodicWorkPolicy.REPLACE, build);
         }
@@ -117,14 +106,12 @@ public class MainActivity extends AppCompatActivity  {
         //----------------------------------------------------------------------------------
         SurfaceView view = (SurfaceView) findViewById(R.id.surfaceView);
 
-        this.androidEngine = new AEngine(this,view, assetManager, mAdView,mInterstitialAd,savedValuesMap);
-
-
+        this.androidEngine = new AEngine(this,view, assetManager, mAdView,savedValuesMap);
 
 
         //bloquea la orientacion del movil a vertical
         StartMenuLogic menuLogic = new StartMenuLogic(this.androidEngine);
-        //GetDataState dataState = new GetDataState(this.androidEngine);
+
         try {
             this.androidEngine.setState(menuLogic);
         } catch (Exception e) {
@@ -155,7 +142,7 @@ public class MainActivity extends AppCompatActivity  {
         Log.i("Cosa ","DESTROY ");
     }
 
-    private String sharedPrefFile = "com.example.android.hellosharedprefs";
+
 
     @Override
     protected void onPause() {
@@ -163,23 +150,24 @@ public class MainActivity extends AppCompatActivity  {
 
         SharedPreferences mPreferences;
 
-
+        // MODE_WORLD_WRITEABLE and MODE_WORLD_READABLE están deprecados desde API 17
         mPreferences = getSharedPreferences(sharedPrefFile, MODE_PRIVATE);
-// MODE_WORLD_WRITEABLE and MODE_WORLD_READABLE están deprecados desde API 17
 
 
         SharedPreferences.Editor preferencesEditor = mPreferences.edit();
+
         DataToAccess data = DataToAccess.getInstance();
         Map<String, Integer> levels = data.getMapInt();
         Map<String, Boolean> palettes = data.getMapBool();
-        for (Map.Entry<String, Integer> entry: levels.entrySet()             ) {
-            preferencesEditor.putInt(entry.getKey(), entry.getValue());
-        }
-        for (Map.Entry<String, Boolean> entry: palettes.entrySet()             ) {
-            preferencesEditor.putBoolean(entry.getKey(), entry.getValue());
-        }
-        preferencesEditor.commit();
 
+        for (Map.Entry<String, Integer> entry: levels.entrySet())
+            preferencesEditor.putInt(entry.getKey(), entry.getValue());
+
+        for (Map.Entry<String, Boolean> entry: palettes.entrySet())
+            preferencesEditor.putBoolean(entry.getKey(), entry.getValue());
+
+        if(!preferencesEditor.commit())
+            Log.i(TAG, "fallo al guardar datos");
 
         this.androidEngine.pause();
     }
@@ -187,6 +175,7 @@ public class MainActivity extends AppCompatActivity  {
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
+        //Serializable serializable = this.androidEngine.getSerializableState();
         //outState.putSerializable("escena", this.androidEngine.getCurrentSceneState());
 
         //FileOutputStream file = new FileOutputStream("completedLevels");

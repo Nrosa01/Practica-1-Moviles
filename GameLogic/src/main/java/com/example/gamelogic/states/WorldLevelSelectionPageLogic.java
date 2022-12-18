@@ -41,8 +41,6 @@ public class WorldLevelSelectionPageLogic extends AbstractState {
     @Override
     public boolean init() {
         try {
-
-            //if(DataToAccess.getInstance().getInt(type.toString()))
             unlockedLevels = DataToAccess.getInstance().getInt(type.toString()) ;
 
 
@@ -73,7 +71,7 @@ public class WorldLevelSelectionPageLogic extends AbstractState {
             levels = new Button[4][5];
 
 
-            for (int i = 0; i <=  unlockedLevels/4 ; i++) {
+            for (int i = 0; i <=  unlockedLevels/5 ; i++) {
                 for (int j = 0; j < Math.min(unlockedLevels - (i * 5), 5); j++) {
 
                     // Calculate the x and y position of the button
@@ -99,7 +97,7 @@ public class WorldLevelSelectionPageLogic extends AbstractState {
 
 
                     final int numLevel = i * 5 +j ;
-                   // final int nextNumLevel = numLevel+1;
+
                     levels[i][j].setCallback(new IInteractableCallback() {
                         @Override
                         public void onInteractionOccur() {
@@ -126,7 +124,7 @@ public class WorldLevelSelectionPageLogic extends AbstractState {
             }
 
 
-            for (int i = unlockedLevels/4; i <  4; i++) {
+            for (int i = unlockedLevels/5; i <  4; i++) {
                 for (int j = Math.max(unlockedLevels - (i * 5), 0); j < 5; j++) {
 
                     // Calculate the x and y position of the button

@@ -57,9 +57,8 @@ public class AEngine implements IEngine, Runnable {
     AAudio audio;
     Map<String, Object> savedValuesMap;
 
-    public AEngine( Activity act, SurfaceView context, AssetManager assetManager, AdView adView, InterstitialAd mInterstitialAd, Map<String, Object> map) {
+    public AEngine( Activity act, SurfaceView context, AssetManager assetManager, AdView adView, Map<String, Object> map) {
 
-        //this.mInterstitialAd = mInterstitialAd;
 
 
         this.savedValuesMap = map;
@@ -95,12 +94,6 @@ public class AEngine implements IEngine, Runnable {
         view.setOnTouchListener((view1, motionEvent) ->
                 onTouchEvent(motionEvent));
 
-       /* view.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View view) {
-                return false;
-            }
-        });*/
     }
 
     private void cargarVideoAnuncio(){
@@ -271,20 +264,6 @@ public class AEngine implements IEngine, Runnable {
         this.stateManager.handleInput(events);
     }
 
-   /* @Override
-    public <T> void setSavedValue(String key, T value) {
-
-    }
-
-    @Override
-    public <T> Boolean hasSavedValue(String key) {
-        return null;
-    }
-
-    @Override
-    public <T> T getSavedValue(String key, Class<T> classType) {
-        return null;
-    }*/
 
     public void stop()
     {
@@ -342,25 +321,6 @@ public class AEngine implements IEngine, Runnable {
     public void saveProgress(){
 
     }
-
-    // soy completamente inutil
-    /*public <T> Boolean hasSavedValue(String key){
-        return savedValuesMap.containsKey(key);
-    }
-
-    //                                              cant be primitive types
-    public  <T> T getSavedValue(String key, Class<T> classType){
-            Object o = savedValuesMap.get(key);
-            T retVal = classType.cast(o);
-            return retVal;
-
-    }
-
-    public <T> void setSavedValue(String key, T value){
-            savedValuesMap.put(key, value);
-    }*/
-
-
 
 
     @Override

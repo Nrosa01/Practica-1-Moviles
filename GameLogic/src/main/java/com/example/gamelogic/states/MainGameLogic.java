@@ -241,8 +241,8 @@ public class MainGameLogic extends AbstractState implements Listener {
             board = new NonogramBoard(engine, level, boardWidth, 2, boardFont, new Callback() {
                 @Override
                 public void callback() {
-                    if(numLevel+1 > 10) DataToAccess.getInstance().changeBool(type.toString()+ "Palette", true);
-                    DataToAccess.getInstance().changeInt(type.toString(), Math.max(DataToAccess.getInstance().getInt(type.toString()), numDesbloq));
+                    if(numLevel+1 > 10) DataToAccess.getInstance().setBool(type.toString()+ "Palette", true);
+                    DataToAccess.getInstance().setMaxLevel(type.toString(), numDesbloq);
                 }
             });
             board.setPosX(LOGIC_WIDTH / 2);

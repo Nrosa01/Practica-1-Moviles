@@ -18,9 +18,11 @@ public class DataToAccess {
 
     IEngine engine;
     private DataToAccess(Map<String, Object> dat ) {
-        // The following code emulates slow initialization.
+
         levelData = new HashMap<>();
         paletteData = new HashMap<>();
+
+        //si esta guardada la key cojo la informacion y si no la inicializo a un valor predefinido
         for (String key: keysOfLevelData  ) {
             if(!dat.containsKey(key))
                 levelData.put(key,1);
@@ -55,32 +57,36 @@ public class DataToAccess {
         return false;
     }
 
-    public  void changeInt(String key, int value){
-
+    public  void setInt(String key, int value){
         if(levelData.containsKey(key))
             levelData.put(key,Integer.class.cast(value));
+    }
+
+    public void setMaxLevel(String key, int value){
+
+        if(levelData.containsKey(key))
+            levelData.put(key, Math.max(value,levelData.get(key)));
 
     }
 
-    public void changeBool(String key, boolean value){
+    public void setBool(String key, boolean value){
         if(levelData.containsKey(key))
             levelData.put(key,Integer.class.cast(value));
     }
 
     public int getInt(String key){
-        if(levelData.containsKey(key)){
+        if(levelData.containsKey(key))
             return levelData.get(key);
-        }
         else return 0;
     }
 
     public boolean getBool(String key){
-        if(paletteData.containsKey(key)){
+        if(paletteData.containsKey(key))
             return paletteData.get(key);
-        }
         else return false;
     }
 
+    //metodos para guardar los datos
     public Map<String, Integer> getMapInt() {
         return levelData;
     }
@@ -90,7 +96,4 @@ public class DataToAccess {
     }
 
 
-   /* dogMap.put("Fido", new Dog("Fido"));
-
-    Dog myPet = dogMap.get("Fido");*/
 }
