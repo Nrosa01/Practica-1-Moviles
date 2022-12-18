@@ -34,17 +34,16 @@ public class WorldLevelSelectionPageLogic extends AbstractState {
     }
 
 
-
     @Override
     public boolean init() {
         try {
-            unlockedLevels = DataToAccess.getInstance().getInt(type.toString()) ;
+            unlockedLevels = DataToAccess.getInstance().getInt(type.toString());
 
 
             tittleFont = graphics.newFont(engine.getAssetsPath() + "fonts/Roboto-Regular.ttf", 24, true);
-            int textY = graphics.isPortrait() ? (LOGIC_HEIGHT / 2) - 100 :  (LOGIC_HEIGHT / 2) - 125;
+            int textY = graphics.isPortrait() ? (LOGIC_HEIGHT / 2) - 100 : (LOGIC_HEIGHT / 2) - 125;
             tittleText = new Text(engine, text, tittleFont, LOGIC_WIDTH / 2, textY);
-            tittleText.setBackgroundColor(new Color(255,255,255,169));
+            tittleText.setBackgroundColor(new Color(255, 255, 255, 169));
             tittleText.setBackgruondSize(LOGIC_WIDTH, -1);
             lockedImg = graphics.newImage(engine.getAssetsPath() + "images/lock.png");
             unlockedImg = graphics.newImage(engine.getAssetsPath() + "images/unlock.png");
@@ -58,27 +57,27 @@ public class WorldLevelSelectionPageLogic extends AbstractState {
             int yPos;
 
             width = (LOGIC_WIDTH - (5 * 10)) / 5;
-            if(!graphics.isPortrait())
+            if (!graphics.isPortrait())
                 width /= 2;
             height = width;
             int spacing = (LOGIC_WIDTH - (5 * width)) / 6;
-            if(!graphics.isPortrait())
+            if (!graphics.isPortrait())
                 spacing /= 4;
 
             levels = new Button[4][5];
-            if(type == WorldLevelType.Day || type == WorldLevelType.Night)
+            boolean specialWorld = type == WorldLevelType.Day || type == WorldLevelType.Night;
+            if (specialWorld)
                 levels = new Button[1][5];
 
 
-            for (int i = 0; i <=  unlockedLevels/5 ; i++) {
+            for (int i = 0; i <= unlockedLevels / 5; i++) {
                 for (int j = 0; j < Math.min(unlockedLevels - (i * 5), 5); j++) {
 
                     // Calculate the x and y position of the button
                     xPos = (j * width) + ((j + 1) * spacing) + width / 2;
                     yPos = (i * height) + ((i + 1) * spacing) + (LOGIC_HEIGHT / 2);
 
-                    if(!graphics.isPortrait())
-                    {
+                    if (!graphics.isPortrait()) {
                         xPos += LOGIC_WIDTH / 5.5;
                         yPos -= LOGIC_HEIGHT / 8 + 20;
                     }
@@ -92,22 +91,20 @@ public class WorldLevelSelectionPageLogic extends AbstractState {
                     levels[i][j].setImage(unlockedImg);
 
 
-
-
-
-                    final int numLevel = i * 5 +j ;
+                    int index = specialWorld ? i + 1 : i;
+                    final int numLevel = index * 5 + j;
 
                     levels[i][j].setCallback(new IInteractableCallback() {
                         @Override
                         public void onInteractionOccur() {
                             try {
-                                MainGameLogic logic = new MainGameLogic(engine,numLevel,type,false, new IInteractableCallback() {
+                                MainGameLogic logic = new MainGameLogic(engine, numLevel, type, false, new IInteractableCallback() {
                                     @Override
                                     public void onInteractionOccur() {
                                         try {
                                             WorldLevelSelectionPageLogic levelSelection = new WorldLevelSelectionPageLogic(engine, type);
                                             engine.setState(levelSelection);
-                                           
+
                                         } catch (Exception e) {
                                             e.printStackTrace();
                                         }
@@ -125,15 +122,14 @@ public class WorldLevelSelectionPageLogic extends AbstractState {
             }
 
 
-            for (int i = unlockedLevels/5; i <  levels.length; i++) {
+            for (int i = unlockedLevels / 5; i < levels.length; i++) {
                 for (int j = Math.max(unlockedLevels - (i * 5), 0); j < levels[0].length; j++) {
 
                     // Calculate the x and y position of the button
                     xPos = (j * width) + ((j + 1) * spacing) + width / 2;
                     yPos = (i * height) + ((i + 1) * spacing) + (LOGIC_HEIGHT / 2);
 
-                    if(!graphics.isPortrait())
-                    {
+                    if (!graphics.isPortrait()) {
                         xPos += LOGIC_WIDTH / 5.5;
                         yPos -= LOGIC_HEIGHT / 8 + 20;
                     }
@@ -178,16 +174,13 @@ public class WorldLevelSelectionPageLogic extends AbstractState {
         return true;
     }
 
-    private void createBackground()
-    {
+    private void createBackground() {
         IImage bg = graphics.newImage("images/" + text.toLowerCase() + ".png");
         int wWidth = graphics.getWidth();
         int wHeiht = graphics.getHeight();
         int maximum = (int) (Math.min(wWidth, wHeiht) * 1.5f); // Asegurar que cuber toda la pantalla
         backgroundImg = new SizedImage(engine, bg, LOGIC_WIDTH / 2, LOGIC_HEIGHT / 2, maximum, maximum);
     }
-
-
 
 
 }

@@ -189,7 +189,7 @@ public class MainGameLogic extends AbstractState implements Listener {
             livesPanel = new LivesPanel(engine, livesPanelXPos, livesPanelYPos, livesPanelWidth, livesPanelHeight, numLifes, fullLive, emptyLive);
             livesPanel.setAnchorPoint(AnchorPoint.DownRight);
 
-            addEntity(livesPanel);
+            //addEntity(livesPanel);
 
             returnButton = new Button(25, 25, 30, 30, engine);
             returnButton.setImage(arrow);
