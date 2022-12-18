@@ -96,7 +96,7 @@ public class WorldSelectionPageLogic extends AbstractState {
         IImage specialImage = engine.getGraphics().newImage(engine.getAssetsPath() + (isDay ? "images/sun.png" : "images/moon.png"));
         IImage specialBg = engine.getGraphics().newImage(engine.getAssetsPath() + (isDay ? "images/lightGradient.png" : "images/darkGradient.png"));
         int imageHeight = specialBg.getHeight();
-        SizedImage specialBgImage = new SizedImage(engine, specialImage, LOGIC_WIDTH/2, -imageHeight/2, LOGIC_WIDTH, 0);
+        SizedImage specialBgImage = new SizedImage(engine, specialBg, LOGIC_WIDTH, 0, LOGIC_WIDTH * 2, LOGIC_WIDTH * 2);
         specialBgImage.setAnchorPoint(AnchorPoint.DownLeft);
         addEntity(specialBgImage);
 
