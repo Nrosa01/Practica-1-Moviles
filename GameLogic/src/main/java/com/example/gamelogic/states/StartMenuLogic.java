@@ -101,6 +101,7 @@ public class StartMenuLogic extends AbstractState {
     @Override
     public void render() {
         super.render();
-        graphics.drawTextCentered("Nonogramas", LOGIC_WIDTH / 2, 90, mainFont);
+        graphics.drawTextCentered(String.valueOf(engine.getLumens()), LOGIC_WIDTH / 2, 90, mainFont);
+        //graphics.drawTextCentered("Nonogramas", LOGIC_WIDTH / 2, 90, mainFont);
     }
 }

@@ -12,6 +12,9 @@ public interface IEngine {
     boolean supportsTouch();
     void enableBanner(boolean enable);
     void showVid();
+    // Devuelve la luz captada por el sensor en lumenes.
+    int getLumens();
+    void setLumens(int lumens);
 
 
     void render();
