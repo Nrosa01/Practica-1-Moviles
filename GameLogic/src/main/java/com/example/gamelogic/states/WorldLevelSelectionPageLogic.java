@@ -66,6 +66,8 @@ public class WorldLevelSelectionPageLogic extends AbstractState {
                 spacing /= 4;
 
             levels = new Button[4][5];
+            if(type == WorldLevelType.Day || type == WorldLevelType.Night)
+                levels = new Button[1][5];
 
 
             for (int i = 0; i <=  unlockedLevels/5 ; i++) {
@@ -123,8 +125,8 @@ public class WorldLevelSelectionPageLogic extends AbstractState {
             }
 
 
-            for (int i = unlockedLevels/5; i <  4; i++) {
-                for (int j = Math.max(unlockedLevels - (i * 5), 0); j < 5; j++) {
+            for (int i = unlockedLevels/5; i <  levels.length; i++) {
+                for (int j = Math.max(unlockedLevels - (i * 5), 0); j < levels[0].length; j++) {
 
                     // Calculate the x and y position of the button
                     xPos = (j * width) + ((j + 1) * spacing) + width / 2;

@@ -91,9 +91,9 @@ public class WorldSelectionPageLogic extends AbstractState {
         int buttonX = (int) (margin + pos * (gapSize + buttonSize / 2) + pos * (buttonSize / 2));
         int buttonY = yStart + (heightStep * j);
         boolean isDay = engine.getLumens() > 50;
-        String text = isDay ? "Day" : "Night";
+        String text = isDay ? "Dia" : "Noche";
         int completedLecels = DataToAccess.getInstance().getInt(text);
-        IImage specialImage = engine.getGraphics().newImage(engine.getAssetsPath() + (isDay ? "images/sun.png" : "images/moon.png"));
+        IImage specialImage = engine.getGraphics().newImage(engine.getAssetsPath() + (isDay ? "images/day.png" : "images/night.png"));
         IImage specialBg = engine.getGraphics().newImage(engine.getAssetsPath() + (isDay ? "images/lightGradient.png" : "images/darkGradient.png"));
         int imageHeight = specialBg.getHeight();
         SizedImage specialBgImage = new SizedImage(engine, specialBg, LOGIC_WIDTH, 0, LOGIC_WIDTH * 2, LOGIC_WIDTH * 2);
@@ -101,6 +101,19 @@ public class WorldSelectionPageLogic extends AbstractState {
         addEntity(specialBgImage);
 
         specialWorld = new WorldCard(engine, buttonX, buttonY, buttonSize, buttonSize, completedLecels, text, cardHolder, specialImage, tape, textFont);
+        final WorldLevelType specialLevel = isDay ? WorldLevelType.Day : WorldLevelType.Night;
+        specialWorld.setCallback(new IInteractableCallback() {
+            @Override
+            public void onInteractionOccur() {
+                try {
+                    WorldLevelSelectionPageLogic worldSelectionPageLogic = new WorldLevelSelectionPageLogic(engine, specialLevel);
+                    engine.setState(worldSelectionPageLogic);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
         addEntity(specialWorld);
 
         returnButton = new Button(25, 25, 30, 30, engine);
