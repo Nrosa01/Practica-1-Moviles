@@ -23,16 +23,17 @@ public abstract class AbstractState implements IState {
     private List<Entity> entities;
     private Pointer pointer;
 
-    protected Color backgroundColor = new Color(255, 255, 255);
-    protected Color defaultColor = new Color(123, 123, 123);
-    protected Color freeColor = new Color(123, 123, 255);
-    protected Color figureColor = new Color(255, 123, 123);
+    static protected Color backgroundColor = new Color(255, 255, 255);
+    static protected Color defaultColor = new Color(123, 123, 123);
+    static protected Color freeColor = new Color(123, 123, 255);
+    static protected Color figureColor = new Color(255, 123, 123);
 
-    public void setColors(Color c, Color c1, Color c2, Color c3){
-        backgroundColor = c;
-        defaultColor = c1;
-        freeColor = c2;
-        figureColor = c3;
+    protected int NUM_THEMES = 5;
+    static protected boolean[] unlockedThemes = {true, false, false, false, false}; //el primero esta desbloqueado por defecto
+
+    public void DesbloquearColor(int i){
+        if(i < NUM_THEMES) // 2 < 3
+            unlockedThemes[i] = true;
     }
 
     protected AbstractState(IEngine engine)
@@ -42,7 +43,7 @@ public abstract class AbstractState implements IState {
         this.audio = engine.getAudio();
         this.entities = new ArrayList<>();
 
-        if(!graphics.isLandscape())
+        if(!graphics.isPortrait())
         {
             LOGIC_WIDTH = 600;
             LOGIC_HEIGHT = 400;

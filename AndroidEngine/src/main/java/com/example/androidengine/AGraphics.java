@@ -386,7 +386,7 @@ public class AGraphics extends AbstractGraphics {
     }
 
     @Override
-    public boolean isLandscape() {
+    public boolean isPortrait() {
         return screenHeight > screenWidth;
     }
 

@@ -53,6 +53,7 @@ public class AEngine implements IEngine, Runnable {
     private InterstitialAd mInterstitialAd;
 
     private Activity activity;
+    int lumens = 0;
 
     private ADataState dataState;
 
@@ -322,6 +323,15 @@ public class AEngine implements IEngine, Runnable {
         });
     }
 
+    @Override
+    public int getLumens() {
+        return this.lumens;
+    }
+
+    @Override
+    public void setLumens(int lumens) {
+        this.lumens = lumens;
+    }
 
     /*public IState getCurrentState(){
         return this.stateManager.getState();

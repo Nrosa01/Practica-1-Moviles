@@ -17,9 +17,7 @@ public class SelectThemeState extends AbstractState{
 
     private int rows = 2;
     private int cols = 3;
-    protected int NUM_THEMES = 5;
-    private boolean[] unlockedThemes = {true, true, true, true, true}; //el primero esta desbloqueado por defecto
-    protected Color[][] themes = {
+    private Color[][] themes = {
             //DEFUALT
             {new Color(255, 255, 255),new Color(123, 123, 123), new Color(123, 123, 255), new Color(255, 123, 123)},
             //BOSQUE
@@ -29,12 +27,8 @@ public class SelectThemeState extends AbstractState{
             //CIUDAD
             {new Color(211, 211, 211),new Color(123, 123, 123), new Color(123, 123, 255), new Color(255, 123, 123)},
             //ANIMALES
-            {new Color(155, 103, 60),new Color(245, 155, 105), new Color(123, 123, 255), new Color(255, 90, 90)}};
-
-    public void DesbloquearColor(int i){
-        if(i < NUM_THEMES) // 2 < 3
-            unlockedThemes[i] = true;
-    }
+            {new Color(155, 103, 60),new Color(245, 155, 105), new Color(123, 123, 255), new Color(255, 90, 90)}
+    };
 
     public SelectThemeState(IEngine engine) {
         super(engine);
@@ -61,7 +55,6 @@ public class SelectThemeState extends AbstractState{
                 public void onInteractionOccur() {
                     try {
                         StartMenuLogic startMenu = new StartMenuLogic(engine);
-                        startMenu.setColors(backgroundColor, defaultColor, freeColor, figureColor);
                         engine.setState(startMenu);
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -71,15 +64,15 @@ public class SelectThemeState extends AbstractState{
             addEntity(returnButton);
 
             //BOTONES DE SELECCION
-            int buttonSize = graphics.isLandscape() ? LOGIC_WIDTH / 5 : LOGIC_WIDTH / 8;
+            int buttonSize = graphics.isPortrait() ? LOGIC_WIDTH / 5 : LOGIC_WIDTH / 8;
             int gapSize = buttonSize / 2;
             IImage unlockedImg = graphics.newImage(engine.getAssetsPath() + "images/unlock.png");
             IImage lockedImg = graphics.newImage(engine.getAssetsPath() + "images/lock.png");
 
             for (int row = 0; row < rows; row++) {
                 for (int col = 0; col < cols && row == 0 || col < cols - 1 && row == 1; col++) {
-                    int buttonY = graphics.isLandscape() ? 200 + (120 * (row + 1)) : 75 + (120 * (row + 1));
-                    int buttonX = graphics.isLandscape() ? (gapSize + buttonSize) * (col + 1) - gapSize : 110 + (gapSize + buttonSize) * (col + 1) - gapSize;
+                    int buttonY = graphics.isPortrait() ? 200 + (120 * (row + 1)) : 75 + (120 * (row + 1));
+                    int buttonX = graphics.isPortrait() ? (gapSize + buttonSize) * (col + 1) - gapSize : 110 + (gapSize + buttonSize) * (col + 1) - gapSize;
                     Button button = new Button(buttonX, buttonY, buttonSize, buttonSize, engine);
                     final int finalCol = col + row * (rows+1);
 
@@ -96,7 +89,10 @@ public class SelectThemeState extends AbstractState{
                             public void onInteractionOccur() {
                                 try {
                                     //engine.setState(new MainGameLogic(engine, texts[finalRow][finalCol]));
-                                    setColors(themes[finalCol][0], themes[finalCol][1], themes[finalCol][2], themes[finalCol][3]);
+                                   backgroundColor = themes[finalCol][0];
+                                   defaultColor = themes[finalCol][1];
+                                   freeColor = themes[finalCol][2];
+                                   figureColor = themes[finalCol][3];
                                     graphics.setClearColor(themes[finalCol][0].r, themes[finalCol][0].g, themes[finalCol][0].b);
                                 } catch (Exception e) {
                                     e.printStackTrace();

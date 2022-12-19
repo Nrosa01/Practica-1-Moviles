@@ -31,13 +31,13 @@ public class SelectLevelLogic extends AbstractState {
             fontBold = graphics.newFont(engine.getAssetsPath() + "fonts/Roboto-Regular.ttf", 24, true);
             font = graphics.newFont(engine.getAssetsPath() + "fonts/Roboto-Regular.ttf", 24, false);
             arrow = graphics.newImage(engine.getAssetsPath() + "images/arrow.png");
-            int buttonSize = graphics.isLandscape() ? LOGIC_WIDTH / 5 : LOGIC_WIDTH / 8;
+            int buttonSize = graphics.isPortrait() ? LOGIC_WIDTH / 5 : LOGIC_WIDTH / 8;
             int gapSize = buttonSize / 2;
 
             for (int row = 0; row < rows; row++) {
                 for (int col = 0; col < cols; col++) {
-                    int buttonY = graphics.isLandscape() ? 200 + (120 * (row + 1)) : 75 + (120 * (row + 1));
-                    int buttonX = graphics.isLandscape() ? (gapSize + buttonSize) * (col + 1) - gapSize : 110 + (gapSize + buttonSize) * (col + 1) - gapSize;
+                    int buttonY = graphics.isPortrait() ? 200 + (120 * (row + 1)) : 75 + (120 * (row + 1));
+                    int buttonX = graphics.isPortrait() ? (gapSize + buttonSize) * (col + 1) - gapSize : 110 + (gapSize + buttonSize) * (col + 1) - gapSize;
                     Button button = new Button(buttonX, buttonY, buttonSize, buttonSize, engine);
                     button.setText(texts[row][col], fontBold);
                     final int finalRow = row;
@@ -47,7 +47,6 @@ public class SelectLevelLogic extends AbstractState {
                         public void onInteractionOccur() {
                             try {
                                 MainGameLogic mainGameLogic = new MainGameLogic(engine, texts[finalRow][finalCol]);
-                                mainGameLogic.setColors(backgroundColor, defaultColor, freeColor, figureColor);
                                 engine.setState(mainGameLogic);
                             } catch (Exception e) {
                                 e.printStackTrace();
@@ -70,7 +69,6 @@ public class SelectLevelLogic extends AbstractState {
                 public void onInteractionOccur() {
                     try {
                         StartMenuLogic startMenu = new StartMenuLogic(engine);
-                        startMenu.setColors(backgroundColor, defaultColor, freeColor, figureColor);
                         engine.setState(startMenu);
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -79,7 +77,7 @@ public class SelectLevelLogic extends AbstractState {
             });
 
             addEntity(returnButton);
-            int textY = graphics.isLandscape() ? 200 : 100;
+            int textY = graphics.isPortrait() ? 200 : 100;
             selectText = new Text(engine, "Selecciona el tamaño del puzzle", font, LOGIC_WIDTH / 2, textY);
             addEntity(selectText);
 

@@ -38,7 +38,6 @@ public class StartMenuLogic extends AbstractState {
                 public void onInteractionOccur() {
                     try {
                         WorldSelectionPageLogic worldSelectionPageLogic = new WorldSelectionPageLogic(engine);
-                        worldSelectionPageLogic.setColors(backgroundColor, defaultColor, freeColor, figureColor);
                         engine.setState(worldSelectionPageLogic);
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -56,7 +55,6 @@ public class StartMenuLogic extends AbstractState {
                 public void onInteractionOccur() {
                     try {
                         SelectLevelLogic levelLogic = new SelectLevelLogic(engine);
-                        levelLogic.setColors(backgroundColor, defaultColor, freeColor, figureColor);
                         engine.setState(levelLogic);
 
                     } catch (Exception e) {
@@ -75,7 +73,6 @@ public class StartMenuLogic extends AbstractState {
                 public void onInteractionOccur() {
                     try {
                         SelectThemeState themeState = new SelectThemeState(engine);
-                        themeState.setColors(backgroundColor, defaultColor, freeColor, figureColor);
                         engine.setState(themeState);
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -104,6 +101,7 @@ public class StartMenuLogic extends AbstractState {
     @Override
     public void render() {
         super.render();
-        graphics.drawTextCentered("Nonogramas", LOGIC_WIDTH / 2, 90, mainFont);
+        graphics.drawTextCentered(String.valueOf(engine.getLumens()), LOGIC_WIDTH / 2, 90, mainFont);
+        //graphics.drawTextCentered("Nonogramas", LOGIC_WIDTH / 2, 90, mainFont);
     }
 }

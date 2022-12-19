@@ -13,10 +13,21 @@ import androidx.work.PeriodicWorkRequest;
 import androidx.work.WorkManager;
 
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 
 import android.content.res.AssetManager;
+
+import android.content.res.Configuration;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
+import android.os.Build;
 
 import android.os.Bundle;
 
@@ -46,12 +57,13 @@ import java.util.concurrent.TimeUnit;
 
 
 
-public class MainActivity extends AppCompatActivity  {
+public class MainActivity extends AppCompatActivity implements SensorEventListener {
 
     private AEngine androidEngine;
     private AssetManager assetManager;
     private AdView mAdView;
-
+    private SensorManager sensorManager;
+    private Sensor ambienceLight;
 
     private String sharedPrefFile = "com.example.android.hellosharedprefs";
 
@@ -103,6 +115,11 @@ public class MainActivity extends AppCompatActivity  {
         //this.androidEngine = new AEngine(this,view, assetManager, mAdView,savedValuesMap);
 
         this.androidEngine = new AEngine(this,view, assetManager, mAdView,savedValuesMap);
+
+        // Sensores
+        sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+        ambienceLight = sensorManager.getDefaultSensor(Sensor.TYPE_LIGHT);
+
         //bloquea la orientacion del movil a vertical
 
         StartMenuLogic menuLogic = new StartMenuLogic(this.androidEngine);
@@ -126,7 +143,7 @@ public class MainActivity extends AppCompatActivity  {
     protected void onResume() {
         super.onResume();
         this.androidEngine.resume();
-
+        sensorManager.registerListener(this, ambienceLight, SensorManager.SENSOR_DELAY_NORMAL);
     }
 
     @Override
@@ -164,6 +181,7 @@ public class MainActivity extends AppCompatActivity  {
             Log.i(TAG, "fallo al guardar datos");
 
         this.androidEngine.pause();
+        sensorManager.unregisterListener(this);
     }
 
     @Override
@@ -218,8 +236,14 @@ public class MainActivity extends AppCompatActivity  {
     }
 
 
+    @Override
+    public void onSensorChanged(SensorEvent sensorEvent) {
+        this.androidEngine.setLumens((int) sensorEvent.values[0]);
+    }
 
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int i) {
 
-
+    }
 }
 
