@@ -17,7 +17,7 @@ import jdk.nashorn.internal.objects.annotations.Function;
 import jdk.vm.ci.code.site.Call;
 
 public class NonogramBoard extends Board {
-    private float timeLongPress = 1500;
+    private float timeLongPress = 350;
     private final int numOfStates = 3;
     private int borderBoardSize;
     private Color borderColor;
@@ -48,15 +48,15 @@ public class NonogramBoard extends Board {
     private Color freeColor = new Color(123, 123, 255);
     private Color figureColor = new Color(255, 123, 123);
 
-    public void setColors(Color c, Color c1, Color c2, Color c3){
+    public void setColors(Color c, Color c1, Color c2, Color c3) {
         backgroundColor = c;
         defaultColor = c1;
         freeColor = c2;
         figureColor = c3;
     }
 
-   
-    public NonogramBoard(IEngine engine, int[][] solvedPuzzle, int width, int gapSize, IFont font,Callback winCallback) {
+
+    public NonogramBoard(IEngine engine, int[][] solvedPuzzle, int width, int gapSize, IFont font, Callback winCallback) {
         super(engine, solvedPuzzle.length, solvedPuzzle[0].length, width, gapSize);
 
         this.winCallBack = winCallback;
@@ -244,9 +244,10 @@ public class NonogramBoard extends Board {
         //System.out.println("Clicked on cell: " + row + " " + col);
         timePressBoard[row][col] = System.currentTimeMillis();
 
-       // System.out.println(row + " / "+ col);
+        // System.out.println(row + " / "+ col);
 
     }
+
     @Override
     protected void OnCellReleased(int row, int col) {
         if (isWin)
@@ -255,20 +256,16 @@ public class NonogramBoard extends Board {
 
       /*  System.out.println(releaseTime);
         System.out.println(timePressBoard[row][col]);*/
-        System.out.println(releaseTime- timePressBoard[row][col]);
+        System.out.println(releaseTime - timePressBoard[row][col]);
 
 
-        if(System.currentTimeMillis()- timePressBoard[row][col] < timeLongPress) {
-            board[row][col] = Math.min(board[row][col] + 1, numOfStates) % numOfStates;
-
-            if (this.badCellNumber > 0) {
-                final Event event = new OnDamaged();
-                EventManager.callEvent(event);
-            }
-
-        }
-        else{
-
+        if (System.currentTimeMillis() - timePressBoard[row][col] < timeLongPress) {
+            // 0 nada, 1 pulsado, 2 bloqueada, 3 error
+            if (board[row][col] != 0)
+                board[row][col] = 0;
+            else
+                board[row][col] = 1;
+        } else {
             board[row][col] = 2;
         }
         isWin = updateBoardState(true);
@@ -280,6 +277,11 @@ public class NonogramBoard extends Board {
             selectCell.play();
 
         timePressBoard[row][col] = 0;
+
+        if (this.badCellNumber > 0) {
+            final Event event = new OnDamaged();
+            EventManager.callEvent(event);
+        }
     }
 
     private void setColorGivenState(int state) {
@@ -433,12 +435,13 @@ public class NonogramBoard extends Board {
         this.posX -= borderBoardSize / 2;
         this.posY -= borderBoardSize / 2;
     }
+
     @Override
-    public void OnPointerUp(int x , int y){
+    public void OnPointerUp(int x, int y) {
         this.posX += borderBoardSize / 2;
         this.posY += borderBoardSize / 2;
 
-        super.OnPointerUp(x,y);
+        super.OnPointerUp(x, y);
 
         this.posX -= borderBoardSize / 2;
         this.posY -= borderBoardSize / 2;
