@@ -356,4 +356,13 @@ public class AEngine implements IEngine, Runnable {
         this.stateManager.getState().saveState();
         return dataState;
     }
+
+    public <T> void addSimpleData(String key, T variable){
+        dataState.addSimpleData(key, variable);
+    }
+
+    public <T> void addArrayData(String key, T[] array, int dim, T[] dimSize){
+        dataState.addArrayData(key,array,dim,dimSize);
+
+    }
 }

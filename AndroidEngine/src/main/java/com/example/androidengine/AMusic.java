@@ -20,6 +20,7 @@ public class AMusic implements ISound {
     @Override
     public void play(){
         //si esta sonando se reinicia
+        
         if (!mediaPlayer.isPlaying())
             mediaPlayer.seekTo(0);
 

@@ -146,6 +146,10 @@ public abstract class Board extends Entity {
         boardBackgroundColor.a = 255;
     }
 
+    public int[][] getBoard(){
+        return board;
+    }
+
     public void clear() {
         for (int row = 0; row < rows; row++) {
             for (int col = 0; col < cols; col++) {

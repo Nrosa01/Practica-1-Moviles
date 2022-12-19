@@ -61,6 +61,9 @@ public class LivesPanel extends Entity{
         //graphics.drawRectangle(posX, posY, width, height, 4);
     }
 
+    public int getNumLives(){
+        return numLives;
+    }
     public boolean isAlive()
     {
         return currentLive < icons.length;

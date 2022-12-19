@@ -6,6 +6,8 @@ import java.util.Map;
 
 public class ADataState implements Serializable {
 
+    float musicDuration;
+
     Integer nameOfState;
 
     Map<String, Object> simpleData;
@@ -28,7 +30,10 @@ public class ADataState implements Serializable {
         arrayData.put(key+"sizeOfDims", dimSize);
         simpleData.put(key+"dimensiones", dim);
     }
+    public <T> T getSimpleData(String key){
+        return (T) simpleData.get(key);
 
+    }
     public void flushStateData() {
         nameOfState = null;
         simpleData.clear();

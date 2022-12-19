@@ -186,7 +186,11 @@ public class WorldLevelSelectionPageLogic extends AbstractState {
         int maximum = (int) (Math.min(wWidth, wHeiht) * 1.5f); // Asegurar que cuber toda la pantalla
         backgroundImg = new SizedImage(engine, bg, LOGIC_WIDTH / 2, LOGIC_HEIGHT / 2, maximum, maximum);
     }
-
+    @Override
+    public void saveState(){
+        super.saveState();
+        engine.addSimpleData("type", type.ordinal());
+    }
 
 
 

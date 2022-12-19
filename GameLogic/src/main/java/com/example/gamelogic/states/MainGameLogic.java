@@ -27,6 +27,8 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.List;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 public class MainGameLogic extends AbstractState implements Listener {
 
@@ -229,7 +231,7 @@ public class MainGameLogic extends AbstractState implements Listener {
             if (level == null)
                 return false;
 
-            final int numDesbloq = numLevel += 2;
+            final int numDesbloq = numLevel + 2;
             int boardWidth = Math.min(LOGIC_WIDTH, LOGIC_HEIGHT) - 20;
 
             board = new NonogramBoard(engine, level, boardWidth, 2, boardFont, new Callback() {
@@ -369,6 +371,21 @@ public class MainGameLogic extends AbstractState implements Listener {
         String typeToLower = type.toString().toLowerCase();
         String filename = typeToLower + cells + "x" + cells + "-" + ((index % 5) + 1) + ".txt";
         return "levels/" + typeToLower + "/" + filename;
+    }
+    @Override
+    public void saveState(){
+        super.saveState();
+        engine.addSimpleData("lives",livesPanel.getNumLives());
+        engine.addSimpleData("numLevel", numLevel);
+        engine.addSimpleData("type", type);
+        int[][]arr = board.getBoard();
+        Integer[] oneDArray = new Integer[arr.length * arr.length];
+        for(int i = 0; i < arr.length; i ++)
+            for(int s = 0; s < arr.length; s ++)
+                oneDArray[(i * arr.length) + s] = arr[i][s];
+
+        Integer[] dim = {arr.length,arr.length};
+        engine.addArrayData("tablero", oneDArray,2,dim);
     }
 
     /*private String getNextLevel(){

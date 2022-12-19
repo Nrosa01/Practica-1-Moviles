@@ -39,6 +39,7 @@ import com.example.androidengine.ADataState;
 import com.example.androidengine.AEngine;
 import com.example.engine.IState;
 
+import com.example.gamelogic.levels.WorldLevelType;
 import com.example.gamelogic.states.SelectLevelLogic;
 import com.example.gamelogic.states.SelectThemeState;
 import com.example.gamelogic.states.StartMenuLogic;
@@ -46,6 +47,7 @@ import com.example.gamelogic.states.StartMenuLogic;
 
 import com.example.gamelogic.states.StatesNames;
 
+import com.example.gamelogic.states.WorldLevelSelectionPageLogic;
 import com.example.gamelogic.states.WorldSelectionPageLogic;
 import com.example.gamelogic.utilities.DataToAccess;
 
@@ -216,7 +218,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 estado = new SelectLevelLogic(androidEngine);
                 break;
             case WorldLevelSelectionPageLogic:
-                //estado = new WorldLevelSelectionPageLogic(androidEngine);
+                int type = state.getSimpleData("type");
+                estado = new WorldLevelSelectionPageLogic(androidEngine, WorldLevelType.values()[type]);
                 break;
             case WorldSelectionPageLogic:
                 estado = new WorldSelectionPageLogic(androidEngine);

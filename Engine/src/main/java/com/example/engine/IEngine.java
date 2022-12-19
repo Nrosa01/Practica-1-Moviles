@@ -32,4 +32,8 @@ public interface IEngine {
     Map<String, Object> getData();
 
     void setNameState(int state);
+
+    <T> void addSimpleData(String key, T variable);
+
+    <T> void addArrayData(String key, T[] array, int dim, T[] dimSize);
 }
