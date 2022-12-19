@@ -117,6 +117,14 @@ public class MainGameLogic extends AbstractState implements Listener {
 
     }
 
+    public void setReturnCallback(IInteractableCallback returnCallback)
+    {
+        if(returnButton != null)
+            returnButton.setCallback(returnCallback);
+
+        this.returnCallback = returnCallback;
+    }
+
 
     @EventHandler
     public void onDamaged(OnDamaged eventArgs) {

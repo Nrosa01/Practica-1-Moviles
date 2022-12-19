@@ -47,6 +47,17 @@ public class SelectLevelLogic extends AbstractState {
                         public void onInteractionOccur() {
                             try {
                                 MainGameLogic mainGameLogic = new MainGameLogic(engine, texts[finalRow][finalCol]);
+                                mainGameLogic.setReturnCallback(new IInteractableCallback() {
+                                    @Override
+                                    public void onInteractionOccur() {
+                                        SelectLevelLogic selectLevelLogic = new SelectLevelLogic(engine);
+                                        try {
+                                            engine.setState(selectLevelLogic);
+                                        } catch (Exception e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                });
                                 engine.setState(mainGameLogic);
                             } catch (Exception e) {
                                 e.printStackTrace();
