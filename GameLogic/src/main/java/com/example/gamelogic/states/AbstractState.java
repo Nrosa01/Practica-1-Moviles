@@ -95,4 +95,8 @@ public abstract class AbstractState implements IState {
     {
         this.entities.remove(entity);
     }
+
+    public void saveState(){
+        this.engine.setNameState((StatesNames.valueOf( this.getClass().getSimpleName())).ordinal());
+    }
 }

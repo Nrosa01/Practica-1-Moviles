@@ -20,7 +20,7 @@ public class WorldSelectionPageLogic extends AbstractState {
     IImage arrow;
     Text tittle;
 
-    protected WorldSelectionPageLogic(IEngine engine) {
+    public WorldSelectionPageLogic(IEngine engine) {
         super(engine);
     }
 

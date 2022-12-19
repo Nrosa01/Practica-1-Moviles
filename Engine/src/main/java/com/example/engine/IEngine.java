@@ -27,4 +27,6 @@ public interface IEngine {
     void setState(IState state) throws Exception;
 
     Map<String, Object> getData();
+
+    void setNameState(int state);
 }

@@ -31,7 +31,7 @@ public class WorldLevelSelectionPageLogic extends AbstractState {
     int unlockedLevels = 1;
 
 
-    protected WorldLevelSelectionPageLogic(IEngine engine, WorldLevelType type) {
+    public WorldLevelSelectionPageLogic(IEngine engine, WorldLevelType type) {
         super(engine);
         text = type.toString();
         this.type = type;

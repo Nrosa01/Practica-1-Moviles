@@ -2,51 +2,45 @@ package com.example.practica1;
 
 import static android.content.ContentValues.TAG;
 
-import androidx.annotation.NonNull;
+
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.NotificationCompat;
-import androidx.core.app.NotificationManagerCompat;
+
 import androidx.work.Constraints;
-import androidx.work.Data;
+
 import androidx.work.ExistingPeriodicWorkPolicy;
-import androidx.work.NetworkType;
+
 import androidx.work.PeriodicWorkRequest;
 import androidx.work.WorkManager;
 
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
+
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.ActivityInfo;
+
 import android.content.res.AssetManager;
-import android.content.res.Configuration;
-import android.os.Build;
+
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
+
 import android.util.Log;
 import android.view.SurfaceView;
-import android.view.View;
 
+
+import com.example.androidengine.ADataState;
 import com.example.androidengine.AEngine;
 import com.example.engine.IState;
-import com.example.gamelogic.states.GetDataState;
+
+import com.example.gamelogic.states.SelectLevelLogic;
+import com.example.gamelogic.states.SelectThemeState;
 import com.example.gamelogic.states.StartMenuLogic;
 
+
+import com.example.gamelogic.states.StatesNames;
+
+import com.example.gamelogic.states.WorldSelectionPageLogic;
 import com.example.gamelogic.utilities.DataToAccess;
-import com.google.android.gms.ads.AdListener;
+
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
-import com.google.android.gms.ads.LoadAdError;
-import com.google.android.gms.ads.MobileAds;
-import com.google.android.gms.ads.initialization.InitializationStatus;
-import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
-import com.google.android.gms.ads.interstitial.InterstitialAd;
-import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback;
 
-import java.io.FileOutputStream;
-import java.io.Serializable;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -106,12 +100,12 @@ public class MainActivity extends AppCompatActivity  {
         //----------------------------------------------------------------------------------
         SurfaceView view = (SurfaceView) findViewById(R.id.surfaceView);
 
+        //this.androidEngine = new AEngine(this,view, assetManager, mAdView,savedValuesMap);
+
         this.androidEngine = new AEngine(this,view, assetManager, mAdView,savedValuesMap);
-
-
         //bloquea la orientacion del movil a vertical
-        StartMenuLogic menuLogic = new StartMenuLogic(this.androidEngine);
 
+        StartMenuLogic menuLogic = new StartMenuLogic(this.androidEngine);
         try {
             this.androidEngine.setState(menuLogic);
         } catch (Exception e) {
@@ -175,22 +169,52 @@ public class MainActivity extends AppCompatActivity  {
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        //Serializable serializable = this.androidEngine.getSerializableState();
-        //outState.putSerializable("escena", this.androidEngine.getCurrentSceneState());
+        outState.putSerializable("escena", this.androidEngine.getDataState());
 
-        //FileOutputStream file = new FileOutputStream("completedLevels");
+        //Serializable serializable = this.androidEngine.getSerializableState();
+       /* IState stateActual = this.androidEngine.getCurrentState();
+        final String clase = stateActual.getClass().getSimpleName();
+        if(clase != "MainGameLogic"){
+            StateDataSave data = stateActual
+        }*/
+        //outState.putSerializable("escena", this.androidEngine.getCurrentSceneState());
 
     }
 
     @Override
     public void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
-      /*  Serializable state = savedInstanceState.getSerializable("escena");
+
+        ADataState state = (ADataState) savedInstanceState.getSerializable("escena");
+        IState estado = null;
+        switch (StatesNames.values()[state.getNameState()]) {
+            case StartMenuLogic:
+                estado = new StartMenuLogic(androidEngine);
+                break;
+            case SelectThemeState:
+                estado = new SelectThemeState(androidEngine);
+                break;
+            case SelectLevelLogic:
+                estado = new SelectLevelLogic(androidEngine);
+                break;
+            case WorldLevelSelectionPageLogic:
+                //estado = new WorldLevelSelectionPageLogic(androidEngine);
+                break;
+            case WorldSelectionPageLogic:
+                estado = new WorldSelectionPageLogic(androidEngine);
+                break;
+            case MainGameLogic:
+                //estado = new MainGameLogic(androidEngine);
+            default:
+
+                break;
+
+        }
         try {
-            this.androidEngine.setState((IState) state);
+            androidEngine.setState(estado);
         } catch (Exception e) {
             e.printStackTrace();
-        }*/
+        }
     }
 
 

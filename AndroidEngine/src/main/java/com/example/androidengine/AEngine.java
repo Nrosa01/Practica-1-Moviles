@@ -54,12 +54,16 @@ public class AEngine implements IEngine, Runnable {
 
     private Activity activity;
 
+    private ADataState dataState;
+
     AAudio audio;
     Map<String, Object> savedValuesMap;
+
 
     public AEngine( Activity act, SurfaceView context, AssetManager assetManager, AdView adView, Map<String, Object> map) {
 
 
+        dataState = new ADataState();
 
         this.savedValuesMap = map;
         this.mAdView = adView;
@@ -147,13 +151,18 @@ public class AEngine implements IEngine, Runnable {
         //si esta en un hilo que no es el principal manda la accion a que la realice el principal
 
         stateManager.setState(state);
-
+        dataState.flushStateData();
         inputManager.clear();
     }
 
     @Override
     public Map<String, Object> getData() {
         return savedValuesMap;
+    }
+
+    @Override
+    public void setNameState(int state) {
+        dataState.addStateName(state);
     }
 
     public void resume() {
@@ -314,13 +323,12 @@ public class AEngine implements IEngine, Runnable {
     }
 
 
-
-    public Serializable getCurrentSceneState(){
+    /*public IState getCurrentState(){
         return this.stateManager.getState();
-    }
+    }*/
 
-    public void saveProgress(){
-
+    public void saveStateInfo(){
+        this.stateManager.getState().saveState();
     }
 
 
@@ -332,5 +340,10 @@ public class AEngine implements IEngine, Runnable {
             e.printStackTrace();
             return null;
         }
+    }
+
+    public ADataState getDataState() {
+        this.stateManager.getState().saveState();
+        return dataState;
     }
 }

@@ -55,6 +55,11 @@ public class StateManager implements IState {
         currentState.handleInput(events);
     }
 
+    @Override
+    public void saveState() {
+
+    }
+
     public void setState(IState state) throws Exception {
         if (state.init()) {
             this.oldState = currentState;
