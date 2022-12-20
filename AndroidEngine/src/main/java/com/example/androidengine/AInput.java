@@ -10,7 +10,7 @@ import java.util.List;
 
 //para que no se modifiquen los eventos mientras los estoy leyendo se dividen en 2 buffers, un buffer controla
 //los eventos que hay que leer y otro controla los eventos de la iteracion actual
-public class AInput  implements IInput {
+public class AInput implements IInput {
     //lista de eventos
     private List<InputEvent>[] eventos ;
     //numero de buffers de eventos que se va a usar

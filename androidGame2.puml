@@ -1,0 +1,44 @@
+@startuml
+class com.example.practica1.MainActivity {
+- AEngine androidEngine
+- AssetManager assetManager
+- AdView mAdView
+- SensorManager sensorManager
+- Sensor ambienceLight
+- String sharedPrefFile
+# void onCreate(Bundle)
+- void cargarBanner()
+# void onResume()
+# void onDestroy()
+# void onPause()
++ void onSaveInstanceState(Bundle)
++ void onRestoreInstanceState(Bundle)
++ void onSensorChanged(SensorEvent)
++ void onAccuracyChanged(Sensor,int)
+}
+class com.example.practica1.BuildConfig {
++ {static} boolean DEBUG
++ {static} String APPLICATION_ID
++ {static} String BUILD_TYPE
++ {static} int VERSION_CODE
++ {static} String VERSION_NAME
+}
+class com.example.practica1.ExampleUnitTest {
++ void addition_isCorrect()
+}
+class com.example.practica1.ExampleInstrumentedTest {
++ void useAppContext()
+}
+class com.example.practica1.NotificationWork {
+- {static} String TAG
+- NotificationCompat.Builder builder
+- NotificationManagerCompat notificationManager
++ Result doWork()
+- void createNotificationChannel()
+}
+
+
+android.hardware.SensorEventListener <|.. com.example.practica1.MainActivity
+androidx.appcompat.app.AppCompatActivity <|-- com.example.practica1.MainActivity
+androidx.work.Worker <|-- com.example.practica1.NotificationWork
+@enduml

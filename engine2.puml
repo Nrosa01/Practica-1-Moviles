@@ -1,0 +1,179 @@
+@startuml
+enum com.example.engine.utilities.LerpType {
++  Linear
++  EaseIn
++  EaseOut
++  EaseInOut
+}
+interface com.example.engine.IState {
+~ boolean init()
+~ void update(double)
+~ void render()
+~ void handleInput(List<InputEvent>)
+~ void saveState()
+}
+abstract class com.example.engine.AbstractGraphics {
+# int logicSizeX
+# double scaleFactor
+# int borderBarWidth
+# void calculateScaleFactor(int,int)
+# void renderBorders()
+}
+interface com.example.engine.IEngine {
+~ IGraphics getGraphics()
+~ IAudio getAudio()
+~ IState getState()
+~ String getAssetsPath()
+~ InputStream openFile(String)
+~ boolean supportsTouch()
+~ void enableBanner(boolean)
+~ void showVid()
+~ int getLumens()
+~ void setLumens(int)
+~ void render()
+~ void update(double)
+~ void handleInput()
+~ void setState(IState)
+~ Map<String,Object> getData()
+~ void setNameState(int)
+}
+interface com.example.engine.IFont {
+~ int getSize()
+~ boolean isBold()
+}
+class com.example.engine.StateManager {
+- IState currentState
+- IState oldState
+- IGraphics graphics
+- FloatLerper lerper
+~ boolean isOnTransition
++ boolean init()
++ void update(double)
++ void render()
++ void handleInput(List<InputEvent>)
++ void saveState()
++ void setState(IState)
++ IState getState()
+}
+interface com.example.engine.IAudio {
+~ ISound newSound(String,String)
+~ ISound newMusic(String,String)
+~ void pause()
+~ void resume()
+~ boolean freeResources()
+}
+interface com.example.engine.IInput {
+}
+enum com.example.engine.InputTouchType {
++  TOUCH_DOWN
++  TOUCH_UP
++  TOUCH_MOVE
+}
+enum com.example.engine.InputKeyType {
++  KEY_DOWN
++  KEY_UP
++  KEY_MOVE
+}
+class com.example.engine.utilities.FloatLerper {
+- float startValue
+- float endValue
+- float duration
+- float currentTime
+- LerpType lerpType
+- boolean reversed
+- float currentValue
+- boolean isPaused
++ void update(double)
+- float calculateCurrentValue()
++ void restart()
++ float getStartValue()
++ float getEndValue()
++ void setPaused(boolean)
++ boolean isFinished()
++ boolean getPaused()
++ void reverse()
++ void setReversed(boolean)
++ float getValue()
++ float getProgress()
+}
+interface com.example.engine.IGraphics {
+~ IImage newImage(String)
+~ IFont newFont(String,int,boolean)
+~ void setLogicSize(int,int)
+~ void setColor(int,int,int)
+~ void setColor(int,int,int,int)
+~ void setClearColor(int,int,int)
+~ void setFont(IFont)
+~ int getStringWidth(String,IFont)
+~ int getFontHeight(IFont)
+~ int getFontAscent(IFont)
+~ void clear(int,int,int)
+~ void clear()
+~ void drawImage(IImage,int,int)
+~ void drawRectangle(int,int,int,int,int)
+~ void fillRectangle(int,int,int,int)
+~ void drawLine(int,int,int,int)
+~ void drawCircle(int,int,int)
+~ void drawText(String,int,int,IFont)
+~ void drawTextCentered(String,int,int,IFont)
+~ int getWidth()
+~ int getHeight()
+~ int getLogicWidth()
+~ int getLogicHeight()
+~ boolean isPortrait()
+~ void setAnchorPoint(AnchorPoint)
+~ int[] getAnchoredPosition(int,int,AnchorPoint)
+~ void setGraphicsAlpha(int)
+~ void translate(double,double)
+~ void scale(double,double)
+~ void rotate(double)
+~ int logicXPositionToWindowsXPosition(int)
+~ int logicYPositionToWindowsYPosition(int)
+~ int windowsXPositionToLogicXPosition(int)
+~ int windowsYPositionToLogicYPosition(int)
+~ void setTranslation(double,double)
+~ void setScale(double,double)
+~ void setRotation(double)
+~ void resetTranslation()
+~ void resetScale()
+~ void resetRotation()
+~ void resetTransform()
+~ void save()
+~ void restore()
+}
+interface com.example.engine.ISound {
+~ void play()
+~ void stop()
+~ boolean isPlaying()
+~ void setVolume(float)
+~ float getVolume()
+}
+enum com.example.engine.AnchorPoint {
++  None
++  UpperLeft
++  UpperRight
++  DownLeft
++  DownRight
++  Middle
+}
+class com.example.engine.utilities.LerperFuncs {
+- {static} float Linear(float)
+- {static} float EaseIn(float)
+- {static} float EaseOut(float)
+- {static} float EaseInOut(float)
++ {static} float getValue(float,LerpType)
+}
+interface com.example.engine.IImage {
+~ int getWidth()
+~ int getHeight()
+}
+class com.example.engine.InputEvent {
++ int x
++ IInput.InputTouchType type
++ int index
+}
+
+
+com.example.engine.IGraphics <|.. com.example.engine.AbstractGraphics
+com.example.engine.IState <|.. com.example.engine.StateManager
+@enduml

@@ -1,0 +1,427 @@
+@startuml
+abstract class com.example.gamelogic.entities.Board {
+# int[][] board
+# long[][] timePressBoard
+# int rows
+# int paddingHorizontal
+- Color boardBackgroundColor
+~ IImage cellImg
+# int cellWidth
+# void init()
++ {abstract}void update(double)
++ void render()
+- void drawImageInCell(int,int,int,int)
++ void setCellImg(IImage)
+# {abstract}void OnCellClicked(int,int)
+# {abstract}void OnCellReleased(int,int)
+# {abstract}void OnCellRender(int,int)
+~ int getCellPosX(int)
+~ int getCellPosY(int)
+~ boolean isPointInsideCell(int,int,int,int)
+~ int[] pointToCell(int,int)
++ void OnPointerDown(int,int)
++ void OnPointerUp(int,int)
++ void OnPointerMove(int,int)
++ void setBoardBackgroundColor(int,int,int)
++ void clear()
+}
+interface com.example.gamelogic.entities.IInteractable {
++ void OnHoverEnter()
++ void OnHoverExit()
++ void OnTouchDown()
++ void OnTouchUp()
+}
+interface com.example.gamelogic.entities.IInputHandler {
+~ void handleInput(int,int,IInput.InputTouchType)
+}
+class com.example.gamelogic.utilities.DataToAccess {
+- {static} DataToAccess instance
+~ String[] keysOfLevelData
+~ String[] keysOfPaletteData
+~ Map<String,Integer> levelData
+~ Map<String,Boolean> paletteData
+~ IEngine engine
++ {static} DataToAccess getInstance()
++ {static} boolean Init(IEngine)
++ void setInt(String,int)
++ void setMaxLevel(String,int)
++ void setBool(String,boolean)
++ int getInt(String)
++ boolean getBool(String)
++ Map<String,Integer> getMapInt()
++ Map<String,Boolean> getMapBool()
+}
+class com.example.gamelogic.states.StartMenuLogic {
+~ IFont mainFont
+~ IFont secondaryFont
+~ Button quickGame
+~ Button historyMode
+~ Button themeSelectButton
++ boolean init()
++ void render()
+}
+enum com.example.gamelogic.states.StatesNames {
++  StartMenuLogic
++  SelectThemeState
++  SelectLevelLogic
++  MainGameLogic
++  WorldLevelSelectionPageLogic
++  WorldSelectionPageLogic
+}
+class com.example.gamelogic.utilities.EventManager {
+- {static} List<Listener> registered
++ {static} void register(Listener)
++ {static} void unregister(Listener)
++ {static} List<Listener> getRegistered()
++ {static} void callEvent(Event)
+- {static} void call(Event)
+}
+interface com.example.gamelogic.entities.IInteractableCallback {
++ void onInteractionOccur()
+}
+class com.example.gamelogic.entities.Text {
+- String text
+- Color backgroundColor
+~ IFont font
+- int bgWidth
++ void setBackgruondSize(int,int)
++ void setBackgroundColor(Color)
++ void update(double)
++ void render()
++ void OnPointerDown(int,int)
++ void OnPointerUp(int,int)
++ void OnPointerMove(int,int)
+}
+class com.example.gamelogic.states.SelectLevelLogic {
+~ IFont font
+~ IFont fontBold
+~ IImage arrow
+~ Button returnButton
+~ int rows
+~ String[][] texts
+~ Text selectText
++ boolean init()
+}
+class com.example.gamelogic.states.WorldLevelSelectionPageLogic {
+~ Button returnButton
+~ IImage arrow
+~ IImage lockedImg
+~ IImage unlockedImg
+~ SizedImage backgroundImg
+~ Button[][] levels
+~ IFont tittleFont
+~ String text
+~ WorldLevelType type
+~ Text tittleText
+~ int unlockedLevels
++ boolean init()
+- void createBackground()
+}
+class com.example.gamelogic.levels.NonogramGenerator {
++ {static} int[][] GenerateLevel(int,int)
+}
+abstract class com.example.gamelogic.states.AbstractState {
+# IEngine engine
+# IGraphics graphics
+# IAudio audio
+# {static} int LOGIC_WIDTH
+# {static} int LOGIC_HEIGHT
+- List<Entity> entities
+- Pointer pointer
+# {static} Color backgroundColor
+# {static} Color defaultColor
+# {static} Color freeColor
+# {static} Color figureColor
+# int NUM_THEMES
+# {static} boolean[] unlockedThemes
++ void DesbloquearColor(int)
++ void update(double)
++ void render()
++ void handleInput(List<InputEvent>)
+# void addEntity(Entity)
+# void removeEntity(Entity)
++ void saveState()
+}
+class com.example.gamelogic.entities.WorldCard {
+- Button button
+- SizedImage tape
+- SizedImage cardHolder
+- SizedImage cardImage
+- IFont textFont
+~ int completedLevels
+~ String completedText
+~ String titeText
++ void setCallback(IInteractableCallback)
++ void update(double)
++ void render()
++ void handleInput(int,int,IInput.InputTouchType)
++ void OnPointerDown(int,int)
++ void OnPointerUp(int,int)
++ void OnPointerMove(int,int)
+}
+class com.example.gamelogic.utilities.events.OnDamaged {
+}
+class com.example.gamelogic.entities.NonogramBoard {
+- float timeLongPress
+- int numOfStates
+- int borderBoardSize
+- Color borderColor
+- int borderWidth
+- int[][] solvedPuzzle
+- String[] rowsText
+- String[] colsText
+- IFont font
+- FloatLerper endTransitionLerper
+- FloatLerper wrongTilesTimer
+- boolean isWin
+- float borderBoardRatio
+- int initialWidth
+- Color textColor
+- int missingCells
+- int maxRow
+- int maxCol
+~ IImage blockedCell
+~ ISound winSound
+~ ISound selectCell
+~ Callback winCallBack
+- Color backgroundColor
+- Color defaultColor
+- Color freeColor
+- Color figureColor
++ void setColors(Color,Color,Color,Color)
++ boolean getIsWin()
++ void setWidth(int)
+- void generateRowsText()
+- void generateColsText()
++ void render()
+- void renderErrorLabels()
+- void RenderTextArea()
+- void calculateMaxRowAndMaxCol()
+- void renderRowText()
+- void renderColText()
+- void RenderBordersStroke()
+# void OnCellClicked(int,int)
+# void OnCellReleased(int,int)
+- void setColorGivenState(int)
++ void setBorderColor(int,int,int)
+# void OnCellRender(int,int)
+- boolean updateBoardState(boolean)
++ void checkSolution()
++ void update(double)
++ void OnPointerDown(int,int)
++ void OnPointerUp(int,int)
+}
+class com.example.gamelogic.utilities.Color {
++ int r
++ String toString()
+}
+class com.example.gamelogic.states.WorldSelectionPageLogic {
+~ WorldCard[] levels
+~ WorldCard specialWorld
+~ IFont textFont
+~ IImage cardHolder
+~ IImage tape
+~ Button returnButton
+~ IImage arrow
+~ Text tittle
++ boolean init()
+}
+interface com.example.gamelogic.entities.Callback {
++ void callback()
+}
+class com.example.gamelogic.utilities.events.DefaultEvent {
+}
+class com.example.gamelogic.states.SelectThemeState {
+~ IFont mainFont
+~ IImage arrow
+~ Button returnButton
+- int rows
+- int cols
+- Color[][] themes
++ boolean init()
++ void render()
+}
+abstract class com.example.gamelogic.entities.UIElement {
+- boolean alreadyOnHover
+- boolean insideLastFrame
+- boolean wasPressed
++ void OnPointerDown(int,int)
++ void OnPointerUp(int,int)
++ void handleInput(int,int,IInput.InputTouchType)
+- boolean isInside(int,int,int,int,int,int)
+}
+class com.example.gamelogic.entities.LivesPanel {
+- int numLives
+- int currentLive
+- int liveSize
+~ IImage fullLive
+~ IImage emptyLive
+~ SizedImage[] icons
++ void update(double)
++ void render()
++ void setAnchorPoint(AnchorPoint)
++ boolean isAlive()
++ boolean takeLive()
++ boolean restoreLive()
++ void restoreLives()
++ void OnPointerDown(int,int)
++ void OnPointerUp(int,int)
++ void OnPointerMove(int,int)
+}
+abstract class com.example.gamelogic.entities.Entity {
+# int width
+~ IEngine engine
+# IGraphics graphics
+# IAudio audio
+# AnchorPoint anchorPoint
++ void setWidth(int)
++ void setHeight(int)
++ int getWidth()
++ int getHeight()
++ void setPosX(int)
++ void setPosY(int)
++ int getPosX()
++ int getPosY()
++ {abstract}void update(double)
++ {abstract}void render()
++ void handleInput(int,int,IInput.InputTouchType)
++ void setAnchorPoint(AnchorPoint)
++ {abstract}void OnPointerDown(int,int)
++ {abstract}void OnPointerUp(int,int)
++ {abstract}void OnPointerMove(int,int)
+}
+class com.example.gamelogic.entities.Pointer {
+- int radius
+- int r
+- FloatLerper lerper
++ void update(double)
++ void render()
++ void OnPointerDown(int,int)
++ void OnPointerUp(int,int)
++ void OnPointerMove(int,int)
+}
+class com.example.gamelogic.entities.Button {
+- Color buttonColor
+- Color borderColor
+- Color buttonPressedColor
+- Color buttonHoverColor
+- Color textColor
+~ ISound clickSound
+- Color currentButtonColor
+- int borderSize
+~ float scale
+~ FloatLerper scaleLerper
+~ String buttonText
+~ IFont font
+~ IInteractableCallback callback
+~ IImage image
+~ int paddingHorizontal
++ void setImage(IImage)
++ void setPadding(int,int)
++ void setCallback(IInteractableCallback)
++ void update(double)
++ void setBorderColor(int,int,int)
++ void setBorderSize(int)
++ void setBackgroundColor(int,int,int)
++ void setBackgroundColor(int,int,int,int)
++ void setPressedColor(int,int,int)
++ void setPressedColorColor(int,int,int,int)
++ void setHoverColor(int,int,int)
++ void setHoverColor(int,int,int,int)
++ void setTextColor(int,int,int)
++ void setTextColor(int,int,int,int)
++ void setText(String,IFont)
++ void render()
++ void OnHoverEnter()
++ void OnHoverExit()
++ void OnTouchDown()
++ void OnTouchUp()
++ void OnPointerMove(int,int)
+- void renderBackground()
+- void renderBorders()
+- void renderText()
+- void renderImage()
+}
+class com.example.gamelogic.states.MainGameLogic {
+~ String level
+~ NonogramBoard board
+~ Button returnButton
+~ Button watchVid
+~ Button winReturnButton
+~ Button nextLevelButton
+~ IFont font
+~ IFont boardFont
+~ IFont congratsFont
+~ IImage arrow
+~ IImage search
+~ IImage fullLive
+~ IImage emptyLive
+~ LivesPanel livesPanel
+~ boolean gameWin
+~ boolean random
+~ IInteractableCallback returnCallback
+~ IInteractableCallback watchVidCallback
+~ IInteractableCallback nextLevelCallback
+~ int numLevel
+~ WorldLevelType type
+~ int row
++ void setReturnCallback(IInteractableCallback)
++ void onDamaged(OnDamaged)
++ boolean init()
+- int[][] loadLevel()
++ void update(double)
++ void render()
++ void handleInput(List<InputEvent>)
+- String getLevelName(int,int)
+}
+interface com.example.gamelogic.utilities.Listener {
+}
+enum com.example.gamelogic.levels.WorldLevelType {
++  Forest
++  Sea
++  City
++  Animals
++  Day
++  Night
+}
+class com.example.gamelogic.entities.SizedImage {
+- IImage image
+- float scale
++ void update(double)
++ void setImage(IImage)
++ void render()
++ void OnPointerDown(int,int)
++ void OnPointerUp(int,int)
++ void OnPointerMove(int,int)
+}
+class com.example.gamelogic.states.GetDataState {
++ boolean init()
+}
+interface com.example.gamelogic.utilities.Event {
+}
+
+
+com.example.gamelogic.entities.Entity <|-- com.example.gamelogic.entities.Board
+com.example.gamelogic.states.AbstractState <|-- com.example.gamelogic.states.StartMenuLogic
+com.example.gamelogic.entities.Entity <|-- com.example.gamelogic.entities.Text
+com.example.gamelogic.states.AbstractState <|-- com.example.gamelogic.states.SelectLevelLogic
+com.example.gamelogic.states.AbstractState <|-- com.example.gamelogic.states.WorldLevelSelectionPageLogic
+com.example.engine.IState <|.. com.example.gamelogic.states.AbstractState
+com.example.gamelogic.entities.Entity <|-- com.example.gamelogic.entities.WorldCard
+com.example.gamelogic.utilities.Event <|.. com.example.gamelogic.utilities.events.OnDamaged
+com.example.gamelogic.entities.Board <|-- com.example.gamelogic.entities.NonogramBoard
+com.example.gamelogic.states.AbstractState <|-- com.example.gamelogic.states.WorldSelectionPageLogic
+com.example.gamelogic.utilities.Event <|.. com.example.gamelogic.utilities.events.DefaultEvent
+com.example.gamelogic.states.AbstractState <|-- com.example.gamelogic.states.SelectThemeState
+com.example.gamelogic.entities.IInputHandler <|.. com.example.gamelogic.entities.UIElement
+com.example.gamelogic.entities.IInteractable <|.. com.example.gamelogic.entities.UIElement
+com.example.gamelogic.entities.Entity <|-- com.example.gamelogic.entities.UIElement
+com.example.gamelogic.entities.Entity <|-- com.example.gamelogic.entities.LivesPanel
+com.example.gamelogic.entities.IInputHandler <|.. com.example.gamelogic.entities.Entity
+com.example.gamelogic.entities.Entity <|-- com.example.gamelogic.entities.Pointer
+com.example.gamelogic.entities.UIElement <|-- com.example.gamelogic.entities.Button
+com.example.gamelogic.utilities.Listener <|.. com.example.gamelogic.states.MainGameLogic
+com.example.gamelogic.states.AbstractState <|-- com.example.gamelogic.states.MainGameLogic
+com.example.gamelogic.entities.Entity <|-- com.example.gamelogic.entities.SizedImage
+com.example.gamelogic.states.AbstractState <|-- com.example.gamelogic.states.GetDataState
+@enduml

@@ -1,0 +1,196 @@
+@startuml
+class com.example.androidengine.AImage {
+~ Bitmap bitmap
++ Bitmap getBitmap()
++ int getWidth()
++ int getHeight()
+}
+class com.example.androidengine.ExampleUnitTest {
++ void addition_isCorrect()
+}
+class com.example.androidengine.BuildConfig {
++ {static} boolean DEBUG
++ {static} String LIBRARY_PACKAGE_NAME
++ {static} String BUILD_TYPE
+}
+class com.example.androidengine.ADataState {
+~ Integer nameOfState
+~ Map<String,Object> simpleData
+~ Map<String,Object[]> arrayData
++ void addStateName(int)
++ void addSimpleData(String,T)
++ void addArrayData(String,T[],int,T[])
++ void flushStateData()
++ int getNameState()
+}
+class com.example.androidengine.AInput {
+- List<InputEvent>[] eventos
+- int listBufferCount
+- int listBufferIndex
++ void addEvent(MotionEvent)
++ List<InputEvent> getEventList()
++ void swapListBuffer()
++ void clear()
+}
+class com.example.androidengine.AMusic {
+~ MediaPlayer mediaPlayer
+~ float volume
++ void play()
++ void stop()
++ boolean isPlaying()
++ void setVolume(float)
++ float getVolume()
+}
+class com.example.androidengine.AGraphics {
+- SurfaceHolder holder
+- Paint paint
+- AEngine engine
+~ AssetManager assetManager
+~ AnchorPoint anchorPoint
+~ int screenWidth
+~ int screenHeight
+- double scaleX
+- double scaleY
+~ int r
+~ int g
+~ int b
+~ int r_clear
+~ int g_clear
+~ int b_clear
+~ float alphaMultiplier
++ IImage newImage(String)
++ IFont newFont(String,int,boolean)
++ void setLogicSize(int,int)
+~ void setScreenSize(int,int)
+~ void calculateScaleFactor()
++ void setColor(int,int,int)
++ void setColor(int,int,int,int)
++ void setFont(IFont)
++ int getStringWidth(String,IFont)
++ int getFontHeight(IFont)
++ int getFontAscent(IFont)
++ void clear(int,int,int)
++ void clear()
++ void setClearColor(int,int,int)
++ void drawImage(IImage,int,int)
++ void drawRectangle(int,int,int,int,int)
++ void fillRectangle(int,int,int,int)
++ void renderBordersAndroid()
++ void drawLine(int,int,int,int)
++ void drawCircle(int,int,int)
++ void drawText(String,int,int,IFont)
++ void drawTextCentered(String,int,int,IFont)
++ int getWidth()
++ int getHeight()
++ int getLogicWidth()
++ int getLogicHeight()
++ boolean isPortrait()
++ void setAnchorPoint(AnchorPoint)
++ int[] getAnchoredPosition(int,int,AnchorPoint)
++ void setGraphicsAlpha(int)
++ void translate(double,double)
++ void scale(double,double)
++ void rotate(double)
++ int logicXPositionToWindowsXPosition(int)
++ int logicYPositionToWindowsYPosition(int)
++ int windowsXPositionToLogicXPosition(int)
++ int windowsYPositionToLogicYPosition(int)
++ void setTranslation(double,double)
++ void setScale(double,double)
++ void setRotation(double)
++ void resetTranslation()
++ void resetScale()
++ void resetRotation()
++ void resetTransform()
++ void save()
++ void restore()
+}
+class com.example.androidengine.ExampleInstrumentedTest {
++ void useAppContext()
+}
+class com.example.androidengine.AFont {
+~ Typeface tface
+~ int size
++ Typeface getFont()
++ int getSize()
++ boolean isBold()
+}
+class com.example.androidengine.AAudio {
+~ Dictionary<String,ISound> sounds
+~ SoundPool soundPool
+~ AssetManager assetManager
+~ List<MediaPlayer> players
++ ISound newSound(String,String)
++ ISound newMusic(String,String)
++ void pause()
++ void resume()
++ boolean freeResources()
+}
+class com.example.androidengine.ASound {
+~ SoundPool soundPool
+~ int id
+~ float volume
++ void play()
++ void stop()
++ boolean isPlaying()
++ void setVolume(float)
++ float getVolume()
+}
+class com.example.androidengine.AEngine {
+- Canvas canvas
+- Paint paint
+- SurfaceView view
+- AssetManager assetManager
+- Thread renderThread
+- boolean running
+- StateManager stateManager
+- AGraphics graphics
+- AInput inputManager
+- AdView mAdView
+- InterstitialAd mInterstitialAd
+- Activity activity
+~ int lumens
+- ADataState dataState
+~ AAudio audio
+~ Map<String,Object> savedValuesMap
+- void cargarVideoAnuncio()
++ void enableBanner(boolean)
++ boolean onTouchEvent(MotionEvent)
++ Canvas getCurrentCanvas()
++ void setState(IState)
++ Map<String,Object> getData()
++ void setNameState(int)
++ void resume()
++ void pause()
++ void run()
++ boolean supportsTouch()
++ void render()
++ void update(double)
++ void handleInput()
++ void stop()
++ IGraphics getGraphics()
++ IAudio getAudio()
++ IState getState()
++ String getAssetsPath()
++ boolean videoAd()
++ void setAd(InterstitialAd)
++ void showVid()
++ int getLumens()
++ void setLumens(int)
++ void saveStateInfo()
++ InputStream openFile(String)
++ ADataState getDataState()
+}
+
+
+com.example.engine.IImage <|.. com.example.androidengine.AImage
+java.io.Serializable <|.. com.example.androidengine.ADataState
+com.example.engine.IInput <|.. com.example.androidengine.AInput
+com.example.engine.ISound <|.. com.example.androidengine.AMusic
+com.example.engine.AbstractGraphics <|-- com.example.androidengine.AGraphics
+com.example.engine.IFont <|.. com.example.androidengine.AFont
+com.example.engine.IAudio <|.. com.example.androidengine.AAudio
+com.example.engine.ISound <|.. com.example.androidengine.ASound
+com.example.androidengine.IEngine <|.. com.example.androidengine.AEngine
+com.example.androidengine.Runnable <|.. com.example.androidengine.AEngine
+@enduml

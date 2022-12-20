@@ -36,6 +36,7 @@ public class MainGameLogic extends AbstractState implements Listener {
     Button watchVid;
     Button winReturnButton;
     Button nextLevelButton;
+    Button shareButton;
     IFont font;
     IFont boardFont;
     IFont congratsFont;
@@ -184,8 +185,22 @@ public class MainGameLogic extends AbstractState implements Listener {
             congratsFont = graphics.newFont(engine.getAssetsPath() + "fonts/Roboto-Regular.ttf", 36, true);
             arrow = graphics.newImage(engine.getAssetsPath() + "images/arrow.png");
             search = graphics.newImage(engine.getAssetsPath() + "images/search.png");
+            IImage share = graphics.newImage(engine.getAssetsPath() + "images/share.png");
             emptyLive = graphics.newImage(engine.getAssetsPath() + "images/heart-empty.png");
             fullLive = graphics.newImage(engine.getAssetsPath() + "images/heart-full.png");
+
+
+            shareButton = new Button(0, LOGIC_HEIGHT/2 + 10, 40, 40, engine);
+            shareButton.setAnchorPoint(AnchorPoint.Middle);
+            shareButton.setImage(share);
+            shareButton.setBorderSize(0);
+
+            if(!graphics.isPortrait())
+            {
+                shareButton.setAnchorPoint(AnchorPoint.DownLeft);
+                shareButton.setPosX(40);
+                shareButton.setPosY(-40);
+            }
 
             int numLifes = 3;
             int livesPanelWidth = Math.min(LOGIC_WIDTH, LOGIC_HEIGHT) / 4;
@@ -217,7 +232,7 @@ public class MainGameLogic extends AbstractState implements Listener {
             watchVid.setAnchorPoint(AnchorPoint.DownLeft);
             watchVid.setCallback(watchVidCallback);
 
-            winReturnButton = new Button(LOGIC_WIDTH / 2, LOGIC_HEIGHT - 50, 100, 50, engine);
+            winReturnButton = new Button(LOGIC_WIDTH / 2, LOGIC_HEIGHT - 75, 100, 50, engine);
             winReturnButton.setText("Volver", font);
             winReturnButton.setBackgroundColor(0, 0, 0, 0);
             winReturnButton.setBorderSize(0);
@@ -225,7 +240,7 @@ public class MainGameLogic extends AbstractState implements Listener {
             winReturnButton.setCallback(returnCallback);
 
 
-            nextLevelButton = new Button(LOGIC_WIDTH / 2, LOGIC_HEIGHT - 15, 100, 50, engine);
+            nextLevelButton = new Button(LOGIC_WIDTH / 2, LOGIC_HEIGHT - 35, 100, 50, engine);
             nextLevelButton.setText("Siguiente Nivel", font);
             nextLevelButton.setBackgroundColor(0, 0, 0, 0);
             nextLevelButton.setBorderSize(0);
@@ -350,6 +365,7 @@ public class MainGameLogic extends AbstractState implements Listener {
             graphics.drawTextCentered("¡Enhorabuena!", LOGIC_WIDTH / 2, 50, congratsFont);
             winReturnButton.render();
             nextLevelButton.render();
+            shareButton.render();
         }
     }
 
@@ -367,6 +383,7 @@ public class MainGameLogic extends AbstractState implements Listener {
             } else {
                 winReturnButton.handleInput(proccesedX, proccesedY, inputEvent.type);
                 nextLevelButton.handleInput(proccesedX, proccesedY, inputEvent.type);
+                shareButton.handleInput(proccesedX, proccesedY, inputEvent.type);
             }
 
         }

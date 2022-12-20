@@ -1,0 +1,834 @@
+@startuml
+abstract class com.example.gamelogic.entities.Board {
+# int[][] board
+# long[][] timePressBoard
+# int rows
+# int paddingHorizontal
+- Color boardBackgroundColor
+~ IImage cellImg
+# int cellWidth
+# void init()
++ {abstract}void update(double)
++ void render()
+- void drawImageInCell(int,int,int,int)
++ void setCellImg(IImage)
+# {abstract}void OnCellClicked(int,int)
+# {abstract}void OnCellReleased(int,int)
+# {abstract}void OnCellRender(int,int)
+~ int getCellPosX(int)
+~ int getCellPosY(int)
+~ boolean isPointInsideCell(int,int,int,int)
+~ int[] pointToCell(int,int)
++ void OnPointerDown(int,int)
++ void OnPointerUp(int,int)
++ void OnPointerMove(int,int)
++ void setBoardBackgroundColor(int,int,int)
++ void clear()
+}
+enum com.example.gamelogic.states.StatesNames {
++  StartMenuLogic
++  SelectThemeState
++  SelectLevelLogic
++  MainGameLogic
++  WorldLevelSelectionPageLogic
++  WorldSelectionPageLogic
+}
+interface com.example.engine.IEngine {
+~ IGraphics getGraphics()
+~ IAudio getAudio()
+~ IState getState()
+~ String getAssetsPath()
+~ InputStream openFile(String)
+~ boolean supportsTouch()
+~ void enableBanner(boolean)
+~ void showVid()
+~ int getLumens()
+~ void setLumens(int)
+~ void render()
+~ void update(double)
+~ void handleInput()
+~ void setState(IState)
+~ Map<String,Object> getData()
+~ void setNameState(int)
+}
+class com.example.practica1.ExampleUnitTest {
++ void addition_isCorrect()
+}
+class com.example.practica1.ExampleInstrumentedTest {
++ void useAppContext()
+}
+class com.example.androidengine.ExampleInstrumentedTest {
++ void useAppContext()
+}
+class com.example.gamelogic.states.SelectLevelLogic {
+~ IFont font
+~ IFont fontBold
+~ IImage arrow
+~ Button returnButton
+~ int rows
+~ String[][] texts
+~ Text selectText
++ boolean init()
+}
+class com.example.engine.utilities.FloatLerper {
+- float startValue
+- float endValue
+- float duration
+- float currentTime
+- LerpType lerpType
+- boolean reversed
+- float currentValue
+- boolean isPaused
++ void update(double)
+- float calculateCurrentValue()
++ void restart()
++ float getStartValue()
++ float getEndValue()
++ void setPaused(boolean)
++ boolean isFinished()
++ boolean getPaused()
++ void reverse()
++ void setReversed(boolean)
++ float getValue()
++ float getProgress()
+}
+class com.example.androidengine.ASound {
+~ SoundPool soundPool
+~ int id
+~ float volume
++ void play()
++ void stop()
++ boolean isPlaying()
++ void setVolume(float)
++ float getVolume()
+}
+class com.example.gamelogic.levels.NonogramGenerator {
++ {static} int[][] GenerateLevel(int,int)
+}
+interface com.example.engine.IGraphics {
+~ IImage newImage(String)
+~ IFont newFont(String,int,boolean)
+~ void setLogicSize(int,int)
+~ void setColor(int,int,int)
+~ void setColor(int,int,int,int)
+~ void setClearColor(int,int,int)
+~ void setFont(IFont)
+~ int getStringWidth(String,IFont)
+~ int getFontHeight(IFont)
+~ int getFontAscent(IFont)
+~ void clear(int,int,int)
+~ void clear()
+~ void drawImage(IImage,int,int)
+~ void drawRectangle(int,int,int,int,int)
+~ void fillRectangle(int,int,int,int)
+~ void drawLine(int,int,int,int)
+~ void drawCircle(int,int,int)
+~ void drawText(String,int,int,IFont)
+~ void drawTextCentered(String,int,int,IFont)
+~ int getWidth()
+~ int getHeight()
+~ int getLogicWidth()
+~ int getLogicHeight()
+~ boolean isPortrait()
+~ void setAnchorPoint(AnchorPoint)
+~ int[] getAnchoredPosition(int,int,AnchorPoint)
+~ void setGraphicsAlpha(int)
+~ void translate(double,double)
+~ void scale(double,double)
+~ void rotate(double)
+~ int logicXPositionToWindowsXPosition(int)
+~ int logicYPositionToWindowsYPosition(int)
+~ int windowsXPositionToLogicXPosition(int)
+~ int windowsYPositionToLogicYPosition(int)
+~ void setTranslation(double,double)
+~ void setScale(double,double)
+~ void setRotation(double)
+~ void resetTranslation()
+~ void resetScale()
+~ void resetRotation()
+~ void resetTransform()
+~ void save()
+~ void restore()
+}
+abstract class com.example.gamelogic.states.AbstractState {
+# IEngine engine
+# IGraphics graphics
+# IAudio audio
+# {static} int LOGIC_WIDTH
+# {static} int LOGIC_HEIGHT
+- List<Entity> entities
+- Pointer pointer
+# {static} Color backgroundColor
+# {static} Color defaultColor
+# {static} Color freeColor
+# {static} Color figureColor
+# int NUM_THEMES
+# {static} boolean[] unlockedThemes
++ void DesbloquearColor(int)
++ void update(double)
++ void render()
++ void handleInput(List<InputEvent>)
+# void addEntity(Entity)
+# void removeEntity(Entity)
++ void saveState()
+}
+class com.example.gamelogic.entities.WorldCard {
+- Button button
+- SizedImage tape
+- SizedImage cardHolder
+- SizedImage cardImage
+- IFont textFont
+~ int completedLevels
+~ String completedText
+~ String titeText
++ void setCallback(IInteractableCallback)
++ void update(double)
++ void render()
++ void handleInput(int,int,IInput.InputTouchType)
++ void OnPointerDown(int,int)
++ void OnPointerUp(int,int)
++ void OnPointerMove(int,int)
+}
+class com.example.gamelogic.utilities.events.OnDamaged {
+}
+class com.example.engine.utilities.LerperFuncs {
+- {static} float Linear(float)
+- {static} float EaseIn(float)
+- {static} float EaseOut(float)
+- {static} float EaseInOut(float)
++ {static} float getValue(float,LerpType)
+}
+class com.example.gamelogic.states.WorldSelectionPageLogic {
+~ WorldCard[] levels
+~ WorldCard specialWorld
+~ IFont textFont
+~ IImage cardHolder
+~ IImage tape
+~ Button returnButton
+~ IImage arrow
+~ Text tittle
++ boolean init()
+}
+abstract class com.example.engine.AbstractGraphics {
+# int logicSizeX
+# double scaleFactor
+# int borderBarWidth
+# void calculateScaleFactor(int,int)
+# void renderBorders()
+}
+class com.example.gamelogic.utilities.events.DefaultEvent {
+}
+class com.example.gamelogic.entities.LivesPanel {
+- int numLives
+- int currentLive
+- int liveSize
+~ IImage fullLive
+~ IImage emptyLive
+~ SizedImage[] icons
++ void update(double)
++ void render()
++ void setAnchorPoint(AnchorPoint)
++ boolean isAlive()
++ boolean takeLive()
++ boolean restoreLive()
++ void restoreLives()
++ void OnPointerDown(int,int)
++ void OnPointerUp(int,int)
++ void OnPointerMove(int,int)
+}
+class com.example.androidengine.AFont {
+~ Typeface tface
+~ int size
++ Typeface getFont()
++ int getSize()
++ boolean isBold()
+}
+class com.example.gamelogic.entities.Pointer {
+- int radius
+- int r
+- FloatLerper lerper
++ void update(double)
++ void render()
++ void OnPointerDown(int,int)
++ void OnPointerUp(int,int)
++ void OnPointerMove(int,int)
+}
+class com.example.gamelogic.entities.Button {
+- Color buttonColor
+- Color borderColor
+- Color buttonPressedColor
+- Color buttonHoverColor
+- Color textColor
+~ ISound clickSound
+- Color currentButtonColor
+- int borderSize
+~ float scale
+~ FloatLerper scaleLerper
+~ String buttonText
+~ IFont font
+~ IInteractableCallback callback
+~ IImage image
+~ int paddingHorizontal
++ void setImage(IImage)
++ void setPadding(int,int)
++ void setCallback(IInteractableCallback)
++ void update(double)
++ void setBorderColor(int,int,int)
++ void setBorderSize(int)
++ void setBackgroundColor(int,int,int)
++ void setBackgroundColor(int,int,int,int)
++ void setPressedColor(int,int,int)
++ void setPressedColorColor(int,int,int,int)
++ void setHoverColor(int,int,int)
++ void setHoverColor(int,int,int,int)
++ void setTextColor(int,int,int)
++ void setTextColor(int,int,int,int)
++ void setText(String,IFont)
++ void render()
++ void OnHoverEnter()
++ void OnHoverExit()
++ void OnTouchDown()
++ void OnTouchUp()
++ void OnPointerMove(int,int)
+- void renderBackground()
+- void renderBorders()
+- void renderText()
+- void renderImage()
+}
+class com.example.gamelogic.states.MainGameLogic {
+~ String level
+~ NonogramBoard board
+~ Button returnButton
+~ Button watchVid
+~ Button winReturnButton
+~ Button nextLevelButton
+~ IFont font
+~ IFont boardFont
+~ IFont congratsFont
+~ IImage arrow
+~ IImage search
+~ IImage fullLive
+~ IImage emptyLive
+~ LivesPanel livesPanel
+~ boolean gameWin
+~ boolean random
+~ IInteractableCallback returnCallback
+~ IInteractableCallback watchVidCallback
+~ IInteractableCallback nextLevelCallback
+~ int numLevel
+~ WorldLevelType type
+~ int row
++ void setReturnCallback(IInteractableCallback)
++ void onDamaged(OnDamaged)
++ boolean init()
+- int[][] loadLevel()
++ void update(double)
++ void render()
++ void handleInput(List<InputEvent>)
+- String getLevelName(int,int)
+}
+interface com.example.gamelogic.utilities.Listener {
+}
+class com.example.androidengine.AAudio {
+~ Dictionary<String,ISound> sounds
+~ SoundPool soundPool
+~ AssetManager assetManager
+~ List<MediaPlayer> players
++ ISound newSound(String,String)
++ ISound newMusic(String,String)
++ void pause()
++ void resume()
++ boolean freeResources()
+}
+interface com.example.engine.ISound {
+~ void play()
+~ void stop()
+~ boolean isPlaying()
+~ void setVolume(float)
+~ float getVolume()
+}
+class com.example.practica1.BuildConfig {
++ {static} boolean DEBUG
++ {static} String APPLICATION_ID
++ {static} String BUILD_TYPE
++ {static} int VERSION_CODE
++ {static} String VERSION_NAME
+}
+interface com.example.engine.IState {
+~ boolean init()
+~ void update(double)
+~ void render()
+~ void handleInput(List<InputEvent>)
+~ void saveState()
+}
+interface com.example.gamelogic.entities.IInteractable {
++ void OnHoverEnter()
++ void OnHoverExit()
++ void OnTouchDown()
++ void OnTouchUp()
+}
+interface com.example.gamelogic.entities.IInputHandler {
+~ void handleInput(int,int,IInput.InputTouchType)
+}
+class com.example.gamelogic.utilities.DataToAccess {
+- {static} DataToAccess instance
+~ String[] keysOfLevelData
+~ String[] keysOfPaletteData
+~ Map<String,Integer> levelData
+~ Map<String,Boolean> paletteData
+~ IEngine engine
++ {static} DataToAccess getInstance()
++ {static} boolean Init(IEngine)
++ void setInt(String,int)
++ void setMaxLevel(String,int)
++ void setBool(String,boolean)
++ int getInt(String)
++ boolean getBool(String)
++ Map<String,Integer> getMapInt()
++ Map<String,Boolean> getMapBool()
+}
+class com.example.gamelogic.states.StartMenuLogic {
+~ IFont mainFont
+~ IFont secondaryFont
+~ Button quickGame
+~ Button historyMode
+~ Button themeSelectButton
++ boolean init()
++ void render()
+}
+class com.example.gamelogic.utilities.EventManager {
+- {static} List<Listener> registered
++ {static} void register(Listener)
++ {static} void unregister(Listener)
++ {static} List<Listener> getRegistered()
++ {static} void callEvent(Event)
+- {static} void call(Event)
+}
+class com.example.androidengine.AGraphics {
+- SurfaceHolder holder
+- Paint paint
+- AEngine engine
+~ AssetManager assetManager
+~ AnchorPoint anchorPoint
+~ int screenWidth
+~ int screenHeight
+- double scaleX
+- double scaleY
+~ int r
+~ int g
+~ int b
+~ int r_clear
+~ int g_clear
+~ int b_clear
+~ float alphaMultiplier
++ IImage newImage(String)
++ IFont newFont(String,int,boolean)
++ void setLogicSize(int,int)
+~ void setScreenSize(int,int)
+~ void calculateScaleFactor()
++ void setColor(int,int,int)
++ void setColor(int,int,int,int)
++ void setFont(IFont)
++ int getStringWidth(String,IFont)
++ int getFontHeight(IFont)
++ int getFontAscent(IFont)
++ void clear(int,int,int)
++ void clear()
++ void setClearColor(int,int,int)
++ void drawImage(IImage,int,int)
++ void drawRectangle(int,int,int,int,int)
++ void fillRectangle(int,int,int,int)
++ void renderBordersAndroid()
++ void drawLine(int,int,int,int)
++ void drawCircle(int,int,int)
++ void drawText(String,int,int,IFont)
++ void drawTextCentered(String,int,int,IFont)
++ int getWidth()
++ int getHeight()
++ int getLogicWidth()
++ int getLogicHeight()
++ boolean isPortrait()
++ void setAnchorPoint(AnchorPoint)
++ int[] getAnchoredPosition(int,int,AnchorPoint)
++ void setGraphicsAlpha(int)
++ void translate(double,double)
++ void scale(double,double)
++ void rotate(double)
++ int logicXPositionToWindowsXPosition(int)
++ int logicYPositionToWindowsYPosition(int)
++ int windowsXPositionToLogicXPosition(int)
++ int windowsYPositionToLogicYPosition(int)
++ void setTranslation(double,double)
++ void setScale(double,double)
++ void setRotation(double)
++ void resetTranslation()
++ void resetScale()
++ void resetRotation()
++ void resetTransform()
++ void save()
++ void restore()
+}
+interface com.example.gamelogic.entities.IInteractableCallback {
++ void onInteractionOccur()
+}
+interface com.example.engine.IAudio {
+~ ISound newSound(String,String)
+~ ISound newMusic(String,String)
+~ void pause()
+~ void resume()
+~ boolean freeResources()
+}
+class com.example.gamelogic.entities.Text {
+- String text
+- Color backgroundColor
+~ IFont font
+- int bgWidth
++ void setBackgruondSize(int,int)
++ void setBackgroundColor(Color)
++ void update(double)
++ void render()
++ void OnPointerDown(int,int)
++ void OnPointerUp(int,int)
++ void OnPointerMove(int,int)
+}
+class com.example.gamelogic.states.WorldLevelSelectionPageLogic {
+~ Button returnButton
+~ IImage arrow
+~ IImage lockedImg
+~ IImage unlockedImg
+~ SizedImage backgroundImg
+~ Button[][] levels
+~ IFont tittleFont
+~ String text
+~ WorldLevelType type
+~ Text tittleText
+~ int unlockedLevels
++ boolean init()
+- void createBackground()
+}
+enum com.example.engine.AnchorPoint {
++  None
++  UpperLeft
++  UpperRight
++  DownLeft
++  DownRight
++  Middle
+}
+class com.example.gamelogic.entities.NonogramBoard {
+- float timeLongPress
+- int numOfStates
+- int borderBoardSize
+- Color borderColor
+- int borderWidth
+- int[][] solvedPuzzle
+- String[] rowsText
+- String[] colsText
+- IFont font
+- FloatLerper endTransitionLerper
+- FloatLerper wrongTilesTimer
+- boolean isWin
+- float borderBoardRatio
+- int initialWidth
+- Color textColor
+- int missingCells
+- int maxRow
+- int maxCol
+~ IImage blockedCell
+~ ISound winSound
+~ ISound selectCell
+~ Callback winCallBack
+- Color backgroundColor
+- Color defaultColor
+- Color freeColor
+- Color figureColor
++ void setColors(Color,Color,Color,Color)
++ boolean getIsWin()
++ void setWidth(int)
+- void generateRowsText()
+- void generateColsText()
++ void render()
+- void renderErrorLabels()
+- void RenderTextArea()
+- void calculateMaxRowAndMaxCol()
+- void renderRowText()
+- void renderColText()
+- void RenderBordersStroke()
+# void OnCellClicked(int,int)
+# void OnCellReleased(int,int)
+- void setColorGivenState(int)
++ void setBorderColor(int,int,int)
+# void OnCellRender(int,int)
+- boolean updateBoardState(boolean)
++ void checkSolution()
++ void update(double)
++ void OnPointerDown(int,int)
++ void OnPointerUp(int,int)
+}
+interface com.example.engine.IImage {
+~ int getWidth()
+~ int getHeight()
+}
+class com.example.engine.InputEvent {
++ int x
++ IInput.InputTouchType type
++ int index
+}
+enum com.example.engine.utilities.LerpType {
++  Linear
++  EaseIn
++  EaseOut
++  EaseInOut
+}
+class com.example.practica1.MainActivity {
+- AEngine androidEngine
+- AssetManager assetManager
+- AdView mAdView
+- SensorManager sensorManager
+- Sensor ambienceLight
+- String sharedPrefFile
+# void onCreate(Bundle)
+- void cargarBanner()
+# void onResume()
+# void onDestroy()
+# void onPause()
++ void onSaveInstanceState(Bundle)
++ void onRestoreInstanceState(Bundle)
++ void onSensorChanged(SensorEvent)
++ void onAccuracyChanged(Sensor,int)
+}
+class com.example.androidengine.AImage {
+~ Bitmap bitmap
++ Bitmap getBitmap()
++ int getWidth()
++ int getHeight()
+}
+class com.example.gamelogic.utilities.Color {
++ int r
++ String toString()
+}
+class com.example.androidengine.ExampleUnitTest {
++ void addition_isCorrect()
+}
+class com.example.androidengine.BuildConfig {
++ {static} boolean DEBUG
++ {static} String LIBRARY_PACKAGE_NAME
++ {static} String BUILD_TYPE
+}
+interface com.example.gamelogic.entities.Callback {
++ void callback()
+}
+class com.example.androidengine.ADataState {
+~ Integer nameOfState
+~ Map<String,Object> simpleData
+~ Map<String,Object[]> arrayData
++ void addStateName(int)
++ void addSimpleData(String,T)
++ void addArrayData(String,T[],int,T[])
++ void flushStateData()
++ int getNameState()
+}
+class com.example.gamelogic.states.SelectThemeState {
+~ IFont mainFont
+~ IImage arrow
+~ Button returnButton
+- int rows
+- int cols
+- Color[][] themes
++ boolean init()
++ void render()
+}
+abstract class com.example.gamelogic.entities.UIElement {
+- boolean alreadyOnHover
+- boolean insideLastFrame
+- boolean wasPressed
++ void OnPointerDown(int,int)
++ void OnPointerUp(int,int)
++ void handleInput(int,int,IInput.InputTouchType)
+- boolean isInside(int,int,int,int,int,int)
+}
+abstract class com.example.gamelogic.entities.Entity {
+# int width
+~ IEngine engine
+# IGraphics graphics
+# IAudio audio
+# AnchorPoint anchorPoint
++ void setWidth(int)
++ void setHeight(int)
++ int getWidth()
++ int getHeight()
++ void setPosX(int)
++ void setPosY(int)
++ int getPosX()
++ int getPosY()
++ {abstract}void update(double)
++ {abstract}void render()
++ void handleInput(int,int,IInput.InputTouchType)
++ void setAnchorPoint(AnchorPoint)
++ {abstract}void OnPointerDown(int,int)
++ {abstract}void OnPointerUp(int,int)
++ {abstract}void OnPointerMove(int,int)
+}
+class com.example.androidengine.AInput {
+- List<InputEvent>[] eventos
+- int listBufferCount
+- int listBufferIndex
++ void addEvent(MotionEvent)
++ List<InputEvent> getEventList()
++ void swapListBuffer()
++ void clear()
+}
+class com.example.androidengine.AMusic {
+~ MediaPlayer mediaPlayer
+~ float volume
++ void play()
++ void stop()
++ boolean isPlaying()
++ void setVolume(float)
++ float getVolume()
+}
+interface com.example.engine.IFont {
+~ int getSize()
+~ boolean isBold()
+}
+class com.example.engine.StateManager {
+- IState currentState
+- IState oldState
+- IGraphics graphics
+- FloatLerper lerper
+~ boolean isOnTransition
++ boolean init()
++ void update(double)
++ void render()
++ void handleInput(List<InputEvent>)
++ void saveState()
++ void setState(IState)
++ IState getState()
+}
+interface com.example.engine.IInput {
+}
+enum com.example.engine.InputTouchType {
++  TOUCH_DOWN
++  TOUCH_UP
++  TOUCH_MOVE
+}
+enum com.example.engine.InputKeyType {
++  KEY_DOWN
++  KEY_UP
++  KEY_MOVE
+}
+enum com.example.gamelogic.levels.WorldLevelType {
++  Forest
++  Sea
++  City
++  Animals
++  Day
++  Night
+}
+class com.example.androidengine.AEngine {
+- Canvas canvas
+- Paint paint
+- SurfaceView view
+- AssetManager assetManager
+- Thread renderThread
+- boolean running
+- StateManager stateManager
+- AGraphics graphics
+- AInput inputManager
+- AdView mAdView
+- InterstitialAd mInterstitialAd
+- Activity activity
+~ int lumens
+- ADataState dataState
+~ AAudio audio
+~ Map<String,Object> savedValuesMap
+- void cargarVideoAnuncio()
++ void enableBanner(boolean)
++ boolean onTouchEvent(MotionEvent)
++ Canvas getCurrentCanvas()
++ void setState(IState)
++ Map<String,Object> getData()
++ void setNameState(int)
++ void resume()
++ void pause()
++ void run()
++ boolean supportsTouch()
++ void render()
++ void update(double)
++ void handleInput()
++ void stop()
++ IGraphics getGraphics()
++ IAudio getAudio()
++ IState getState()
++ String getAssetsPath()
++ boolean videoAd()
++ void setAd(InterstitialAd)
++ void showVid()
++ int getLumens()
++ void setLumens(int)
++ void saveStateInfo()
++ InputStream openFile(String)
++ ADataState getDataState()
+}
+class com.example.gamelogic.entities.SizedImage {
+- IImage image
+- float scale
++ void update(double)
++ void setImage(IImage)
++ void render()
++ void OnPointerDown(int,int)
++ void OnPointerUp(int,int)
++ void OnPointerMove(int,int)
+}
+class com.example.gamelogic.states.GetDataState {
++ boolean init()
+}
+interface com.example.gamelogic.utilities.Event {
+}
+class com.example.practica1.NotificationWork {
+- {static} String TAG
+- NotificationCompat.Builder builder
+- NotificationManagerCompat notificationManager
++ Result doWork()
+- void createNotificationChannel()
+}
+
+
+com.example.gamelogic.entities.Entity <|-- com.example.gamelogic.entities.Board
+com.example.gamelogic.states.AbstractState <|-- com.example.gamelogic.states.SelectLevelLogic
+com.example.engine.ISound <|.. com.example.androidengine.ASound
+com.example.engine.IState <|.. com.example.gamelogic.states.AbstractState
+com.example.gamelogic.entities.Entity <|-- com.example.gamelogic.entities.WorldCard
+com.example.gamelogic.utilities.Event <|.. com.example.gamelogic.utilities.events.OnDamaged
+com.example.gamelogic.states.AbstractState <|-- com.example.gamelogic.states.WorldSelectionPageLogic
+com.example.engine.IGraphics <|.. com.example.engine.AbstractGraphics
+com.example.gamelogic.utilities.Event <|.. com.example.gamelogic.utilities.events.DefaultEvent
+com.example.gamelogic.entities.Entity <|-- com.example.gamelogic.entities.LivesPanel
+com.example.engine.IFont <|.. com.example.androidengine.AFont
+com.example.gamelogic.entities.Entity <|-- com.example.gamelogic.entities.Pointer
+com.example.gamelogic.entities.UIElement <|-- com.example.gamelogic.entities.Button
+com.example.gamelogic.utilities.Listener <|.. com.example.gamelogic.states.MainGameLogic
+com.example.gamelogic.states.AbstractState <|-- com.example.gamelogic.states.MainGameLogic
+com.example.engine.IAudio <|.. com.example.androidengine.AAudio
+com.example.gamelogic.states.AbstractState <|-- com.example.gamelogic.states.StartMenuLogic
+com.example.engine.AbstractGraphics <|-- com.example.androidengine.AGraphics
+com.example.gamelogic.entities.Entity <|-- com.example.gamelogic.entities.Text
+com.example.gamelogic.states.AbstractState <|-- com.example.gamelogic.states.WorldLevelSelectionPageLogic
+com.example.gamelogic.entities.Board <|-- com.example.gamelogic.entities.NonogramBoard
+android.hardware.SensorEventListener <|.. com.example.practica1.MainActivity
+androidx.appcompat.app.AppCompatActivity <|-- com.example.practica1.MainActivity
+com.example.engine.IImage <|.. com.example.androidengine.AImage
+java.io.Serializable <|.. com.example.androidengine.ADataState
+com.example.gamelogic.states.AbstractState <|-- com.example.gamelogic.states.SelectThemeState
+com.example.gamelogic.entities.IInputHandler <|.. com.example.gamelogic.entities.UIElement
+com.example.gamelogic.entities.IInteractable <|.. com.example.gamelogic.entities.UIElement
+com.example.gamelogic.entities.Entity <|-- com.example.gamelogic.entities.UIElement
+com.example.gamelogic.entities.IInputHandler <|.. com.example.gamelogic.entities.Entity
+com.example.engine.IInput <|.. com.example.androidengine.AInput
+com.example.engine.ISound <|.. com.example.androidengine.AMusic
+com.example.engine.IState <|.. com.example.engine.StateManager
+com.example.androidengine.IEngine <|.. com.example.androidengine.AEngine
+com.example.androidengine.Runnable <|.. com.example.androidengine.AEngine
+com.example.gamelogic.entities.Entity <|-- com.example.gamelogic.entities.SizedImage
+com.example.gamelogic.states.AbstractState <|-- com.example.gamelogic.states.GetDataState
+androidx.work.Worker <|-- com.example.practica1.NotificationWork
+@enduml
