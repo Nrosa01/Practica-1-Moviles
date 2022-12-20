@@ -196,6 +196,15 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     protected void onPause() {
         super.onPause();
 
+        this.androidEngine.pause();
+        sensorManager.unregisterListener(this);
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putSerializable("escena", this.androidEngine.getDataState());
+
         SharedPreferences mPreferences;
 
         mPreferences = getSharedPreferences();
@@ -218,15 +227,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
         if(!preferencesEditor.commit())
             Log.i(TAG, "fallo al guardar datos");
-
-        this.androidEngine.pause();
-        sensorManager.unregisterListener(this);
-    }
-
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putSerializable("escena", this.androidEngine.getDataState());
 
     }
 

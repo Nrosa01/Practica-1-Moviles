@@ -1,9 +1,6 @@
 package com.example.gamelogic.states;
 
-import static com.example.gamelogic.levels.WorldLevelType.Animals;
-import static com.example.gamelogic.levels.WorldLevelType.City;
-import static com.example.gamelogic.levels.WorldLevelType.Forest;
-import static com.example.gamelogic.levels.WorldLevelType.Sea;
+
 
 import com.example.engine.AnchorPoint;
 import com.example.engine.IEngine;
@@ -27,8 +24,7 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.List;
-import java.util.stream.IntStream;
-import java.util.stream.Stream;
+
 
 public class MainGameLogic extends AbstractState implements Listener {
 
@@ -43,6 +39,7 @@ public class MainGameLogic extends AbstractState implements Listener {
     IFont boardFont;
     IFont congratsFont;
     IImage arrow;
+    IImage play;
     IImage search;
 
     IImage fullLive;
@@ -134,14 +131,24 @@ public class MainGameLogic extends AbstractState implements Listener {
                 }
             }
         };
-        final int nextLevel = numLevel + 1;
+        int nextLevel = 0;
+        if(type == WorldLevelType.Day || type == WorldLevelType.Night){
+            if(numLevel+1 < 10)
+                nextLevel = numLevel+1;
+        }
+        else if (numLevel+1<20){
+            nextLevel = numLevel+1;
+        }
+        else nextLevel = numLevel;
+
+        final int nX = nextLevel;
 
         nextLevelCallback = new IInteractableCallback() {
             @Override
             public void onInteractionOccur() {
                 try {
 
-                    MainGameLogic logic = new MainGameLogic(engine, nextLevel, type);
+                    MainGameLogic logic = new MainGameLogic(engine, nX, type);
 
                     engine.setState(logic);
                 } catch (Exception e) {
@@ -228,6 +235,7 @@ public class MainGameLogic extends AbstractState implements Listener {
             boardFont = graphics.newFont(engine.getAssetsPath() + "fonts/Roboto-Regular.ttf", 18, true);
             congratsFont = graphics.newFont(engine.getAssetsPath() + "fonts/Roboto-Regular.ttf", 36, true);
             arrow = graphics.newImage(engine.getAssetsPath() + "images/arrow.png");
+            play = graphics.newImage(engine.getAssetsPath() + "images/play.png");
             search = graphics.newImage(engine.getAssetsPath() + "images/search.png");
             IImage share = graphics.newImage(engine.getAssetsPath() + "images/share.png");
             emptyLive = graphics.newImage(engine.getAssetsPath() + "images/heart-empty.png");
@@ -278,8 +286,8 @@ public class MainGameLogic extends AbstractState implements Listener {
             returnButton.setAnchorPoint(AnchorPoint.UpperLeft);
             returnButton.setCallback(returnCallback);
 
-            watchVid = new Button(25, -10, 30, 30, engine);
-            watchVid.setImage(arrow);
+            watchVid = new Button(35, -25, 60, 60, engine);
+            watchVid.setImage(play);
             watchVid.setPadding(10, 10);
             watchVid.setBackgroundColor(0, 0, 0, 0);
             watchVid.setBorderSize(0);
@@ -331,6 +339,7 @@ public class MainGameLogic extends AbstractState implements Listener {
                     }
 
                     if (!random) {
+
                         final int n ;
                         if(type == WorldLevelType.Day || type == WorldLevelType.Night)
                             n = numDesbloq-5;
