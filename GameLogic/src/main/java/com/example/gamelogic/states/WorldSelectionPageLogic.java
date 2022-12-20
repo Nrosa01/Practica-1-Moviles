@@ -68,7 +68,7 @@ public class WorldSelectionPageLogic extends AbstractState {
             int buttonX = margin + pos * (gapSize + buttonSize / 2) + pos * (buttonSize / 2);
             int buttonY = yStart + (heightStep * j);
             int completedLevels = 0;
-            completedLevels = DataToAccess.getInstance().getInt(texts[i]);
+            completedLevels = DataToAccess.getInstance().getInt(levelTypes[i].toString()) ;
             levels[i] = new WorldCard(engine, buttonX, buttonY, buttonSize, buttonSize,
                     completedLevels, texts[i], cardHolder, images[i], tape, textFont);
             final int index = i;
@@ -92,7 +92,7 @@ public class WorldSelectionPageLogic extends AbstractState {
         int buttonY = yStart + (heightStep * j);
         boolean isDay = engine.getLumens() > 50;
         String text = isDay ? "Dia" : "Noche";
-        int completedLecels = DataToAccess.getInstance().getInt(text);
+
         IImage specialImage = engine.getGraphics().newImage(engine.getAssetsPath() + (isDay ? "images/day.png" : "images/night.png"));
         IImage specialBg = engine.getGraphics().newImage(engine.getAssetsPath() + (isDay ? "images/lightGradient.png" : "images/darkGradient.png"));
         int imageHeight = specialBg.getHeight();
@@ -100,8 +100,14 @@ public class WorldSelectionPageLogic extends AbstractState {
         specialBgImage.setAnchorPoint(AnchorPoint.DownLeft);
         addEntity(specialBgImage);
 
-        specialWorld = new WorldCard(engine, buttonX, buttonY, buttonSize, buttonSize, completedLecels, text, cardHolder, specialImage, tape, textFont);
+
         final WorldLevelType specialLevel = isDay ? WorldLevelType.Day : WorldLevelType.Night;
+        int completedLevels = 0;
+        completedLevels = DataToAccess.getInstance().getInt(specialLevel.toString()) ;
+
+        specialWorld = new WorldCard(engine, buttonX, buttonY, buttonSize, buttonSize, completedLevels, text, cardHolder, specialImage, tape, textFont);
+
+
         specialWorld.setCallback(new IInteractableCallback() {
             @Override
             public void onInteractionOccur() {

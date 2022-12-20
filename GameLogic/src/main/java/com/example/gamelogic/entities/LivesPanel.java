@@ -46,6 +46,15 @@ public class LivesPanel extends Entity{
     }
 
     @Override
+    public void setAnchorPoint(AnchorPoint anchor)
+    {
+        super.setAnchorPoint(anchor);
+        for (int i = 0; i < numLives; i++) {
+            icons[i].setAnchorPoint(anchor);
+        }
+    }
+
+    @Override
     public void update(double deltaTime) {
 
     }
