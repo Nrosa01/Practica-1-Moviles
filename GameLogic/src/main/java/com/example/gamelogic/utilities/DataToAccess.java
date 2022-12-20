@@ -51,6 +51,13 @@ public class DataToAccess {
 
         }
 
+        if(!dat.containsKey("CurrentColor")){
+            levelData.put("CurrentColor", 0);
+        }
+        else{
+            levelData.put("CurrentColor", Integer.class.cast(dat.get("CurrentColor")));
+        }
+
     }
 
     public static DataToAccess getInstance() {
@@ -106,6 +113,7 @@ public class DataToAccess {
     public Map<String, Boolean> getMapBool(){
         return paletteData;
     }
+
 
 
 }
