@@ -55,6 +55,7 @@ public class MainGameLogic extends AbstractState implements Listener {
     WorldLevelType type;
     int row;
     int lives = -1;
+    int nextLevel = 0;
 
     boolean savedBoard = false;
     int[][] savedBoardState;
@@ -131,7 +132,7 @@ public class MainGameLogic extends AbstractState implements Listener {
                 }
             }
         };
-        int nextLevel = 0;
+        nextLevel = 0;
         if(type == WorldLevelType.Day || type == WorldLevelType.Night){
             if(numLevel+1 < 10)
                 nextLevel = numLevel+1;
@@ -322,9 +323,10 @@ public class MainGameLogic extends AbstractState implements Listener {
                 level = loadLevel();
 
             if (level == null) return false;
-
-
-            final int numDesbloq = numLevel + 2;
+            final int numDesbloq;
+            if(!random && numLevel != nextLevel)
+             numDesbloq = numLevel + 2;
+            else numDesbloq = numLevel;
             int boardWidth = Math.min(LOGIC_WIDTH, LOGIC_HEIGHT) - 20;
 
             board = new NonogramBoard(engine, level, boardWidth, 2, boardFont, new Callback() {
