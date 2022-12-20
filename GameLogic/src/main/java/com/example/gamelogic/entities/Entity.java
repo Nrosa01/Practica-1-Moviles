@@ -79,4 +79,6 @@ public abstract class Entity implements IInputHandler{
     public abstract void OnPointerDown(int x, int y);
     public abstract void OnPointerUp(int x, int y);
     public abstract void OnPointerMove(int x, int y);
+
+
 }
