@@ -39,6 +39,8 @@ import com.example.androidengine.ADataState;
 import com.example.androidengine.AEngine;
 import com.example.engine.IState;
 
+import com.example.gamelogic.levels.WorldLevelType;
+import com.example.gamelogic.states.MainGameLogic;
 import com.example.gamelogic.states.SelectLevelLogic;
 import com.example.gamelogic.states.SelectThemeState;
 import com.example.gamelogic.states.StartMenuLogic;
@@ -46,6 +48,7 @@ import com.example.gamelogic.states.StartMenuLogic;
 
 import com.example.gamelogic.states.StatesNames;
 
+import com.example.gamelogic.states.WorldLevelSelectionPageLogic;
 import com.example.gamelogic.states.WorldSelectionPageLogic;
 import com.example.gamelogic.utilities.DataToAccess;
 
@@ -65,16 +68,20 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private SensorManager sensorManager;
     private Sensor ambienceLight;
 
-    private String sharedPrefFile = "com.example.android.hellosharedprefs";
+    private String sharedPrefFile = "com.example.android.sharedPrefs";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
+
         //cargado de datos de preferencias
         SharedPreferences mPreferences = getSharedPreferences(sharedPrefFile,
                 MODE_PRIVATE);
+
+
         Map<String, Object> savedValuesMap  = (Map<String, Object>) mPreferences.getAll();
 
 
@@ -167,6 +174,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
         SharedPreferences.Editor preferencesEditor = mPreferences.edit();
 
+
+
         DataToAccess data = DataToAccess.getInstance();
         Map<String, Integer> levels = data.getMapInt();
         Map<String, Boolean> palettes = data.getMapBool();
@@ -176,6 +185,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
         for (Map.Entry<String, Boolean> entry: palettes.entrySet())
             preferencesEditor.putBoolean(entry.getKey(), entry.getValue());
+
+        //preferencesEditor.clear();
 
         if(!preferencesEditor.commit())
             Log.i(TAG, "fallo al guardar datos");
@@ -190,11 +201,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         outState.putSerializable("escena", this.androidEngine.getDataState());
 
         //Serializable serializable = this.androidEngine.getSerializableState();
-       /* IState stateActual = this.androidEngine.getCurrentState();
-        final String clase = stateActual.getClass().getSimpleName();
-        if(clase != "MainGameLogic"){
-            StateDataSave data = stateActual
-        }*/
+
         //outState.putSerializable("escena", this.androidEngine.getCurrentSceneState());
 
     }
@@ -216,25 +223,51 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 estado = new SelectLevelLogic(androidEngine);
                 break;
             case WorldLevelSelectionPageLogic:
-                //estado = new WorldLevelSelectionPageLogic(androidEngine);
+                int type = state.getSimpleData("type");
+                estado = new WorldLevelSelectionPageLogic(androidEngine, WorldLevelType.values()[type]);
                 break;
             case WorldSelectionPageLogic:
                 estado = new WorldSelectionPageLogic(androidEngine);
                 break;
             case MainGameLogic:
-                //estado = new MainGameLogic(androidEngine);
+                Integer[][]boardAux = state.get2DArrayData("board");
+
+                int row = boardAux.length;
+                int col = boardAux[0].length;
+
+                int[][] board = new int[row][col];
+
+                for(int x = 0; x <row ; x++)
+                    for (int y = 0; y < col; y++)
+                        board[x][y] = boardAux[x][y];
+
+                    if(state.getSimpleData("random")){
+                        String level = state.getSimpleData("level");
+                        Integer[][]boardSolAux = state.get2DArrayData("boardSolution");
+                        int[][] boardSol = new int[row][col];
+                        for(int x = 0; x <row ; x++)
+                            for (int y = 0; y < col; y++)
+                                boardSol[x][y] = boardSolAux[x][y];
+                        estado = new MainGameLogic(androidEngine,level,board , boardSol);
+
+                    }
+                    else {
+                        WorldLevelType worldType = WorldLevelType.values()[(int)state.getSimpleData("type")];
+                        int numLevel = (int) state.getSimpleData("numLevel");
+                        estado = new MainGameLogic(androidEngine,numLevel,worldType , board);
+                    }
             default:
 
                 break;
 
         }
         try {
+            androidEngine.setMusicPos(state.getSimpleData("musica"));
             androidEngine.setState(estado);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
-
 
     @Override
     public void onSensorChanged(SensorEvent sensorEvent) {

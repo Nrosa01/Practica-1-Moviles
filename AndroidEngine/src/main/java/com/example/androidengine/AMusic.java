@@ -20,6 +20,7 @@ public class AMusic implements ISound {
     @Override
     public void play(){
         //si esta sonando se reinicia
+        
         if (!mediaPlayer.isPlaying())
             mediaPlayer.seekTo(0);
 
@@ -44,6 +45,16 @@ public class AMusic implements ISound {
     @Override
     public float getVolume() {
         return volume;
+    }
+
+    @Override
+    public int getPos() {
+        return mediaPlayer.getCurrentPosition();
+    }
+
+    @Override
+    public void moveMusic(int pos) {
+        mediaPlayer.seekTo(pos);
     }
 
 }

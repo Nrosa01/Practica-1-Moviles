@@ -6,4 +6,8 @@ public interface ISound {
     boolean isPlaying();
     void setVolume(float volume);
     float getVolume();
+
+    int getPos();
+
+    void moveMusic(int pos);
 }

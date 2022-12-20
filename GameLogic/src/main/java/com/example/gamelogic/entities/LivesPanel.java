@@ -46,6 +46,15 @@ public class LivesPanel extends Entity{
     }
 
     @Override
+    public void setAnchorPoint(AnchorPoint anchor)
+    {
+        super.setAnchorPoint(anchor);
+        for (int i = 0; i < numLives; i++) {
+            icons[i].setAnchorPoint(anchor);
+        }
+    }
+
+    @Override
     public void update(double deltaTime) {
 
     }
@@ -61,15 +70,9 @@ public class LivesPanel extends Entity{
         //graphics.drawRectangle(posX, posY, width, height, 4);
     }
 
-    @Override
-    public void setAnchorPoint(AnchorPoint anchor)
-    {
-        super.setAnchorPoint(anchor);
-        for (int i = 0; i < numLives; i++) {
-            icons[i].setAnchorPoint(anchor);
-        }
+    public int getNumLives(){
+        return numLives;
     }
-
     public boolean isAlive()
     {
         return currentLive < icons.length;

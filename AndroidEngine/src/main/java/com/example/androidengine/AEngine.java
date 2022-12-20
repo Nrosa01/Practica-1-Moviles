@@ -61,6 +61,7 @@ public class AEngine implements IEngine, Runnable {
     AAudio audio;
     Map<String, Object> savedValuesMap;
 
+    ISound actualMusic = null;
 
     public AEngine( Activity act, SurfaceView context, AssetManager assetManager, AdView adView, Map<String, Object> map) {
 
@@ -366,6 +367,31 @@ public class AEngine implements IEngine, Runnable {
 
     public ADataState getDataState() {
         this.stateManager.getState().saveState();
+        dataState.addSimpleData("musica", actualMusic.getPos());
         return dataState;
     }
+
+    public <T> void addSimpleData(String key, T variable){
+        dataState.addSimpleData(key, variable);
+    }
+
+    public <T> void addArrayData(String key, T[] array){
+        dataState.addArrayData(key,array);
+
+    }
+
+    public <T> void add2DArrayData(String key, T[][] array){
+        dataState.add2DArrayData(key,array);
+    }
+
+    public void setMusic(ISound music){
+        actualMusic = music;
+    }
+
+
+    public void setMusicPos(int pos) {
+        actualMusic.moveMusic(pos);
+    }
+
+
 }

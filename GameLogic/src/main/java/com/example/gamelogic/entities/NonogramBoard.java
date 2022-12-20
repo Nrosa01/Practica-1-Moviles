@@ -446,4 +446,8 @@ public class NonogramBoard extends Board {
         this.posX -= borderBoardSize / 2;
         this.posY -= borderBoardSize / 2;
     }
+
+    public int[][] getSolvedPuzzle() {
+        return solvedPuzzle;
+    }
 }
