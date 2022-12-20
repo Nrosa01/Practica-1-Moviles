@@ -39,7 +39,7 @@ public class WorldLevelSelectionPageLogic extends AbstractState {
         try {
 
             engine.enableBanner(false);
-            unlockedLevels = DataToAccess.getInstance().getInt(type.toString()) ;
+            unlockedLevels = DataToAccess.getInstance().getInt(type.toString());
 
 
             tittleFont = graphics.newFont(engine.getAssetsPath() + "fonts/Roboto-Regular.ttf", 24, true);
