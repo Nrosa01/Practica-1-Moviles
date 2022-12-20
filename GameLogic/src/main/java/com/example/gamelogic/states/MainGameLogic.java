@@ -330,7 +330,7 @@ public class MainGameLogic extends AbstractState implements Listener {
                         }
                     }
 
-                    if (numLevel > 0) {
+                    if (!random) {
                         final int n ;
                         if(type == WorldLevelType.Day || type == WorldLevelType.Night)
                             n = numDesbloq-5;
@@ -435,7 +435,7 @@ public class MainGameLogic extends AbstractState implements Listener {
             graphics.drawTextCentered("¡Enhorabuena!", LOGIC_WIDTH / 2, 50, congratsFont);
             winReturnButton.render();
 
-            if (numLevel > 0)
+            if (!random)
                 nextLevelButton.render();
             shareButton.render();
         }

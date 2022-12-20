@@ -5,6 +5,8 @@ import static android.content.ContentValues.TAG;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import androidx.security.crypto.EncryptedSharedPreferences;
+import androidx.security.crypto.MasterKeys;
 import androidx.work.Constraints;
 
 import androidx.work.ExistingPeriodicWorkPolicy;
@@ -55,6 +57,8 @@ import com.example.gamelogic.utilities.DataToAccess;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 
+import java.io.IOException;
+import java.security.GeneralSecurityException;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -70,18 +74,42 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     private String sharedPrefFile = "com.example.android.sharedPrefs";
 
+    private String key;
+
+    //devuelve datos encriptados
+    protected SharedPreferences getSharedPreferences (){
+        try {
+            key = MasterKeys.getOrCreate(MasterKeys.AES256_GCM_SPEC);
+        } catch (GeneralSecurityException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        };
+        SharedPreferences sharedPreferences = null;
+        try {
+            sharedPreferences = EncryptedSharedPreferences.create(
+                    sharedPrefFile,
+                    key,
+                    this,
+                    EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
+                    EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
+            );
+        } catch (GeneralSecurityException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return sharedPreferences;
+    }
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
 
-
-        //cargado de datos de preferencias
-        SharedPreferences mPreferences = getSharedPreferences(sharedPrefFile,
-                MODE_PRIVATE);
-
-
+        SharedPreferences mPreferences = getSharedPreferences();
 
         Map<String, Object> savedValuesMap  = (Map<String, Object>) mPreferences.getAll();
 
@@ -120,7 +148,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         //----------------------------------------------------------------------------------
         SurfaceView view = (SurfaceView) findViewById(R.id.surfaceView);
 
-        //this.androidEngine = new AEngine(this,view, assetManager, mAdView,savedValuesMap);
+
 
         this.androidEngine = new AEngine(this,view, assetManager, mAdView,savedValuesMap);
 
@@ -169,9 +197,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
         SharedPreferences mPreferences;
 
-        // MODE_WORLD_WRITEABLE and MODE_WORLD_READABLE están deprecados desde API 17
-        mPreferences = getSharedPreferences(sharedPrefFile, MODE_PRIVATE);
-
+        mPreferences = getSharedPreferences();
 
         SharedPreferences.Editor preferencesEditor = mPreferences.edit();
 
@@ -200,10 +226,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putSerializable("escena", this.androidEngine.getDataState());
-
-        //Serializable serializable = this.androidEngine.getSerializableState();
-
-        //outState.putSerializable("escena", this.androidEngine.getCurrentSceneState());
 
     }
 
