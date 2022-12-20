@@ -46,7 +46,7 @@ public abstract class Board extends Entity {
 
     @Override
     public void render() {
-        graphics.setColor(boardBackgroundColor.r, boardBackgroundColor.r, boardBackgroundColor.b);
+        //graphics.setColor(boardBackgroundColor.r, boardBackgroundColor.r, boardBackgroundColor.b);
         graphics.fillRectangle(posX, posY, width, height);
         graphics.setColor(123, 123, 123);
 
