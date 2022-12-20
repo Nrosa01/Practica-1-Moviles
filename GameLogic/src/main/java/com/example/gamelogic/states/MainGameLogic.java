@@ -246,6 +246,7 @@ public class MainGameLogic extends AbstractState implements Listener {
             shareButton.setAnchorPoint(AnchorPoint.Middle);
             shareButton.setImage(share);
             shareButton.setBorderSize(0);
+            shareButton.setBackgroundColor(0,0,0,0);
             shareButton.setCallback(new IInteractableCallback() {
                 @Override
                 public void onInteractionOccur() {
