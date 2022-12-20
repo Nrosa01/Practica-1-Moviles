@@ -60,11 +60,11 @@ public class MainGameLogic extends AbstractState implements Listener {
     int lives = -1;
 
     boolean savedBoard = false;
-    int[][]savedBoardState;
-    int[][]savedBoardSol;
+    int[][] savedBoardState;
+    int[][] savedBoardSol;
 
 
-    private void InitRandomGame(final IEngine engine, String level){
+    private void InitRandomGame(final IEngine engine, String level) {
 
         this.level = level;
         this.random = true;
@@ -89,7 +89,7 @@ public class MainGameLogic extends AbstractState implements Listener {
             public void onInteractionOccur() {
                 try {
 
-                    MainGameLogic logic = new MainGameLogic(engine,level_);
+                    MainGameLogic logic = new MainGameLogic(engine, level_);
 
                     engine.setState(logic);
                 } catch (Exception e) {
@@ -99,8 +99,7 @@ public class MainGameLogic extends AbstractState implements Listener {
         };
     }
 
-    private void InitHistoryGame(final IEngine engine, int numLevel, final WorldLevelType type){
-
+    private void InitHistoryGame(final IEngine engine, int numLevel, final WorldLevelType type) {
         this.row = numLevel / 5;
         this.numLevel = numLevel;
         this.type = type;
@@ -135,11 +134,8 @@ public class MainGameLogic extends AbstractState implements Listener {
                 }
             }
         };
-        final int nextLevel;
-        //if(type != WorldLevelType.Day && type != WorldLevelType.Night)
-            nextLevel = numLevel+1;
-        //else
-        //    nextLevel = (numLevel/5)+1;
+        final int nextLevel = numLevel + 1;
+
         nextLevelCallback = new IInteractableCallback() {
             @Override
             public void onInteractionOccur() {
@@ -158,7 +154,7 @@ public class MainGameLogic extends AbstractState implements Listener {
 
     public MainGameLogic(final IEngine engine, String level) {
         super(engine);
-        InitRandomGame(engine,level);
+        InitRandomGame(engine, level);
 
     }
 
@@ -198,16 +194,13 @@ public class MainGameLogic extends AbstractState implements Listener {
     public MainGameLogic(final IEngine engine, int numLevel, final WorldLevelType type) {
 
 
-
-
         super(engine);
-        InitHistoryGame(engine,numLevel,type);
+        InitHistoryGame(engine, numLevel, type);
 
     }
 
-    public void setReturnCallback(IInteractableCallback returnCallback)
-    {
-        if(returnButton != null)
+    public void setReturnCallback(IInteractableCallback returnCallback) {
+        if (returnButton != null)
             returnButton.setCallback(returnCallback);
 
         this.returnCallback = returnCallback;
@@ -229,8 +222,6 @@ public class MainGameLogic extends AbstractState implements Listener {
         try {
 
 
-
-
             EventManager.register(this);
 
             font = graphics.newFont(engine.getAssetsPath() + "fonts/Roboto-Regular.ttf", 24, false);
@@ -243,13 +234,23 @@ public class MainGameLogic extends AbstractState implements Listener {
             fullLive = graphics.newImage(engine.getAssetsPath() + "images/heart-full.png");
 
 
-            shareButton = new Button(0, LOGIC_HEIGHT/2 + 10, 40, 40, engine);
+            shareButton = new Button(0, LOGIC_HEIGHT / 2 + 10, 40, 40, engine);
             shareButton.setAnchorPoint(AnchorPoint.Middle);
             shareButton.setImage(share);
             shareButton.setBorderSize(0);
+            shareButton.setCallback(new IInteractableCallback() {
+                @Override
+                public void onInteractionOccur() {
+                    if (numLevel >= 0) {
+                        int level = (numLevel + 1);
+                        engine.shareText("Me he pasado el nivel " + level + " de la categoría " + type.toString() + " en Nonogram. ¡Descargatelo gratis!");
+                    } else
+                        engine.shareText("Me he pasado el nivel " + level + " en Nonogram. ¡Descargatelo gratis!");
 
-            if(!graphics.isPortrait())
-            {
+                }
+            });
+
+            if (!graphics.isPortrait()) {
                 shareButton.setAnchorPoint(AnchorPoint.DownLeft);
                 shareButton.setPosX(40);
                 shareButton.setPosY(-40);
@@ -303,16 +304,15 @@ public class MainGameLogic extends AbstractState implements Listener {
 
 
             int[][] level;
-            if(random){
-                if(savedBoard)
+            if (random) {
+                if (savedBoard)
                     level = savedBoardSol;
                 else
                     level = loadLevel();
-            }
-            else
+            } else
                 level = loadLevel();
 
-            if(level == null)return false;
+            if (level == null) return false;
 
 
             final int numDesbloq = numLevel + 2;
@@ -323,13 +323,15 @@ public class MainGameLogic extends AbstractState implements Listener {
                 public void callback() {
                     if (numLevel + 1 > 1) {
                         DataToAccess.getInstance().setBool(type.toString() + "Palette", true);
-                        int theme = type.ordinal()+1;
+                        int theme = type.ordinal() + 1;
                         unlockedThemes[theme] = true;
                     }
-                    DataToAccess.getInstance().setMaxLevel(type.toString(), numDesbloq);
+
+                    if (numLevel > 0)
+                        DataToAccess.getInstance().setMaxLevel(type.toString(), numDesbloq);
                 }
             });
-            if(savedBoard)
+            if (savedBoard)
                 board.SetBoard(savedBoardState);
             board.setColors(backgroundColor, defaultColor, freeColor, figureColor);
             board.setPosX(LOGIC_WIDTH / 2);
@@ -422,7 +424,9 @@ public class MainGameLogic extends AbstractState implements Listener {
         } else {
             graphics.drawTextCentered("¡Enhorabuena!", LOGIC_WIDTH / 2, 50, congratsFont);
             winReturnButton.render();
-            nextLevelButton.render();
+
+            if (numLevel > 0)
+                nextLevelButton.render();
             shareButton.render();
         }
     }
@@ -439,7 +443,7 @@ public class MainGameLogic extends AbstractState implements Listener {
                 watchVid.handleInput(proccesedX, proccesedY, inputEvent.type);
                 returnButton.handleInput(proccesedX, proccesedY, inputEvent.type);
             } else {
-                if(winReturnButton != null)
+                if (winReturnButton != null)
                     winReturnButton.handleInput(proccesedX, proccesedY, inputEvent.type);
                 nextLevelButton.handleInput(proccesedX, proccesedY, inputEvent.type);
                 shareButton.handleInput(proccesedX, proccesedY, inputEvent.type);
@@ -454,8 +458,9 @@ public class MainGameLogic extends AbstractState implements Listener {
         String filename = typeToLower + cells + "x" + cells + "-" + ((index % 5) + 1) + ".txt";
         return "levels/" + typeToLower + "/" + filename;
     }
+
     @Override
-    public void saveState(){
+    public void saveState() {
         super.saveState();
 
 
@@ -467,9 +472,9 @@ public class MainGameLogic extends AbstractState implements Listener {
         int col = solution[0].length;
 
 
-        Integer[][]bI = new Integer[row][col];
-        Integer[][]sP = new Integer[row][col];
-        for(int x = 0; x <row ; x++)
+        Integer[][] bI = new Integer[row][col];
+        Integer[][] sP = new Integer[row][col];
+        for (int x = 0; x < row; x++)
             for (int y = 0; y < col; y++) {
                 bI[x][y] = boardState[x][y];
                 sP[x][y] = solution[x][y];
@@ -477,18 +482,16 @@ public class MainGameLogic extends AbstractState implements Listener {
 
         engine.addSimpleData("random", random);
         engine.add2DArrayData("board", bI);
-        engine.addSimpleData("lives",livesPanel.getNumLives());
-        if(random) {
+        engine.addSimpleData("lives", livesPanel.getNumLives());
+        if (random) {
             engine.add2DArrayData("boardSolution", sP);
             engine.addSimpleData("level", level);
-        }
-            else{
+        } else {
             engine.addSimpleData("numLevel", numLevel);
             engine.addSimpleData("type", type.ordinal());
         }
 
     }
-
 
 
 }
