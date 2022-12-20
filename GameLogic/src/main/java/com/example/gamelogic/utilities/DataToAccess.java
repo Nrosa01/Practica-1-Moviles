@@ -28,6 +28,7 @@ public class DataToAccess {
             keysOfLevelData[i] = WorldLevelType.values()[i].toString();
             keysOfPaletteData[i] = WorldLevelType.values()[i].toString() + "Palette";
         }
+        //keysOfPaletteData[0] = "ForestPalete";
 
 
         levelData = new HashMap<>();
@@ -81,8 +82,8 @@ public class DataToAccess {
     }
 
     public void setBool(String key, boolean value){
-        if(levelData.containsKey(key))
-            levelData.put(key,Integer.class.cast(value));
+        if(paletteData.containsKey(key))
+            paletteData.put(key,value); //Integer.class.cast(value)
     }
 
     public int getInt(String key){

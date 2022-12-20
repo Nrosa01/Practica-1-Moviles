@@ -6,6 +6,7 @@ import com.example.engine.IFont;
 import com.example.engine.ISound;
 import com.example.gamelogic.entities.Button;
 import com.example.gamelogic.entities.IInteractableCallback;
+import com.example.gamelogic.levels.WorldLevelType;
 import com.example.gamelogic.utilities.DataToAccess;
 
 public class StartMenuLogic extends AbstractState {
@@ -25,6 +26,12 @@ public class StartMenuLogic extends AbstractState {
     public boolean init() {
         try {
             DataToAccess.Init(engine);
+            //Inicializar array de colores desbloqueados
+            DataToAccess data = DataToAccess.getInstance();
+            String[] keys = {"ForestPalette", "SeaPalette", "CityPalette", "AnimalsPalette", "DayPalette"}; //, "NightPalette"};
+            for(int i = 1; i < keys.length; i++){ //No hay boton para el nightpalette
+                    unlockedThemes[i] = data.getBool(keys[i-1]);
+            }
             engine.enableBanner(true);
             int separation = 35;
             mainFont = graphics.newFont(engine.getAssetsPath() + "fonts/Roboto-Regular.ttf", 36, true);
