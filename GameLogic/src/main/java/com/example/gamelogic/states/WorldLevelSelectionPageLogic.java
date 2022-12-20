@@ -103,7 +103,7 @@ public class WorldLevelSelectionPageLogic extends AbstractState {
                         @Override
                         public void onInteractionOccur() {
                             try {
-                                MainGameLogic logic = new MainGameLogic(engine,numLevel,type,false);
+                                MainGameLogic logic = new MainGameLogic(engine,numLevel,type);
 
                                 engine.setState(logic);
                             } catch (Exception e) {

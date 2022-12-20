@@ -233,13 +233,21 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                     for (int y = 0; y < col; y++)
                         board[x][y] = boardAux[x][y];
 
-                    WorldLevelType w = WorldLevelType.values()[(int)state.getSimpleData("type")];
-                
-                estado = new MainGameLogic(androidEngine,
-                        (int)state.getSimpleData("numLevel"),
-                        w ,
-                        (boolean)state.getSimpleData("random"),
-                        board);
+                    if(state.getSimpleData("random")){
+                        String level = state.getSimpleData("level");
+                        Integer[][]boardSolAux = state.get2DArrayData("boardSolution");
+                        int[][] boardSol = new int[row][col];
+                        for(int x = 0; x <row ; x++)
+                            for (int y = 0; y < col; y++)
+                                boardSol[x][y] = boardSolAux[x][y];
+                        estado = new MainGameLogic(androidEngine,level,board , boardSol);
+
+                    }
+                    else {
+                        WorldLevelType worldType = WorldLevelType.values()[(int)state.getSimpleData("type")];
+                        int numLevel = (int) state.getSimpleData("numLevel");
+                        estado = new MainGameLogic(androidEngine,numLevel,worldType , board);
+                    }
             default:
 
                 break;

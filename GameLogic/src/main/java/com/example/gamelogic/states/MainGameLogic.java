@@ -48,7 +48,7 @@ public class MainGameLogic extends AbstractState implements Listener {
     IImage emptyLive;
     LivesPanel livesPanel;
     boolean gameWin = false;
-    boolean random = true;
+    boolean random = false;
     IInteractableCallback returnCallback;
     IInteractableCallback watchVidCallback;
     IInteractableCallback nextLevelCallback;
@@ -59,12 +59,14 @@ public class MainGameLogic extends AbstractState implements Listener {
 
     boolean savedBoard = false;
     int[][]savedBoardState;
+    int[][]savedBoardSol;
 
 
-    public MainGameLogic(final IEngine engine, String level) {
-        super(engine);
+    private void InitRandomGame(final IEngine engine, String level){
+
         this.level = level;
-        //final IEngine eng = engine;
+        this.random = true;
+
         returnCallback = new IInteractableCallback() {
             @Override
             public void onInteractionOccur() {
@@ -79,102 +81,119 @@ public class MainGameLogic extends AbstractState implements Listener {
                 }
             }
         };
+        final String level_ = level;
+        nextLevelCallback = new IInteractableCallback() {
+            @Override
+            public void onInteractionOccur() {
+                try {
+
+                    MainGameLogic logic = new MainGameLogic(engine,level_);
+
+                    engine.setState(logic);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+    }
+
+    private void InitHistoryGame(final IEngine engine, int numLevel, final WorldLevelType type){
+        this.row = numLevel / 5;
+        this.numLevel = numLevel;
+        this.type = type;
+        this.level = getLevelName(numLevel, row);
+
+
+        final IEngine engineAux = this.engine;
+        this.watchVidCallback = new IInteractableCallback() {
+            @Override
+            public void onInteractionOccur() {
+                try {
+                    livesPanel.restoreLive();
+                    engineAux.showVid();
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+
+        returnCallback = new IInteractableCallback() {
+            @Override
+            public void onInteractionOccur() {
+                try {
+                    WorldLevelSelectionPageLogic selectLogic = new WorldLevelSelectionPageLogic(engine, type);
+
+                    engine.setState(selectLogic);
+
+                    //engine.setState(new WorldLevelSelectionPageLogic(engine,type));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+        final int nextLevel = numLevel+1;
+
+        nextLevelCallback = new IInteractableCallback() {
+            @Override
+            public void onInteractionOccur() {
+                try {
+
+                    MainGameLogic logic = new MainGameLogic(engine, nextLevel, type);
+
+                    engine.setState(logic);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+
+    }
+
+    public MainGameLogic(final IEngine engine, String level) {
+        super(engine);
+        InitRandomGame(engine,level);
+
+    }
+
+    public MainGameLogic(final IEngine engine ,String level,int[][] boardState, int[][] solvedLevel) {
+        super(engine);
+
+        this.savedBoard = true;
+
+        savedBoardSol = solvedLevel;
+        savedBoardState = boardState;
+
+
+
+        this.InitRandomGame(engine,level);
+
     }
 
 
 
-    public MainGameLogic(final IEngine engine, int numLevel,final WorldLevelType type, boolean random, int[][] board) {
+
+    public MainGameLogic(final IEngine engine, int numLevel,final WorldLevelType type, int[][] boardState) {
 
         super(engine);
 
         this.savedBoard = true;
-        this.savedBoardState = board;
+        this.savedBoardState = boardState;
 
-        this.row = numLevel / 5;
-        this.numLevel = numLevel;
-        this.type = type;
-        this.level = getLevelName(numLevel, row);
+        InitHistoryGame(engine,numLevel,type);
 
 
-        this.random = random;
-
-        final IEngine engineAux = this.engine;
-        this.watchVidCallback = new IInteractableCallback() {
-            @Override
-            public void onInteractionOccur() {
-                try {
-                    livesPanel.restoreLive();
-                    engineAux.showVid();
-
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        };
-
-        returnCallback = new IInteractableCallback() {
-            @Override
-            public void onInteractionOccur() {
-                try {
-                    WorldLevelSelectionPageLogic selectLogic = new WorldLevelSelectionPageLogic(engine, type);
-
-                    engine.setState(selectLogic);
-
-                    //engine.setState(new WorldLevelSelectionPageLogic(engine,type));
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        };
 
     }
 
 
-    public MainGameLogic(final IEngine engine, int numLevel, final WorldLevelType type, boolean random) {
+    public MainGameLogic(final IEngine engine, int numLevel, final WorldLevelType type) {
 
 
 
 
         super(engine);
-        this.row = numLevel / 5;
-        this.numLevel = numLevel;
-        this.type = type;
-        this.level = getLevelName(numLevel, row);
-
-
-        this.random = random;
-
-
-        final IEngine engineAux = this.engine;
-
-
-        returnCallback = new IInteractableCallback() {
-            @Override
-            public void onInteractionOccur() {
-                try {
-                    WorldLevelSelectionPageLogic selectLogic = new WorldLevelSelectionPageLogic(engine, type);
-
-                    engine.setState(selectLogic);
-
-                    //engine.setState(new WorldLevelSelectionPageLogic(engine,type));
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        };
-
-        this.watchVidCallback = new IInteractableCallback() {
-            @Override
-            public void onInteractionOccur() {
-                try {
-                    livesPanel.restoreLive();
-                    engineAux.showVid();
-
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        };
+        InitHistoryGame(engine,numLevel,type);
 
     }
 
@@ -194,19 +213,7 @@ public class MainGameLogic extends AbstractState implements Listener {
         try {
 
 
-            nextLevelCallback = new IInteractableCallback() {
-                @Override
-                public void onInteractionOccur() {
-                    try {
 
-                        MainGameLogic logic = new MainGameLogic(engine, ++numLevel, type, false);
-
-                        engine.setState(logic);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-            };
 
             EventManager.register(this);
 
@@ -264,9 +271,18 @@ public class MainGameLogic extends AbstractState implements Listener {
             nextLevelButton.setCallback(nextLevelCallback);
 
 
-            int[][] level = loadLevel();
-            if (level == null)
-                return false;
+            int[][] level;
+            if(random){
+                if(savedBoard)
+                    level = savedBoardSol;
+                else
+                    level = loadLevel();
+            }
+            else
+                level = loadLevel();
+
+            if(level == null)return false;
+
 
             final int numDesbloq = numLevel + 2;
             int boardWidth = Math.min(LOGIC_WIDTH, LOGIC_HEIGHT) - 20;
@@ -352,6 +368,7 @@ public class MainGameLogic extends AbstractState implements Listener {
             }
 
             winReturnButton.update(deltaTime);
+
             nextLevelButton.update(deltaTime);
         }
         watchVid.update(deltaTime);
@@ -390,7 +407,8 @@ public class MainGameLogic extends AbstractState implements Listener {
                 watchVid.handleInput(proccesedX, proccesedY, inputEvent.type);
                 returnButton.handleInput(proccesedX, proccesedY, inputEvent.type);
             } else {
-                winReturnButton.handleInput(proccesedX, proccesedY, inputEvent.type);
+                if(winReturnButton != null)
+                    winReturnButton.handleInput(proccesedX, proccesedY, inputEvent.type);
                 nextLevelButton.handleInput(proccesedX, proccesedY, inputEvent.type);
             }
 
@@ -406,56 +424,38 @@ public class MainGameLogic extends AbstractState implements Listener {
     @Override
     public void saveState(){
         super.saveState();
-       /* engine.addSimpleData("lives",livesPanel.getNumLives());
-        engine.addSimpleData("numLevel", numLevel);
-        engine.addSimpleData("type", type);
-        int[][]arr = board.getBoard();
-        Integer[] oneDArray = new Integer[arr.length * arr.length];
-        for(int i = 0; i < arr.length; i ++)
-            for(int s = 0; s < arr.length; s ++)
-                oneDArray[(i * arr.length) + s] = arr[i][s];
 
-        Integer[] dim = {arr.length,arr.length};*/
 
-        int[][] b = board.getBoard();
+        int[][] boardState = board.getBoard();
+        int[][] solution = board.getSolvedPuzzle();
 
-        int row = b.length;
-        int col = b[0].length;
+
+        int row = boardState.length;
+        int col = solution[0].length;
+
 
         Integer[][]bI = new Integer[row][col];
-
-
-
+        Integer[][]sP = new Integer[row][col];
         for(int x = 0; x <row ; x++)
-            for (int y = 0; y < col; y++)
-                bI[x][y] = b[x][y];
+            for (int y = 0; y < col; y++) {
+                bI[x][y] = boardState[x][y];
+                sP[x][y] = solution[x][y];
+            }
 
-
+        engine.addSimpleData("random", random);
         engine.add2DArrayData("board", bI);
         engine.addSimpleData("lives",livesPanel.getNumLives());
-        engine.addSimpleData("numLevel", numLevel);
-        engine.addSimpleData("type", type.ordinal());
-        engine.addSimpleData("random", random);
+        if(random) {
+            engine.add2DArrayData("boardSolution", sP);
+            engine.addSimpleData("level", level);
+        }
+            else{
+            engine.addSimpleData("numLevel", numLevel);
+            engine.addSimpleData("type", type.ordinal());
+        }
+
     }
 
-    /*private String getNextLevel(){
-         String nextLevel;
-         int nextLevelNum = ++numLevel;
-
-         int i = nextLevelNum / 5;
-         int j  = nextLevelNum % 5;
-
-        nextLevel = getLevelName( (i * 5) + j, i);
-
-       *//*  if(j+1 < 5)
-             nextLevel = getLevelName( (i * 5) + j+1, i);
-         else if(i +1<4)
-             nextLevel = getLevelName( ((i+1) *5) ,i);
-         else
-             nextLevel = getLevelName( (i * 5) + j, i);*//*
-
-        return  nextLevel;
-    }*/
 
 
 }
