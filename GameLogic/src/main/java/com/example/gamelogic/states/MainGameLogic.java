@@ -27,6 +27,8 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.List;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 public class MainGameLogic extends AbstractState implements Listener {
 
@@ -64,8 +66,6 @@ public class MainGameLogic extends AbstractState implements Listener {
     private void InitRandomGame(final IEngine engine, String level){
 
         this.level = level;
-        this.random = random;
-        this.numLevel = -1;
         this.random = true;
 
         returnCallback = new IInteractableCallback() {
@@ -198,8 +198,9 @@ public class MainGameLogic extends AbstractState implements Listener {
 
     }
 
-    public void setReturnCallback(IInteractableCallback returnCallback) {
-        if (returnButton != null)
+    public void setReturnCallback(IInteractableCallback returnCallback)
+    {
+        if(returnButton != null)
             returnButton.setCallback(returnCallback);
 
         this.returnCallback = returnCallback;
