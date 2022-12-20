@@ -294,7 +294,7 @@ public class NonogramBoard extends Board {
                 if (!isWin)
                     graphics.setColor(defaultColor.r, defaultColor.g, defaultColor.b); //Gray
                 else
-                    graphics.setColor(255, 255, 255);
+                    graphics.setColor(255, 255, 255, 0);
                 break;
             // FREE SQUARE WAS PRESSED
             case 1:
