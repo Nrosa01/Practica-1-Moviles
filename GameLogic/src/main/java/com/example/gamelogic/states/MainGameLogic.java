@@ -322,8 +322,9 @@ public class MainGameLogic extends AbstractState implements Listener {
                 @Override
                 public void callback() {
                     if (numLevel + 1 > 1) {
-                        DataToAccess.getInstance().setBool(type.toString() + "Palette", true);
+                        //no hay paleta para day y night
                         if(type.ordinal() < 5) {
+                            DataToAccess.getInstance().setBool(type.toString() + "Palette", true);
                             int theme = type.ordinal() + 1;
                             unlockedThemes[theme] = true;
                         }
@@ -333,7 +334,8 @@ public class MainGameLogic extends AbstractState implements Listener {
                         final int n ;
                         if(type == WorldLevelType.Day || type == WorldLevelType.Night)
                             n = numDesbloq-5;
-                        else n = numDesbloq;
+                        else
+                            n = numDesbloq;
                         DataToAccess.getInstance().setMaxLevel(type.toString(), n);
 
                     }

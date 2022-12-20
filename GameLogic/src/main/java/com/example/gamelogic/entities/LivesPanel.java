@@ -53,6 +53,15 @@ public class LivesPanel extends Entity{
     }
 
     @Override
+    public void setAnchorPoint(AnchorPoint anchor)
+    {
+        super.setAnchorPoint(anchor);
+        for (int i = 0; i < numLives; i++) {
+            icons[i].setAnchorPoint(anchor);
+        }
+    }
+
+    @Override
     public void render() {
         graphics.setAnchorPoint(this.anchorPoint);
         for (int i = 0; i < numLives; i++) {
@@ -68,10 +77,9 @@ public class LivesPanel extends Entity{
     }
     public void setNumLives(int l){
         currentLive = l;
-        for(int x = l; x < numLives; x++){
-            icons[currentLive].setImage(emptyLive);
+        for(int x = 0; x <l ; x++){
+            icons[x].setImage(emptyLive);
         }
-
     }
     public boolean isAlive()
     {
