@@ -57,6 +57,7 @@ public class MainGameLogic extends AbstractState implements Listener {
     int numLevel;
     WorldLevelType type;
     int row;
+    int lives = -1;
 
     boolean savedBoard = false;
     int[][]savedBoardState;
@@ -99,6 +100,7 @@ public class MainGameLogic extends AbstractState implements Listener {
     }
 
     private void InitHistoryGame(final IEngine engine, int numLevel, final WorldLevelType type){
+
         this.row = numLevel / 5;
         this.numLevel = numLevel;
         this.type = type;
@@ -133,8 +135,11 @@ public class MainGameLogic extends AbstractState implements Listener {
                 }
             }
         };
-        final int nextLevel = numLevel+1;
-
+        final int nextLevel;
+        //if(type != WorldLevelType.Day && type != WorldLevelType.Night)
+            nextLevel = numLevel+1;
+        //else
+        //    nextLevel = (numLevel/5)+1;
         nextLevelCallback = new IInteractableCallback() {
             @Override
             public void onInteractionOccur() {
@@ -157,7 +162,7 @@ public class MainGameLogic extends AbstractState implements Listener {
 
     }
 
-    public MainGameLogic(final IEngine engine ,String level,int[][] boardState, int[][] solvedLevel) {
+    public MainGameLogic(final IEngine engine ,String level,int[][] boardState, int[][] solvedLevel, int lives) {
         super(engine);
 
         this.savedBoard = true;
@@ -165,7 +170,7 @@ public class MainGameLogic extends AbstractState implements Listener {
         savedBoardSol = solvedLevel;
         savedBoardState = boardState;
 
-
+        this.lives = lives;
 
         this.InitRandomGame(engine,level);
 
@@ -174,12 +179,14 @@ public class MainGameLogic extends AbstractState implements Listener {
 
 
 
-    public MainGameLogic(final IEngine engine, int numLevel,final WorldLevelType type, int[][] boardState) {
+    public MainGameLogic(final IEngine engine, int numLevel,final WorldLevelType type, int[][] boardState,int lives) {
 
         super(engine);
 
         this.savedBoard = true;
         this.savedBoardState = boardState;
+
+        this.lives = lives;
 
         InitHistoryGame(engine,numLevel,type);
 
@@ -257,7 +264,8 @@ public class MainGameLogic extends AbstractState implements Listener {
 
             livesPanel = new LivesPanel(engine, livesPanelXPos, livesPanelYPos, livesPanelWidth, livesPanelHeight, numLifes, fullLive, emptyLive);
             livesPanel.setAnchorPoint(AnchorPoint.DownRight);
-
+            if(lives != -1)
+                livesPanel.setNumLives(lives);
             //addEntity(livesPanel);
 
             returnButton = new Button(25, 25, 30, 30, engine);

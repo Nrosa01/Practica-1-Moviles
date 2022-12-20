@@ -82,6 +82,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 MODE_PRIVATE);
 
 
+
         Map<String, Object> savedValuesMap  = (Map<String, Object>) mPreferences.getAll();
 
 
@@ -237,6 +238,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
                 int[][] board = new int[row][col];
 
+                int lives = state.getSimpleData("lives");
+
                 for(int x = 0; x <row ; x++)
                     for (int y = 0; y < col; y++)
                         board[x][y] = boardAux[x][y];
@@ -248,13 +251,13 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                         for(int x = 0; x <row ; x++)
                             for (int y = 0; y < col; y++)
                                 boardSol[x][y] = boardSolAux[x][y];
-                        estado = new MainGameLogic(androidEngine,level,board , boardSol);
+                        estado = new MainGameLogic(androidEngine,level,board , boardSol,lives);
 
                     }
                     else {
                         WorldLevelType worldType = WorldLevelType.values()[(int)state.getSimpleData("type")];
                         int numLevel = (int) state.getSimpleData("numLevel");
-                        estado = new MainGameLogic(androidEngine,numLevel,worldType , board);
+                        estado = new MainGameLogic(androidEngine,numLevel,worldType , board,lives);
                     }
             default:
 
