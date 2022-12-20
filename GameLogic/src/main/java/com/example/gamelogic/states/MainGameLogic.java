@@ -323,12 +323,20 @@ public class MainGameLogic extends AbstractState implements Listener {
                 public void callback() {
                     if (numLevel + 1 > 1) {
                         DataToAccess.getInstance().setBool(type.toString() + "Palette", true);
-                        int theme = type.ordinal() + 1;
-                        unlockedThemes[theme] = true;
+                        if(type.ordinal() < 5) {
+                            int theme = type.ordinal() + 1;
+                            unlockedThemes[theme] = true;
+                        }
                     }
 
-                    if (numLevel > 0)
-                        DataToAccess.getInstance().setMaxLevel(type.toString(), numDesbloq);
+                    if (numLevel > 0) {
+                        final int n ;
+                        if(type == WorldLevelType.Day || type == WorldLevelType.Night)
+                            n = numDesbloq-5;
+                        else n = numDesbloq;
+                        DataToAccess.getInstance().setMaxLevel(type.toString(), n);
+
+                    }
                 }
             });
             if (savedBoard)
