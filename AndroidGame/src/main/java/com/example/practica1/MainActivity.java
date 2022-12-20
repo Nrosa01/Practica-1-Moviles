@@ -65,16 +65,20 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private SensorManager sensorManager;
     private Sensor ambienceLight;
 
-    private String sharedPrefFile = "com.example.android.hellosharedprefs";
+    private String sharedPrefFile = "com.example.android.sharedPrefs";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
+
         //cargado de datos de preferencias
         SharedPreferences mPreferences = getSharedPreferences(sharedPrefFile,
                 MODE_PRIVATE);
+
+
         Map<String, Object> savedValuesMap  = (Map<String, Object>) mPreferences.getAll();
 
 
@@ -165,6 +169,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
         SharedPreferences.Editor preferencesEditor = mPreferences.edit();
 
+
+
         DataToAccess data = DataToAccess.getInstance();
         Map<String, Integer> levels = data.getMapInt();
         Map<String, Boolean> palettes = data.getMapBool();
@@ -174,6 +180,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
         for (Map.Entry<String, Boolean> entry: palettes.entrySet())
             preferencesEditor.putBoolean(entry.getKey(), entry.getValue());
+
+        //preferencesEditor.clear();
 
         if(!preferencesEditor.commit())
             Log.i(TAG, "fallo al guardar datos");
