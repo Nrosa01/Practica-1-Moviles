@@ -5,6 +5,7 @@ import static android.content.ContentValues.TAG;
 import com.example.engine.*;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.content.res.AssetManager;
 import android.content.res.Resources;
 import android.graphics.Canvas;
@@ -331,6 +332,17 @@ public class AEngine implements IEngine, Runnable {
     @Override
     public void setLumens(int lumens) {
         this.lumens = lumens;
+    }
+
+    @Override
+    public void shareText(String text) {
+        Intent sendIntent = new Intent();
+        sendIntent.setAction(Intent.ACTION_SEND);
+        sendIntent.putExtra(Intent.EXTRA_TEXT, text);
+        sendIntent.setType("text/plain");
+
+        Intent shareIntent = Intent.createChooser(sendIntent, null);
+        this.activity.startActivity(shareIntent);
     }
 
     /*public IState getCurrentState(){

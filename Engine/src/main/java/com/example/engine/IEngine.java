@@ -15,6 +15,7 @@ public interface IEngine {
     // Devuelve la luz captada por el sensor en lumenes.
     int getLumens();
     void setLumens(int lumens);
+    void shareText(String text);
 
 
     void render();

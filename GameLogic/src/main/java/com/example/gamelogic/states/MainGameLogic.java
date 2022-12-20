@@ -67,6 +67,7 @@ public class MainGameLogic extends AbstractState implements Listener {
         super(engine);
         this.level = level;
         this.random = random;
+        this.numLevel = -1;
     }
 
     /*public MainGameLogic(final IEngine engine, String level, boolean random, IInteractableCallback returnCallabck) {
@@ -118,9 +119,8 @@ public class MainGameLogic extends AbstractState implements Listener {
 
     }
 
-    public void setReturnCallback(IInteractableCallback returnCallback)
-    {
-        if(returnButton != null)
+    public void setReturnCallback(IInteractableCallback returnCallback) {
+        if (returnButton != null)
             returnButton.setCallback(returnCallback);
 
         this.returnCallback = returnCallback;
@@ -190,13 +190,24 @@ public class MainGameLogic extends AbstractState implements Listener {
             fullLive = graphics.newImage(engine.getAssetsPath() + "images/heart-full.png");
 
 
-            shareButton = new Button(0, LOGIC_HEIGHT/2 + 10, 40, 40, engine);
+            shareButton = new Button(0, LOGIC_HEIGHT / 2 + 10, 40, 40, engine);
             shareButton.setAnchorPoint(AnchorPoint.Middle);
             shareButton.setImage(share);
             shareButton.setBorderSize(0);
+            shareButton.setCallback(new IInteractableCallback() {
+                @Override
+                public void onInteractionOccur() {
+                    if(numLevel >= 0) {
+                        int level = (numLevel - 1);
+                        engine.shareText("Me he pasado el nivel " + level + " de la categoría " + type.toString() + " en Nonogram. ¡Descargatelo gratis!");
+                    }
+                    else
+                        engine.shareText("Me he pasado el nivel " + level + " en Nonogram. ¡Descargatelo gratis!");
 
-            if(!graphics.isPortrait())
-            {
+                }
+            });
+
+            if (!graphics.isPortrait()) {
                 shareButton.setAnchorPoint(AnchorPoint.DownLeft);
                 shareButton.setPosX(40);
                 shareButton.setPosY(-40);
