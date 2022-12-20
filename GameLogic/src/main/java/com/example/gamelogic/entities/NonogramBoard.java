@@ -141,13 +141,14 @@ public class NonogramBoard extends Board {
     @Override
     public void render() {
         setBoardBackgroundColor(backgroundColor.r, backgroundColor.g, backgroundColor.b); //NO FUNCA ==> NEGRO??
-        setBoardBackgroundColor(255, 0, 0); //NO FUNCA ==> AMARILLO?
+        //setBoardBackgroundColor(255, 0, 0); //NO FUNCA ==> AMARILLO?
 
         this.posX += borderBoardSize / 2;
         this.posY += borderBoardSize / 2;
 
         // Draw the border board
         super.render();
+
         RenderTextArea();
         RenderBordersStroke();
 

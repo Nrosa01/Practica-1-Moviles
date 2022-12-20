@@ -435,6 +435,7 @@ public class MainGameLogic extends AbstractState implements Listener {
             graphics.drawTextCentered("¡Enhorabuena!", LOGIC_WIDTH / 2, 50, congratsFont);
             winReturnButton.render();
 
+            //graphics.setColor(backgroundColor.r, backgroundColor.g, backgroundColor.b);
             if (!random)
                 nextLevelButton.render();
             shareButton.render();
