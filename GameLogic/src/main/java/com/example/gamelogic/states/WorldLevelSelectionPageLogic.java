@@ -38,6 +38,8 @@ public class WorldLevelSelectionPageLogic extends AbstractState {
     @Override
     public boolean init() {
         try {
+
+            engine.enableBanner(false);
             unlockedLevels = DataToAccess.getInstance().getInt(type.toString()) ;
 
 
@@ -101,18 +103,7 @@ public class WorldLevelSelectionPageLogic extends AbstractState {
                         @Override
                         public void onInteractionOccur() {
                             try {
-                                MainGameLogic logic = new MainGameLogic(engine,numLevel,type,false, new IInteractableCallback() {
-                                    @Override
-                                    public void onInteractionOccur() {
-                                        try {
-                                            WorldLevelSelectionPageLogic levelSelection = new WorldLevelSelectionPageLogic(engine, type);
-                                            engine.setState(levelSelection);
-                                           
-                                        } catch (Exception e) {
-                                            e.printStackTrace();
-                                        }
-                                    }
-                                });
+                                MainGameLogic logic = new MainGameLogic(engine,numLevel,type,false);
 
                                 engine.setState(logic);
                             } catch (Exception e) {

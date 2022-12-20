@@ -35,5 +35,9 @@ public interface IEngine {
 
     <T> void addSimpleData(String key, T variable);
 
-    <T> void addArrayData(String key, T[] array, int dim, T[] dimSize);
+    <T> void addArrayData(String key, T[] array);
+
+    <T> void add2DArrayData(String key, T[][] array);
+
+    void setMusic(ISound music);
 }

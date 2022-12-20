@@ -40,6 +40,7 @@ import com.example.androidengine.AEngine;
 import com.example.engine.IState;
 
 import com.example.gamelogic.levels.WorldLevelType;
+import com.example.gamelogic.states.MainGameLogic;
 import com.example.gamelogic.states.SelectLevelLogic;
 import com.example.gamelogic.states.SelectThemeState;
 import com.example.gamelogic.states.StartMenuLogic;
@@ -192,11 +193,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         outState.putSerializable("escena", this.androidEngine.getDataState());
 
         //Serializable serializable = this.androidEngine.getSerializableState();
-       /* IState stateActual = this.androidEngine.getCurrentState();
-        final String clase = stateActual.getClass().getSimpleName();
-        if(clase != "MainGameLogic"){
-            StateDataSave data = stateActual
-        }*/
+
         //outState.putSerializable("escena", this.androidEngine.getCurrentSceneState());
 
     }
@@ -225,19 +222,36 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 estado = new WorldSelectionPageLogic(androidEngine);
                 break;
             case MainGameLogic:
-                //estado = new MainGameLogic(androidEngine);
+                Integer[][]boardAux = state.get2DArrayData("board");
+
+                int row = boardAux.length;
+                int col = boardAux[0].length;
+
+                int[][] board = new int[row][col];
+
+                for(int x = 0; x <row ; x++)
+                    for (int y = 0; y < col; y++)
+                        board[x][y] = boardAux[x][y];
+
+                    WorldLevelType w = WorldLevelType.values()[(int)state.getSimpleData("type")];
+                
+                estado = new MainGameLogic(androidEngine,
+                        (int)state.getSimpleData("numLevel"),
+                        w ,
+                        (boolean)state.getSimpleData("random"),
+                        board);
             default:
 
                 break;
 
         }
         try {
+            androidEngine.setMusicPos(state.getSimpleData("musica"));
             androidEngine.setState(estado);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
-
 
     @Override
     public void onSensorChanged(SensorEvent sensorEvent) {

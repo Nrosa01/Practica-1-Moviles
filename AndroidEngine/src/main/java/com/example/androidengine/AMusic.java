@@ -47,5 +47,15 @@ public class AMusic implements ISound {
         return volume;
     }
 
+    @Override
+    public int getPos() {
+        return mediaPlayer.getCurrentPosition();
+    }
+
+    @Override
+    public void moveMusic(int pos) {
+        mediaPlayer.seekTo(pos);
+    }
+
 }
 

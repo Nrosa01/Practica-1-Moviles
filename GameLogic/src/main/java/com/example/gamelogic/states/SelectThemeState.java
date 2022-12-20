@@ -7,6 +7,9 @@ import com.example.gamelogic.entities.Button;
 import com.example.gamelogic.entities.IInteractableCallback;
 import com.example.gamelogic.entities.Text;
 import com.example.gamelogic.utilities.Color;
+import com.example.gamelogic.utilities.DataToAccess;
+
+import java.util.Map;
 
 
 public class SelectThemeState extends AbstractState{
@@ -37,6 +40,9 @@ public class SelectThemeState extends AbstractState{
     @Override
     public boolean init() {
         try{
+            engine.enableBanner(true);
+            Map<String, Boolean> mapa = DataToAccess.getInstance().getMapBool();
+
             arrow = graphics.newImage(engine.getAssetsPath() + "images/arrow.png");
 
             mainFont = graphics.newFont(engine.getAssetsPath() + "fonts/Roboto-Regular.ttf", 25, true);

@@ -57,24 +57,46 @@ public class MainGameLogic extends AbstractState implements Listener {
     WorldLevelType type;
     int row;
 
+    boolean savedBoard = false;
+    int[][]savedBoardState;
 
-    public MainGameLogic(IEngine engine, String level) {
+
+    public MainGameLogic(final IEngine engine, String level) {
         super(engine);
         this.level = level;
+        //final IEngine eng = engine;
+        returnCallback = new IInteractableCallback() {
+            @Override
+            public void onInteractionOccur() {
+                try {
+                    SelectLevelLogic selectLogic = new SelectLevelLogic(engine);
+
+                    engine.setState(selectLogic);
+
+                    //engine.setState(new WorldLevelSelectionPageLogic(engine,type));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        };
     }
 
 
-    public MainGameLogic(IEngine engine, String level, boolean random) {
-        super(engine);
-        this.level = level;
-        this.random = random;
-    }
 
-    /*public MainGameLogic(final IEngine engine, String level, boolean random, IInteractableCallback returnCallabck) {
+    public MainGameLogic(final IEngine engine, int numLevel,final WorldLevelType type, boolean random, int[][] board) {
+
         super(engine);
-        this.level = level;
+
+        this.savedBoard = true;
+        this.savedBoardState = board;
+
+        this.row = numLevel / 5;
+        this.numLevel = numLevel;
+        this.type = type;
+        this.level = getLevelName(numLevel, row);
+
+
         this.random = random;
-        this.returnCallback = returnCallabck;
 
         final IEngine engineAux = this.engine;
         this.watchVidCallback = new IInteractableCallback() {
@@ -90,9 +112,29 @@ public class MainGameLogic extends AbstractState implements Listener {
             }
         };
 
-    }*/
+        returnCallback = new IInteractableCallback() {
+            @Override
+            public void onInteractionOccur() {
+                try {
+                    WorldLevelSelectionPageLogic selectLogic = new WorldLevelSelectionPageLogic(engine, type);
 
-    public MainGameLogic(final IEngine engine, int numLevel, WorldLevelType type, boolean random, IInteractableCallback returnCallabck) {
+                    engine.setState(selectLogic);
+
+                    //engine.setState(new WorldLevelSelectionPageLogic(engine,type));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+
+    }
+
+
+    public MainGameLogic(final IEngine engine, int numLevel, final WorldLevelType type, boolean random) {
+
+
+
+
         super(engine);
         this.row = numLevel / 5;
         this.numLevel = numLevel;
@@ -101,9 +143,26 @@ public class MainGameLogic extends AbstractState implements Listener {
 
 
         this.random = random;
-        this.returnCallback = returnCallabck;
+
 
         final IEngine engineAux = this.engine;
+
+
+        returnCallback = new IInteractableCallback() {
+            @Override
+            public void onInteractionOccur() {
+                try {
+                    WorldLevelSelectionPageLogic selectLogic = new WorldLevelSelectionPageLogic(engine, type);
+
+                    engine.setState(selectLogic);
+
+                    //engine.setState(new WorldLevelSelectionPageLogic(engine,type));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+
         this.watchVidCallback = new IInteractableCallback() {
             @Override
             public void onInteractionOccur() {
@@ -131,38 +190,16 @@ public class MainGameLogic extends AbstractState implements Listener {
 
     @Override
     public boolean init() {
+        engine.enableBanner(false);
         try {
-            if (returnCallback == null)
-                returnCallback = new IInteractableCallback() {
-                    @Override
-                    public void onInteractionOccur() {
-                        try {
-                            WorldLevelSelectionPageLogic selectLogic = new WorldLevelSelectionPageLogic(engine, type);
 
-                            engine.setState(selectLogic);
-
-                            //engine.setState(new WorldLevelSelectionPageLogic(engine,type));
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    }
-                };
 
             nextLevelCallback = new IInteractableCallback() {
                 @Override
                 public void onInteractionOccur() {
                     try {
 
-                        MainGameLogic logic = new MainGameLogic(engine, ++numLevel, type, false, new IInteractableCallback() {
-                            @Override
-                            public void onInteractionOccur() {
-                                try {
-                                    engine.setState(new WorldLevelSelectionPageLogic(engine, type));
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                }
-                            }
-                        });
+                        MainGameLogic logic = new MainGameLogic(engine, ++numLevel, type, false);
 
                         engine.setState(logic);
                     } catch (Exception e) {
@@ -239,20 +276,14 @@ public class MainGameLogic extends AbstractState implements Listener {
                 public void callback() {
                     if (numLevel + 1 > 1) {
                         DataToAccess.getInstance().setBool(type.toString() + "Palette", true);
-                        if (type == Forest) {
-                            unlockedThemes[1] = true;
-                            //  Log.i("Cosa", "Bosque desbloqueado");
-                        } else if (type == Sea) {
-                            unlockedThemes[2] = true;
-                        } else if (type == City) {
-                            unlockedThemes[3] = true;
-                        } else if (type == Animals) {
-                            unlockedThemes[4] = true;
-                        }
+                        int theme = type.ordinal()+1;
+                        unlockedThemes[theme] = true;
                     }
                     DataToAccess.getInstance().setMaxLevel(type.toString(), numDesbloq);
                 }
             });
+            if(savedBoard)
+                board.SetBoard(savedBoardState);
             board.setColors(backgroundColor, defaultColor, freeColor, figureColor);
             board.setPosX(LOGIC_WIDTH / 2);
             board.setPosY(LOGIC_HEIGHT / 2);
@@ -375,7 +406,7 @@ public class MainGameLogic extends AbstractState implements Listener {
     @Override
     public void saveState(){
         super.saveState();
-        engine.addSimpleData("lives",livesPanel.getNumLives());
+       /* engine.addSimpleData("lives",livesPanel.getNumLives());
         engine.addSimpleData("numLevel", numLevel);
         engine.addSimpleData("type", type);
         int[][]arr = board.getBoard();
@@ -384,8 +415,27 @@ public class MainGameLogic extends AbstractState implements Listener {
             for(int s = 0; s < arr.length; s ++)
                 oneDArray[(i * arr.length) + s] = arr[i][s];
 
-        Integer[] dim = {arr.length,arr.length};
-        engine.addArrayData("tablero", oneDArray,2,dim);
+        Integer[] dim = {arr.length,arr.length};*/
+
+        int[][] b = board.getBoard();
+
+        int row = b.length;
+        int col = b[0].length;
+
+        Integer[][]bI = new Integer[row][col];
+
+
+
+        for(int x = 0; x <row ; x++)
+            for (int y = 0; y < col; y++)
+                bI[x][y] = b[x][y];
+
+
+        engine.add2DArrayData("board", bI);
+        engine.addSimpleData("lives",livesPanel.getNumLives());
+        engine.addSimpleData("numLevel", numLevel);
+        engine.addSimpleData("type", type.ordinal());
+        engine.addSimpleData("random", random);
     }
 
     /*private String getNextLevel(){
