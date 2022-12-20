@@ -32,4 +32,12 @@ public interface IEngine {
     Map<String, Object> getData();
 
     void setNameState(int state);
+
+    <T> void addSimpleData(String key, T variable);
+
+    <T> void addArrayData(String key, T[] array);
+
+    <T> void add2DArrayData(String key, T[][] array);
+
+    void setMusic(ISound music);
 }

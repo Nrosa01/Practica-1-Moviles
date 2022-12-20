@@ -4,8 +4,6 @@ import com.example.engine.IEngine;
 import com.example.engine.IImage;
 import com.example.gamelogic.utilities.Color;
 
-import java.sql.Time;
-
 public abstract class Board extends Entity {
     protected int[][] board;
     protected long[][] timePressBoard;
@@ -144,6 +142,14 @@ public abstract class Board extends Entity {
         boardBackgroundColor.g = g;
         boardBackgroundColor.b = b;
         boardBackgroundColor.a = 255;
+    }
+
+    public int[][] getBoard(){
+        return board;
+    }
+
+    public void SetBoard(int[][] b){
+        board = b;
     }
 
     public void clear() {

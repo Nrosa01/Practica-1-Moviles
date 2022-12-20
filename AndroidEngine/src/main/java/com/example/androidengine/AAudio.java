@@ -60,6 +60,7 @@ public class AAudio implements IAudio {
         if (sounds.get(audioKey) != null)
             return (AMusic) sounds.get(audioKey);
         MediaPlayer media = new MediaPlayer();
+
         players.add(media);
         try {
             AssetFileDescriptor afd = assetManager.openFd(soundPath);
@@ -92,6 +93,8 @@ public class AAudio implements IAudio {
                 player.start();
         }
     }
+
+
 
     @Override
     public boolean freeResources() {

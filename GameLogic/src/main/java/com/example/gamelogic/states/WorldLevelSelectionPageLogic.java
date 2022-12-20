@@ -37,7 +37,9 @@ public class WorldLevelSelectionPageLogic extends AbstractState {
     @Override
     public boolean init() {
         try {
-            unlockedLevels = DataToAccess.getInstance().getInt(type.toString());
+
+            engine.enableBanner(false);
+            unlockedLevels = DataToAccess.getInstance().getInt(type.toString()) ;
 
 
             tittleFont = graphics.newFont(engine.getAssetsPath() + "fonts/Roboto-Regular.ttf", 24, true);
@@ -98,18 +100,7 @@ public class WorldLevelSelectionPageLogic extends AbstractState {
                         @Override
                         public void onInteractionOccur() {
                             try {
-                                MainGameLogic logic = new MainGameLogic(engine, numLevel, type, false, new IInteractableCallback() {
-                                    @Override
-                                    public void onInteractionOccur() {
-                                        try {
-                                            WorldLevelSelectionPageLogic levelSelection = new WorldLevelSelectionPageLogic(engine, type);
-                                            engine.setState(levelSelection);
-
-                                        } catch (Exception e) {
-                                            e.printStackTrace();
-                                        }
-                                    }
-                                });
+                                MainGameLogic logic = new MainGameLogic(engine,numLevel,type);
 
                                 engine.setState(logic);
                             } catch (Exception e) {
@@ -181,6 +172,10 @@ public class WorldLevelSelectionPageLogic extends AbstractState {
         int maximum = (int) (Math.min(wWidth, wHeiht) * 1.5f); // Asegurar que cuber toda la pantalla
         backgroundImg = new SizedImage(engine, bg, LOGIC_WIDTH / 2, LOGIC_HEIGHT / 2, maximum, maximum);
     }
-
+    @Override
+    public void saveState(){
+        super.saveState();
+        engine.addSimpleData("type", type.ordinal());
+    }
 
 }

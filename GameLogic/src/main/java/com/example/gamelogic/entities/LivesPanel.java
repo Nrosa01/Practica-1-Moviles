@@ -79,6 +79,9 @@ public class LivesPanel extends Entity{
         }
     }
 
+    public int getNumLives(){
+        return numLives;
+    }
     public boolean isAlive()
     {
         return currentLive < icons.length;

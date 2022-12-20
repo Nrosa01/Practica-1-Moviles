@@ -48,4 +48,14 @@ public class ASound implements ISound {
         return volume;
     }
 
+    @Override
+    public int getPos() {
+        return 0;
+    }
+
+    @Override
+    public void moveMusic(int pos) {
+
+    }
+
 }

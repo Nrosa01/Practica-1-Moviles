@@ -15,6 +15,8 @@ public class StartMenuLogic extends AbstractState {
     Button historyMode;
     Button themeSelectButton;
 
+
+
     public StartMenuLogic(IEngine engine) {
         super(engine);
     }
@@ -89,7 +91,7 @@ public class StartMenuLogic extends AbstractState {
             ISound sound = audio.newMusic(engine.getAssetsPath() + "audio/bgMusic.wav", "musicBg");
             sound.setVolume(1f);
             sound.play(); //It only plays if it's not alrady playing
-          
+            engine.setMusic(sound);
 
             return true;
         } catch (Exception e) {
