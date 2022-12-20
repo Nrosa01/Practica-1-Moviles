@@ -23,6 +23,7 @@ import android.content.SharedPreferences;
 import android.content.res.AssetManager;
 
 import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;

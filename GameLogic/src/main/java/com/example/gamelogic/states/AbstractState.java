@@ -48,6 +48,11 @@ public abstract class AbstractState implements IState {
             LOGIC_WIDTH = 600;
             LOGIC_HEIGHT = 400;
         }
+        else
+        {
+            LOGIC_WIDTH = 400;
+            LOGIC_HEIGHT = 600;
+        }
 
         if (!engine.supportsTouch())
             pointer = new Pointer(engine);
