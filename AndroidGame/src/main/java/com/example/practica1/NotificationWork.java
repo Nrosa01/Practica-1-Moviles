@@ -50,7 +50,7 @@ public class NotificationWork extends Worker {
                 //-----------------
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                 // Set the intent that will fire when the user taps the notification
-                .setContentIntent(pendingIntent)
+                .setContentIntent(pendingIntent) //para parametros
                 .setAutoCancel(true);
 
 

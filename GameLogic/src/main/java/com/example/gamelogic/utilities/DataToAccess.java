@@ -51,11 +51,33 @@ public class DataToAccess {
 
         }
 
+        // Cuando arranca:
+        // ==> si no esta --> Default Value
         if(!dat.containsKey("CurrentColor")){
             levelData.put("CurrentColor", 0);
         }
+        // si esta, guardamos los valores
         else{
             levelData.put("CurrentColor", Integer.class.cast(dat.get("CurrentColor")));
+        }
+
+        // ULTIMO TIPO JUGADO------------------------------------------
+        if(!dat.containsKey("LastTypePlayed")){
+            levelData.put("LastTypePlayed", -1); //default -1
+        }
+        // si esta, guardamos los valores
+        else{
+            Object l = dat.get("LastTypePlayed");
+            levelData.put("LastTypePlayed", Integer.class.cast(l));//WorldLevelType.values()[i]);
+        }
+        //ULTIMO NIVEL--------------------------------------------------
+        if(!dat.containsKey("LastLevelPlayed")){
+            levelData.put("LastLevelPlayed", 0); //default -1
+        }
+        // si esta, guardamos los valores
+        else{
+            Object l = dat.get("LastLevelPlayed");
+            levelData.put("LastLevelPlayed", Integer.class.cast(l));//WorldLevelType.values()[i]);
         }
 
     }

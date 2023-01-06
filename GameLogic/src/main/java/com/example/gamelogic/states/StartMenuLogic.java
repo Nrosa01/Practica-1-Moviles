@@ -15,6 +15,7 @@ public class StartMenuLogic extends AbstractState {
     Button quickGame;
     Button historyMode;
     Button themeSelectButton;
+    Button lastLevelButton;
 
 
 
@@ -96,11 +97,40 @@ public class StartMenuLogic extends AbstractState {
                 }
             });
 
+            // ULTIMO NIVEL
+            // GUARDAR LEVEL--------------------
+            final int t = data.getInt("LastTypePlayed");
+
+            if(t != -1){
+                lastLevelButton = new Button(LOGIC_WIDTH / 2, LOGIC_HEIGHT / 2 + 5* separation, 300, 35, engine);
+                lastLevelButton.setText("Ultimo Nivel Guardado", secondaryFont);
+                lastLevelButton.setBackgroundColor(0, 0, 0, 0);
+                lastLevelButton.setBorderSize(0);
+                lastLevelButton.setHoverColor(200, 200, 200);
+                lastLevelButton.setCallback(new IInteractableCallback() {
+                    @Override
+                    public void onInteractionOccur() {
+                        try {
+                            WorldLevelType type = WorldLevelType.values()[t];
+                            int unlockedLevels = DataToAccess.getInstance().getInt(type.toString()) - 1; // queremos [0, unlockedLevels-1]
+
+                            MainGameLogic logic = new MainGameLogic(engine,unlockedLevels,type); //numLevel
+                            engine.setState(logic);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+
+                addEntity(lastLevelButton);
+            }
+
 
 
             addEntity(quickGame);
             addEntity(historyMode);
             addEntity(themeSelectButton);
+
 
             ISound sound = audio.newMusic(engine.getAssetsPath() + "audio/bgMusic.wav", "musicBg");
             sound.setVolume(1f);

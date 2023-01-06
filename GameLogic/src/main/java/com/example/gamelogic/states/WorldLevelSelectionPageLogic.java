@@ -37,6 +37,11 @@ public class WorldLevelSelectionPageLogic extends AbstractState {
     @Override
     public boolean init() {
         try {
+            //GUARDAR EL ULTIMO JUGADO---------------
+            int l = type.ordinal();
+            DataToAccess.getInstance().setInt("LastTypePlayed", l); // [0, 1, 2, 3, 4...]
+
+            //----------------------
 
             engine.enableBanner(false);
             unlockedLevels = DataToAccess.getInstance().getInt(type.toString());

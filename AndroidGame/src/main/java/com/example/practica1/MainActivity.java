@@ -109,15 +109,20 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
         SharedPreferences mPreferences = getSharedPreferences();
 
+        //BORRAR CACHE.---------------------------------------------------
+        //SharedPreferences mPreferences = getSharedPreferences(sharedPrefFile, MODE_PRIVATE);
+        //mPreferences.edit().clear().apply();
+
+        //----------------------------
         Map<String, Object> savedValuesMap  = (Map<String, Object>) mPreferences.getAll();
 
 
 
         Intent intentParam = getIntent();
         if (intentParam != null){
+            //default value 0
             int a = intentParam.getIntExtra("someKey", 0);
             Log.i("Cosa ","Intent cargado onCreate: "+a);
         }
@@ -148,8 +153,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
         //----------------------------------------------------------------------------------
         SurfaceView view = (SurfaceView) findViewById(R.id.surfaceView);
-
-
 
         this.androidEngine = new AEngine(this,view, assetManager, mAdView,savedValuesMap);
 
@@ -210,8 +213,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         mPreferences = getSharedPreferences();
 
         SharedPreferences.Editor preferencesEditor = mPreferences.edit();
-
-
 
         DataToAccess data = DataToAccess.getInstance();
         Map<String, Integer> levels = data.getMapInt();
