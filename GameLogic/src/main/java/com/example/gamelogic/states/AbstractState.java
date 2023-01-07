@@ -27,6 +27,7 @@ public abstract class AbstractState implements IState {
     static protected Color defaultColor = new Color(123, 123, 123);
     static protected Color freeColor = new Color(123, 123, 255);
     static protected Color figureColor = new Color(255, 123, 123);
+    static protected int currentColor = 0;
 
     protected int NUM_THEMES = 5;
     static protected boolean[] unlockedThemes = {true, false, false, false, false}; //el primero esta desbloqueado por defecto

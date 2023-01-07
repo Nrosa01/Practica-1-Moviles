@@ -17,6 +17,10 @@ public class SelectThemeState extends AbstractState{
     IImage arrow;
 
     Button returnButton;
+    Button RightCornerButton;
+
+    static int num_clicks = 0;
+
 
     private int rows = 2;
     private int cols = 3;
@@ -57,6 +61,49 @@ public class SelectThemeState extends AbstractState{
             });
             addEntity(returnButton);
 
+            // PULSAR ESQUINA INFERIOR
+            int width = 200;
+            int height = 100;
+            RightCornerButton = new Button(LOGIC_WIDTH - width/2, LOGIC_HEIGHT - height / 8, width, height, engine);
+            //RightCornerButton.setText("Esquina", secondaryFont);
+            RightCornerButton.setBackgroundColor(0, 0, 0, 0);
+            RightCornerButton.setBorderSize(0);
+            RightCornerButton.setPressedColorColor(0,0,0,0);
+            //RightCornerButton.setHoverColor(200, 200, 200);
+            //RightCornerButton.setHoverColor(0, 0, 0, 0);
+            RightCornerButton.setSoundWillPlay(false);
+            RightCornerButton.setCallback(new IInteractableCallback() {
+                @Override
+                public void onInteractionOccur() {
+                    try {
+                        num_clicks += 1;
+                        if(num_clicks == 3){
+                            num_clicks = 0;
+                            currentColor += 1;
+                            if (currentColor == NUM_THEMES)
+                                currentColor = 0;
+
+                            DataToAccess.getInstance().setInt("CurrentColor", currentColor);
+                            backgroundColor = themes[currentColor][0];
+                            defaultColor = themes[currentColor][1];
+                            freeColor = themes[currentColor][2];
+                            figureColor = themes[currentColor][3];
+                            graphics.setClearColor(themes[currentColor][0].r, themes[currentColor][0].g, themes[currentColor][0].b);
+                        }
+
+                        //WorldLevelType type = WorldLevelType.values()[t];
+                        //int unlockedLevels = DataToAccess.getInstance().getInt(type.toString()) - 1; // queremos [0, unlockedLevels-1]
+
+                        //MainGameLogic logic = new MainGameLogic(engine,unlockedLevels,type); //numLevel
+                        //engine.setState(logic);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+
+            addEntity(RightCornerButton);
+
             //BOTONES DE SELECCION
             int buttonSize = graphics.isPortrait() ? LOGIC_WIDTH / 5 : LOGIC_WIDTH / 8;
             int gapSize = buttonSize / 2;
@@ -82,12 +129,13 @@ public class SelectThemeState extends AbstractState{
                             @Override
                             public void onInteractionOccur() {
                                 try {
+                                    currentColor = finalCol;
                                     //engine.setState(new MainGameLogic(engine, texts[finalRow][finalCol]));
                                     DataToAccess.getInstance().setInt("CurrentColor", finalCol);
-                                   backgroundColor = themes[finalCol][0];
-                                   defaultColor = themes[finalCol][1];
-                                   freeColor = themes[finalCol][2];
-                                   figureColor = themes[finalCol][3];
+                                    backgroundColor = themes[finalCol][0];
+                                    defaultColor = themes[finalCol][1];
+                                    freeColor = themes[finalCol][2];
+                                    figureColor = themes[finalCol][3];
                                     graphics.setClearColor(themes[finalCol][0].r, themes[finalCol][0].g, themes[finalCol][0].b);
                                 } catch (Exception e) {
                                     e.printStackTrace();

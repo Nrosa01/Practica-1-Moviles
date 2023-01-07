@@ -16,6 +16,7 @@ public class Button extends UIElement {
     private Color buttonHoverColor;
     private Color textColor;
     ISound clickSound, hoverSound;
+    private boolean soundWillPlay = true;
 
     private Color currentButtonColor;
     private int borderSize = 10;
@@ -51,6 +52,10 @@ public class Button extends UIElement {
         hoverSound = audio.newSound(engine.getAssetsPath() + "audio/menuHover.wav", "hover" + this.hashCode());
     }
 
+
+    public void setSoundWillPlay(boolean s){
+        soundWillPlay = s;
+    }
     public void setImage(IImage image) {
         this.image = image;
     }
@@ -160,7 +165,8 @@ public class Button extends UIElement {
     public void OnHoverEnter() {
         currentButtonColor = buttonHoverColor;
         scaleLerper.setReversed(false);
-        hoverSound.play();
+        if(soundWillPlay)
+            hoverSound.play();
     }
 
     @Override
@@ -171,7 +177,8 @@ public class Button extends UIElement {
 
     @Override
     public void OnTouchDown() {
-        clickSound.play();
+        if(soundWillPlay)
+            clickSound.play();
         currentButtonColor = this.buttonPressedColor;
         if (callback != null)
             callback.onInteractionOccur();

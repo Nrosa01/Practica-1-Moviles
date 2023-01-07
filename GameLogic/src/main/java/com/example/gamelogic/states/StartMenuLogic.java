@@ -18,7 +18,6 @@ public class StartMenuLogic extends AbstractState {
     Button lastLevelButton;
 
 
-
     public StartMenuLogic(IEngine engine) {
         super(engine);
     }
@@ -33,12 +32,12 @@ public class StartMenuLogic extends AbstractState {
             for(int i = 1; i < keys.length; i++){ //No hay boton para el nightpalette
                     unlockedThemes[i] = data.getBool(keys[i-1]);
             }
-            int color = data.getInt("CurrentColor");
-            backgroundColor = themes[color][0];
-            defaultColor = themes[color][1];
-            freeColor = themes[color][2];
-            figureColor = themes[color][3];
-            graphics.setClearColor(themes[color][0].r, themes[color][0].g, themes[color][0].b);
+            currentColor = data.getInt("CurrentColor");
+            backgroundColor = themes[currentColor][0];
+            defaultColor = themes[currentColor][1];
+            freeColor = themes[currentColor][2];
+            figureColor = themes[currentColor][3];
+            graphics.setClearColor(themes[currentColor][0].r, themes[currentColor][0].g, themes[currentColor][0].b);
 
             engine.enableBanner(true);
             int separation = 35;
@@ -124,8 +123,6 @@ public class StartMenuLogic extends AbstractState {
 
                 addEntity(lastLevelButton);
             }
-
-
 
             addEntity(quickGame);
             addEntity(historyMode);
