@@ -13,6 +13,13 @@ public abstract class AbstractState implements IState {
     protected static final int LOGIC_WIDTH = 400;
     protected static final int LOGIC_HEIGHT = 600;
 
+    //EXAMEN EJER 3
+    protected static boolean contrarreloj = false;
+    protected static double timeLeftInContrarreloj = 15 * 60; //segundos
+    protected static double bestContrarreloj = 15 * 60; //segundos
+    protected static String[] contrarrelojLevels = {"2x2", "2x3", "3x3", "3x4", "4x4"};
+    protected static int currentContrarrelojLevel = 0;
+
     protected AbstractState(IEngine engine)
     {
         this.engine = engine;

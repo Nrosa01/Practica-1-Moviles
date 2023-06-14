@@ -19,6 +19,9 @@ public class StartMenuLogic extends AbstractState {
     Button button;
     Pointer pointer;
 
+    //EXAMEN EJER 3
+    Button buttonContrarreloj;
+
     public StartMenuLogic(IEngine engine) {
         super(engine);
     }
@@ -48,6 +51,27 @@ public class StartMenuLogic extends AbstractState {
             ISound sound = audio.newMusic(engine.getAssetsPath() + "audio/bgMusic.wav", "musicBg");
             sound.setVolume(1f);
             sound.play(); //It only plays if it's not alrady playing
+
+            //EXAMEN EJER 3==============================================================
+            buttonContrarreloj = new Button(LOGIC_WIDTH / 2, LOGIC_HEIGHT * 2/3, 100, 35, engine);
+            buttonContrarreloj.setText("Contrarreloj", testFont);
+            buttonContrarreloj.setBackgroundColor(0, 0, 0, 0);
+            buttonContrarreloj.setBorderSize(0);
+            buttonContrarreloj.setHoverColor(200, 200, 200);
+            buttonContrarreloj.setCallback(new IInteractableCallback() {
+                @Override
+                public void onInteractionOccur() {
+                    try {
+                        engine.setState(new MainGameLogic(engine, "2x2"));
+                        timeLeftInContrarreloj = 15 * 60; //ms
+                        contrarreloj = true;
+                        currentContrarrelojLevel = 0;
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+
             return true;
         } catch (Exception e) {
             e.printStackTrace();
@@ -58,6 +82,8 @@ public class StartMenuLogic extends AbstractState {
     @Override
     public void update(double deltaTime) {
         button.update((float) deltaTime);
+        //EXAMEN EJER 3
+        buttonContrarreloj.update((float) deltaTime);
 
         if (pointer != null)
             pointer.update((float) deltaTime);
@@ -70,6 +96,12 @@ public class StartMenuLogic extends AbstractState {
         button.render();
         if (pointer != null)
             pointer.render();
+
+        //EXAMEN EJER 3
+        buttonContrarreloj.render();
+        int min = (int)(bestContrarreloj / 60);
+        int secs = (int)(bestContrarreloj % 60);
+        graphics.drawTextCentered("Best Record: " + min + ":" + secs, LOGIC_WIDTH / 2, LOGIC_HEIGHT * 5/6, testFont);
     }
 
     @Override
@@ -79,6 +111,8 @@ public class StartMenuLogic extends AbstractState {
             int proccesedY = graphics.windowsYPositionToLogicYPosition(inputEvent.y);
 
             button.handleInput(proccesedX, proccesedY, inputEvent.type);
+            //EXAMEN EJER 3
+            buttonContrarreloj.handleInput(proccesedX, proccesedY, inputEvent.type);
 
 
             if (pointer != null)

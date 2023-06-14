@@ -153,13 +153,38 @@ public class MainGameLogic extends AbstractState {
 
         if (!board.getIsWin()) {
             returnButton.update(deltaTime);
-        } else
+        }
+        // EXAMEN EJER 3==============================================================
+        // TERMINÓ EL LEVEL & ESTAMOS EN MODO CONTRARRELOJ
+        else if(contrarreloj) {
+            currentContrarrelojLevel += 1;
+            // PASAMOS AL SIGUIENTE NIVEL
+            if(currentContrarrelojLevel < contrarrelojLevels.length){
+                try {
+                    engine.setState(new MainGameLogic(engine, contrarrelojLevels[currentContrarrelojLevel]));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+            // TERMINAMOS
+            else{
+                contrarreloj = false;
+                if (15 * 60 - timeLeftInContrarreloj < bestContrarreloj){
+                    System.out.println("SE CUMPLE");
+                    bestContrarreloj = 15 * 60 - timeLeftInContrarreloj;
+                }
+            }
+        }
+        //===============================================================
+        else
             winReturnButton.update(deltaTime);
 
         //EXAMEN ===============================================
-        //EJER 1:
+        // EJER 1:
         currentComprobarTime += deltaTime; //(segundos)
-       // System.out.println("=========current============" + currentComprobarTime);
+        // EJER 3:
+        if(contrarreloj)
+            timeLeftInContrarreloj -= deltaTime; //(segundos)
     }
 
     @Override
@@ -173,13 +198,21 @@ public class MainGameLogic extends AbstractState {
 
             returnButton.render();
             checkButton.render();
-        } else {
+        }
+        else {
             graphics.drawTextCentered("¡Enhorabuena!", LOGIC_WIDTH / 2, 50, congratsFont);
             winReturnButton.render();
         }
 
         if(pointer != null)
                 pointer.render();
+
+        // EXAMEN EJER 3 =============================================
+        if(contrarreloj){
+            int min = (int)(timeLeftInContrarreloj / 60);
+            int secs = (int)(timeLeftInContrarreloj % 60);
+            graphics.drawTextCentered("Time Left: " + min + ":" + secs, LOGIC_WIDTH / 2, LOGIC_HEIGHT - 90, font);
+        }
     }
 
     @Override
