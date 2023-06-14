@@ -16,6 +16,7 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
 import java.util.List;
+import java.util.Map;
 
 public class AEngine extends SurfaceView implements IEngine, Runnable {
 
@@ -33,8 +34,14 @@ public class AEngine extends SurfaceView implements IEngine, Runnable {
     private AInput inputManager;
     AAudio audio;
 
-    public AEngine(Context context, AssetManager assetManager) {
+    //EXAMEN EJER 2
+    Map<String, Object> savedValuesMap;
+
+    public AEngine(Context context, AssetManager assetManager, Map<String, Object> map) {
         super(context); //constructora de SurfaceView
+
+        //EXAMEN EJER 2
+        savedValuesMap = map;
 
         this.paint = new Paint();
         this.paint.setColor(0xFF000000);
@@ -197,6 +204,10 @@ public class AEngine extends SurfaceView implements IEngine, Runnable {
         return "";
     }
 
-
+    //EXAMEN EJER 2
+    @Override
+    public Map<String, Object> getData(){
+        return savedValuesMap;
+    }
 
 }
