@@ -332,4 +332,31 @@ public class NonogramBoard extends Board {
         this.posX -= borderBoardSize / 2;
         this.posY -= borderBoardSize / 2;
     }
+
+    //EXAMEN EJER 1=======================================================================
+    /*Todas las celdas que no son parte de la solución aparecerán con su cuadrado y línea diagonal que
+indica que no es solución. Y todas las celdas menos una que sí forman parte de la solución aparecerán
+en azul.*/
+    public void helpSolution() {
+        int i = -1;
+        int j = -1;
+
+        for (int row = 0; row < rows; row++) {
+            for (int col = 0; col < cols; col++) {
+                //SOLUCION
+                if (solvedPuzzle[row][col] == 1 && i == -1) {
+                    nonogramCellStates[row][col] = 0; // GRIS (NO CLICK)
+                    i = row;
+                }
+                else if(solvedPuzzle[row][col] == 1){
+                    nonogramCellStates[row][col] = 1; //AZUL
+                }
+                //NO ES SOLUCION
+                else{
+                    nonogramCellStates[row][col] = 2; //BLANCO (DIAGONAL)
+                }
+            }
+        }
+
+    }
 }

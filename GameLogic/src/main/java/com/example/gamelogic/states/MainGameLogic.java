@@ -31,6 +31,12 @@ public class MainGameLogic extends AbstractState {
     IImage search;
     boolean gameWin = false;
 
+    //EXAMEN EJER 1
+    int clicks = 0;
+    double lastTimeSinceComprobar = 0;
+    double currentComprobarTime = 0;
+    final int COMPROBAR_TIME_LIMIT = 1; //limite de tiempo
+
     public MainGameLogic(IEngine engine, String level) {
         super(engine);
         this.level = level;
@@ -75,6 +81,25 @@ public class MainGameLogic extends AbstractState {
             checkButton.setCallback(new IInteractableCallback() {
                 @Override
                 public void onInteractionOccur() {
+                    try{
+                        // 1ª VEZ QUE HACEN CLICK || HACEN CLICK HABIENDO PASADO MAS DE 1 SEGUNDO
+                        if(clicks == 0 || currentComprobarTime - lastTimeSinceComprobar >= COMPROBAR_TIME_LIMIT){
+                            lastTimeSinceComprobar = currentComprobarTime; //SEGUNDOS //???1472943.5746293
+                            clicks = 1;
+                        }
+                        else{
+                            clicks++;
+                        }
+
+                        // HAN HECHO 3 CLICKS EN MENOS DE 3 SEGUNDOS
+                        if(clicks >= 3 && currentComprobarTime - lastTimeSinceComprobar <= COMPROBAR_TIME_LIMIT){ //1 segundo
+                            board.helpSolution();
+                            clicks = 0;
+                        }
+                    }
+                    catch (Exception e){
+                        e.printStackTrace();
+                    }
                     board.checkSolution();
                 }
             });
@@ -130,6 +155,11 @@ public class MainGameLogic extends AbstractState {
             returnButton.update(deltaTime);
         } else
             winReturnButton.update(deltaTime);
+
+        //EXAMEN ===============================================
+        //EJER 1:
+        currentComprobarTime += deltaTime; //(segundos)
+       // System.out.println("=========current============" + currentComprobarTime);
     }
 
     @Override
@@ -149,7 +179,7 @@ public class MainGameLogic extends AbstractState {
         }
 
         if(pointer != null)
-        pointer.render();
+                pointer.render();
     }
 
     @Override
