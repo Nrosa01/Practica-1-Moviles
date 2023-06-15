@@ -98,6 +98,10 @@ public class MainGameLogic extends AbstractState implements Listener {
     }
 
     private void InitHistoryGame(final IEngine engine, int numLevel, final WorldLevelType type) {
+        // GUARDAR ULTIMO NIVEL JUGADO
+        DataToAccess.getInstance().setInt("LastTypePlayed", type.ordinal());
+        DataToAccess.getInstance().setInt("LastLevelPlayed", numLevel);
+        //
         this.row = numLevel / 5;
         this.numLevel = numLevel;
         this.type = type;

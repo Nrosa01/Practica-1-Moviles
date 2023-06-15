@@ -15,6 +15,7 @@ public class StartMenuLogic extends AbstractState {
     Button quickGame;
     Button historyMode;
     Button themeSelectButton;
+    Button lastGameButton;
 
 
 
@@ -95,6 +96,32 @@ public class StartMenuLogic extends AbstractState {
                     }
                 }
             });
+
+            // LAST LEVEL ============================================================================
+            last_level_played = data.getInt("LastLevelPlayed");
+            last_type = data.getInt("LastTypePlayed");
+
+            if(last_type != -1){
+                lastGameButton = new Button(LOGIC_WIDTH / 2, LOGIC_HEIGHT / 2 + 5* separation, 300, 35, engine);
+                lastGameButton.setText("Última Partida", secondaryFont);
+                lastGameButton.setBackgroundColor(0, 0, 0, 0);
+                lastGameButton.setBorderSize(0);
+                lastGameButton.setHoverColor(200, 200, 200);
+                lastGameButton.setCallback(new IInteractableCallback() {
+                    @Override
+                    public void onInteractionOccur() {
+                        try {
+                            MainGameLogic logic = new MainGameLogic(engine, last_level_played, WorldLevelType.values()[last_type]);
+                            engine.setState(logic);
+
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+
+                addEntity(lastGameButton); //IMPORTANTE GUARDAR EL BOTON
+            }
 
 
 

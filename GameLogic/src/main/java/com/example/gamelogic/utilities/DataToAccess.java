@@ -66,6 +66,20 @@ public class DataToAccess {
             else
                 levelData.put(key, Integer.class.cast(dat.get(key)));
         }
+
+        //LAST LEVEL
+        if(!dat.containsKey("LastLevelPlayed")){
+            levelData.put("LastLevelPlayed", -1);
+        }
+        else{
+            levelData.put("LastLevelPlayed", Integer.class.cast(dat.get("LastLevelPlayed")));
+        }
+        if(!dat.containsKey("LastTypePlayed")){
+            levelData.put("LastTypePlayed", -1);
+        }
+        else{
+            levelData.put("LastTypePlayed", Integer.class.cast(dat.get("LastTypePlayed")));
+        }
     }
 
     public static DataToAccess getInstance() {

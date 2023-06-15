@@ -7,6 +7,7 @@ import com.example.engine.IState;
 import com.example.engine.InputEvent;
 import com.example.gamelogic.entities.Entity;
 import com.example.gamelogic.entities.Pointer;
+import com.example.gamelogic.levels.WorldLevelType;
 import com.example.gamelogic.utilities.Color;
 
 import java.util.ArrayList;
@@ -31,7 +32,11 @@ public abstract class AbstractState implements IState {
     protected int NUM_THEMES = 5;
     static protected boolean[] unlockedThemes = {true, false, false, false, false}; //el primero esta desbloqueado por defecto
 
+    // PUNTUACIONES
     static protected int[] puntuaciones = {0,0,0,0, 0, 0};
+    //LAST LEVEL
+    static int last_level_played = 0;
+    static int last_type = -1;
 
     protected Color[][] themes = {
             //DEFUALT
