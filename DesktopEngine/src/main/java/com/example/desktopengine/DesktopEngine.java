@@ -9,7 +9,6 @@ import java.awt.Toolkit;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.util.List;
-import java.util.Map;
 
 import javax.swing.JFrame;
 import javax.swing.event.MouseInputListener;
@@ -28,13 +27,7 @@ public class DesktopEngine implements IEngine, Runnable, MouseInputListener {
     Cursor blankCursor;
     Cursor defaultCursor;
 
-    //EXAMEN EJER 2
-    Map<String, Object> savedValuesMap;
-
-    public DesktopEngine(int wWidth, int wHeight, String wTittle, Map<String, Object> map) {
-        //EXAMEN EJER 2
-        savedValuesMap = map;
-        //
+    public DesktopEngine(int wWidth, int wHeight, String wTittle) {
         mView = new JFrame(wTittle);
         graphics = new DesktopGraphics(mView, wWidth, wHeight);
         inputManager = new DesktopInput();
@@ -200,11 +193,5 @@ public class DesktopEngine implements IEngine, Runnable, MouseInputListener {
             inputManager.addEvent(mouseEvent);
         } else
             mView.setCursor(defaultCursor);
-    }
-
-    //EXAMEN EJER 2
-    @Override
-    public Map<String, Object> getData(){
-        return savedValuesMap;
     }
 }
