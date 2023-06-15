@@ -278,6 +278,21 @@ public class AGraphics extends AbstractGraphics {
         canvas.drawRect(uLx, uLy, lRx, lRy, paint);
     }
 
+    @Override
+    public void drawCircle(int x, int y, int radius) {
+        int coordinates[] = getAnchoredPosition(x,y,this.anchorPoint);
+        x = coordinates[0];
+        y = coordinates[1];
+
+        //calculo de coordenadas fisicas desde coordenadas logicas
+        radius *= scaleX;
+        x = logicXPositionToWindowsXPosition(x);
+        y = logicYPositionToWindowsYPosition(y);
+
+        Canvas canvas = engine.getCurrentCanvas();
+        canvas.drawCircle(x, y, radius, paint);
+    }
+
     //se pintan los bordes necesarios para mantener la relacion de aspecto deseada
     public void renderBordersAndroid() {
         paint.setARGB((int) (0), 0, 0, 255); //BLANCO
@@ -324,11 +339,7 @@ public class AGraphics extends AbstractGraphics {
         canvas.drawPath(path, paint);
     }
 
-    @Override
-    public void drawCircle(int xPos, int yPos, int radius) {
-        Canvas canvas = engine.getCurrentCanvas();
-        canvas.drawCircle(xPos, yPos, radius, paint);
-    }
+
 
 
     @Override

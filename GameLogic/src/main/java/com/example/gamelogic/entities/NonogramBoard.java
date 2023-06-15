@@ -273,11 +273,13 @@ public class NonogramBoard extends Board {
                 //AUN NO LA PULSE && ES PARTE DE LA SOLCUION
                 if(board[row][col] == 0 && solvedPuzzle[row][col] == 1)
                     level_puntuacion += 10;
-                    // NO ES PARTE DE LA SOLUCION
-                else if (solvedPuzzle[row][col] != 1) level_puntuacion -= 10;
+                // NO ES PARTE DE LA SOLUCION
+                else if (solvedPuzzle[row][col] != 1) // COMENTAR PARA LOS CIRCULOS
+                    level_puntuacion -= 10;
 
                 //TECLA PULSADA
-                board[row][col] = 1;
+                //if(solvedPuzzle[row][col] == 1) //QUITAR PARA QUE RESTE PUNTUACION
+                    board[row][col] = 1;
             }
 
         } else {
@@ -345,9 +347,12 @@ public class NonogramBoard extends Board {
         borderColor.a = 255;
     }
 
+    //DEVUELVE TRUE SI NO ES SOLUCION
     @Override
-    protected void OnCellRender(int row, int col) {
+    protected boolean OnCellRender(int row, int col) {
+
         setColorGivenState(board[row][col]);
+        return solvedPuzzle[row][col] == 0;
     }
 
     // Updates board state, update missingCells and badCells, also returns true if win is satisfied
