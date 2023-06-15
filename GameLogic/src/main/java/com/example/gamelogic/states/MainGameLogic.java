@@ -60,7 +60,7 @@ public class MainGameLogic extends AbstractState implements Listener {
     boolean savedBoard = false;
     int[][] savedBoardState;
     int[][] savedBoardSol;
-
+    boolean end = false; //solo queremos que se actualice la puntuacion 1 vez
 
     private void InitRandomGame(final IEngine engine, String level) {
 
@@ -102,7 +102,6 @@ public class MainGameLogic extends AbstractState implements Listener {
         this.numLevel = numLevel;
         this.type = type;
         this.level = getLevelName(numLevel, row);
-
 
         final IEngine engineAux = this.engine;
         this.watchVidCallback = new IInteractableCallback() {
@@ -177,11 +176,7 @@ public class MainGameLogic extends AbstractState implements Listener {
         this.lives = lives;
 
         this.InitRandomGame(engine,level);
-
     }
-
-
-
 
     public MainGameLogic(final IEngine engine, int numLevel,final WorldLevelType type, int[][] boardState,int lives) {
 
@@ -193,9 +188,6 @@ public class MainGameLogic extends AbstractState implements Listener {
         this.lives = lives;
 
         InitHistoryGame(engine,numLevel,type);
-
-
-
     }
 
 
@@ -217,7 +209,7 @@ public class MainGameLogic extends AbstractState implements Listener {
 
     @EventHandler
     public void onDamaged(OnDamaged eventArgs) {
-        livesPanel.takeLive();
+        livesPanel.takeLive(); //PIERDE CORAZON
         if (!livesPanel.isAlive()) {
             board.clear();
             livesPanel.restoreLives();
@@ -228,8 +220,6 @@ public class MainGameLogic extends AbstractState implements Listener {
     public boolean init() {
         engine.enableBanner(false);
         try {
-
-
             EventManager.register(this);
 
             font = graphics.newFont(engine.getAssetsPath() + "fonts/Roboto-Regular.ttf", 24, false);
@@ -349,7 +339,6 @@ public class MainGameLogic extends AbstractState implements Listener {
                         else
                             n = numDesbloq;
                         DataToAccess.getInstance().setMaxLevel(type.toString(), n);
-
                     }
                 }
             });
@@ -425,6 +414,14 @@ public class MainGameLogic extends AbstractState implements Listener {
             winReturnButton.update(deltaTime);
 
             nextLevelButton.update(deltaTime);
+
+            // ACTUALIZAMOS LA PUNTUACION EN ESE TIPO
+            if (!random && !end) //Modo Historia
+            {
+                puntuaciones[type.ordinal()] += board.getPuntuacion();
+                end = true; // solo se suma la puntuacion 1 vez
+            }
+
         }
         watchVid.update(deltaTime);
     }
@@ -451,6 +448,8 @@ public class MainGameLogic extends AbstractState implements Listener {
                 nextLevelButton.render();
             shareButton.render();
         }
+
+        graphics.drawText("Puntuación: " + board.getPuntuacion(), LOGIC_WIDTH / 4, LOGIC_HEIGHT * 3/20, font);
     }
 
     @Override

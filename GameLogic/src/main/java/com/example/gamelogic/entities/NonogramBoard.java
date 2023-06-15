@@ -48,13 +48,15 @@ public class NonogramBoard extends Board {
     private Color freeColor = new Color(123, 123, 255);
     private Color figureColor = new Color(255, 123, 123);
 
+    // PUNTUACION
+    int level_puntuacion = 0;
+
     public void setColors(Color c, Color c1, Color c2, Color c3) {
         backgroundColor = c;
         defaultColor = c1;
         freeColor = c2;
         figureColor = c3;
     }
-
 
     public NonogramBoard(IEngine engine, int[][] solvedPuzzle, int width, int gapSize, IFont font, Callback winCallback) {
         super(engine, solvedPuzzle.length, solvedPuzzle[0].length, width, gapSize);
@@ -262,10 +264,22 @@ public class NonogramBoard extends Board {
 
         if (System.currentTimeMillis() - timePressBoard[row][col] < timeLongPress) {
             // 0 nada, 1 pulsado, 2 bloqueada, 3 error
-            if (board[row][col] != 0)
+            //SOLO PUEDES DESCLICKAR SI NO ES SOLUCION
+            if (board[row][col] != 0 && solvedPuzzle[row][col] != 1){
                 board[row][col] = 0;
-            else
+            }
+
+            else{
+                //AUN NO LA PULSE && ES PARTE DE LA SOLCUION
+                if(board[row][col] == 0 && solvedPuzzle[row][col] == 1)
+                    level_puntuacion += 10;
+                    // NO ES PARTE DE LA SOLUCION
+                else if (solvedPuzzle[row][col] != 1) level_puntuacion -= 10;
+
+                //TECLA PULSADA
                 board[row][col] = 1;
+            }
+
         } else {
             board[row][col] = 2;
         }
@@ -450,5 +464,9 @@ public class NonogramBoard extends Board {
 
     public int[][] getSolvedPuzzle() {
         return solvedPuzzle;
+    }
+
+    public int getPuntuacion() {
+        return level_puntuacion;
     }
 }

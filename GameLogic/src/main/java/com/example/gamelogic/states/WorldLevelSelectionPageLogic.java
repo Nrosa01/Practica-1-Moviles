@@ -23,9 +23,8 @@ public class WorldLevelSelectionPageLogic extends AbstractState {
     String text;
     WorldLevelType type;
     Text tittleText;
-
+    IFont font;
     int unlockedLevels = 1;
-
 
     public WorldLevelSelectionPageLogic(IEngine engine, WorldLevelType type) {
         super(engine);
@@ -37,6 +36,8 @@ public class WorldLevelSelectionPageLogic extends AbstractState {
     @Override
     public boolean init() {
         try {
+            //PUNTUACION
+            font = graphics.newFont(engine.getAssetsPath() + "fonts/Roboto-Regular.ttf", 24, false);
 
             engine.enableBanner(false);
             unlockedLevels = DataToAccess.getInstance().getInt(type.toString());
@@ -178,4 +179,12 @@ public class WorldLevelSelectionPageLogic extends AbstractState {
         engine.addSimpleData("type", type.ordinal());
     }
 
+
+    //NO HAY RENDER??????????????????????????
+    @Override
+    public void render() {
+        super.render();
+
+        graphics.drawText("Puntuación: " + puntuaciones[type.ordinal()], LOGIC_WIDTH / 2, LOGIC_HEIGHT * 2/10, font);
+    }
 }
