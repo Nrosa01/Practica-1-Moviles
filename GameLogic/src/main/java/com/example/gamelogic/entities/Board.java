@@ -137,4 +137,9 @@ public abstract class Board extends Entity {
         boardBackgroundColor.b = b;
         boardBackgroundColor.a = 255;
     }
+
+    // EJER 2==========================================================
+    public int[][] getBoard(){
+        return board;
+    }
 }

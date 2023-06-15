@@ -357,6 +357,14 @@ en azul.*/
                 }
             }
         }
+    }
 
+    // EXAMEN EJER 2==================================================
+    public int[][] getSolvedPuzzle() {
+        return solvedPuzzle;
+    }
+
+    public void setCellState(int[][] savedBoardMatrixSol) {
+        nonogramCellStates = savedBoardMatrixSol;
     }
 }

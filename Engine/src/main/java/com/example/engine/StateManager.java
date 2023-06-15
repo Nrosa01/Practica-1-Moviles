@@ -64,4 +64,15 @@ public class StateManager implements IState {
         } else
             throw new Exception("State didn't init correctly");
     }
+
+    // EJER 2=========================================================
+    public IState getState(){
+        return this.currentState;
+    }
+
+    //EJER 2 ==================
+    @Override
+    public void saveState(){
+
+    }
 }

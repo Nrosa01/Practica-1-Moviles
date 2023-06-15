@@ -8,4 +8,6 @@ public interface IState {
     void update(double deltaTime);
     void render();
     void handleInput(List<InputEvent> events);
+    //EJER 2
+    void saveState();
 }

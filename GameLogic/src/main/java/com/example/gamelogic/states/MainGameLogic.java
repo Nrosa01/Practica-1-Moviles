@@ -37,9 +37,26 @@ public class MainGameLogic extends AbstractState {
     double currentComprobarTime = 0;
     final int COMPROBAR_TIME_LIMIT = 1; //limite de tiempo
 
+    //EXAMEN EJER 2 ========================================================
+    int[][] savedBoardMatrix = null;
+    int[][] savedBoardMatrixSol = null;
+
     public MainGameLogic(IEngine engine, String level) {
         super(engine);
         this.level = level;
+
+        if(!engine.supportsTouch())
+            pointer = new Pointer(engine);
+    }
+
+    // EXAMEN EJER 2
+    public MainGameLogic(IEngine engine, String level, int[][] board, int[][] boardSol) {
+        super(engine);
+
+        this.level = level;
+
+        savedBoardMatrix = board;
+        savedBoardMatrixSol = boardSol;
 
         if(!engine.supportsTouch())
             pointer = new Pointer(engine);
@@ -64,7 +81,9 @@ public class MainGameLogic extends AbstractState {
                 @Override
                 public void onInteractionOccur() {
                     try {
+                        saveState(); // EJER 2
                         engine.setState(new SelectLevelLogic(engine));
+
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -120,21 +139,29 @@ public class MainGameLogic extends AbstractState {
                 }
             });
 
-            int rows = Integer.parseInt(level.split("x")[0]);
-            int cols = Integer.parseInt(level.split("x")[1]);
+            // ALEATORIO ===================================================================================================
+            if (savedBoardMatrix == null){
+                int rows = Integer.parseInt(level.split("x")[0]);
+                int cols = Integer.parseInt(level.split("x")[1]);
 
-            // Nivel de prueba para tests
-            int[][] level =
-                    {
-                            {1, 0, 1, 1},
-                            {0, 1, 0, 1},
-                            {1, 0, 1, 0},
-                            {1, 1, 0, 0}
-                    };
-            level = NonogramGenerator.GenerateLevel(rows, cols);
+                // Nivel de prueba para tests
+                int[][] level =
+                        {
+                                {1, 0, 1, 1},
+                                {0, 1, 0, 1},
+                                {1, 0, 1, 0},
+                                {1, 1, 0, 0}
+                        };
+                level = NonogramGenerator.GenerateLevel(rows, cols);
 
+                board = new NonogramBoard(engine, level, LOGIC_WIDTH - 20, 2, boardFont);
+            }
+            //SALVADO================================================================================================
+            else{
+                board = new NonogramBoard(engine, savedBoardMatrix, LOGIC_WIDTH - 20, 2, boardFont);
+                board.setCellState(savedBoardMatrixSol);
+            }
 
-            board = new NonogramBoard(engine, level, LOGIC_WIDTH - 20, 2, boardFont);
             board.setPosX(LOGIC_WIDTH / 2);
             board.setPosY(LOGIC_HEIGHT / 2);
             return true;
@@ -233,6 +260,40 @@ public class MainGameLogic extends AbstractState {
             } else
                 winReturnButton.handleInput(proccesedX, proccesedY, inputEvent.type);
 
+        }
+    }
+
+    //EJER 2 ==================
+    @Override
+    public void saveState(){
+        super.saveState();
+
+        savedBoardMatrix = board.getBoard();
+        savedBoardMatrixSol = board.getSolvedPuzzle();
+
+        int row = savedBoardMatrix.length;
+        int col = savedBoardMatrixSol[0].length;
+
+        Integer[][] bI = new Integer[row][col];
+        Integer[][] sP = new Integer[row][col];
+        for (int x = 0; x < row; x++)
+            for (int y = 0; y < col; y++) {
+                bI[x][y] = savedBoardMatrix[x][y];
+                sP[x][y] = savedBoardMatrixSol[x][y];
+            }
+
+        boolean random = true;
+        //engine.addSimpleData("random", random);
+        engine.add2DArrayData("board", bI);
+        //engine.addSimpleData("lives", livesPanel.getNumLives());
+        if (random) {
+            engine.add2DArrayData("boardSolution", sP);
+            engine.addSimpleData("level", level);
+        }
+        // PRACTICA 2: NO SE USA
+        else {
+            //engine.addSimpleData("numLevel", numLevel);
+            //engine.addSimpleData("type", type.ordinal());
         }
     }
 }

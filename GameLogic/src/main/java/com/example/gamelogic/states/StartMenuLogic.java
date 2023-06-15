@@ -21,6 +21,8 @@ public class StartMenuLogic extends AbstractState {
 
     //EXAMEN EJER 3
     Button buttonContrarreloj;
+    //EXAMEN EJER 2
+    Button lastLevelButton;
 
     public StartMenuLogic(IEngine engine) {
         super(engine);
@@ -53,7 +55,7 @@ public class StartMenuLogic extends AbstractState {
             sound.play(); //It only plays if it's not alrady playing
 
             //EXAMEN EJER 3==============================================================
-            buttonContrarreloj = new Button(LOGIC_WIDTH / 2, LOGIC_HEIGHT * 2/3, 100, 35, engine);
+            buttonContrarreloj = new Button(LOGIC_WIDTH / 2, LOGIC_HEIGHT * 2/3 - 35, 100, 35, engine);
             buttonContrarreloj.setText("Contrarreloj", testFont);
             buttonContrarreloj.setBackgroundColor(0, 0, 0, 0);
             buttonContrarreloj.setBorderSize(0);
@@ -72,6 +74,28 @@ public class StartMenuLogic extends AbstractState {
                 }
             });
 
+            //EXAMEN EJER 2=========================================================================
+            lastLevelButton = new Button(LOGIC_WIDTH / 2, LOGIC_HEIGHT * 2/3, 100, 35, engine);
+            lastLevelButton.setText("Last Level", testFont);
+            lastLevelButton.setBackgroundColor(0, 0, 0, 0);
+            lastLevelButton.setBorderSize(0);
+            lastLevelButton.setHoverColor(200, 200, 200);
+            lastLevelButton.setCallback(new IInteractableCallback() {
+                @Override
+                public void onInteractionOccur() {
+                    try {
+                        if(lastLevel != null){
+                            engine.setState(lastLevel);
+                        }
+                        else
+                            System.out.println("NO HAY LAST LEVEL");
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+
             return true;
         } catch (Exception e) {
             e.printStackTrace();
@@ -84,6 +108,8 @@ public class StartMenuLogic extends AbstractState {
         button.update((float) deltaTime);
         //EXAMEN EJER 3
         buttonContrarreloj.update((float) deltaTime);
+        //EXAMEN EJER 2
+        lastLevelButton.update((float) deltaTime);
 
         if (pointer != null)
             pointer.update((float) deltaTime);
@@ -99,6 +125,8 @@ public class StartMenuLogic extends AbstractState {
 
         //EXAMEN EJER 3
         buttonContrarreloj.render();
+        //EXAMEN EJER 2
+        lastLevelButton.render();
         int min = (int)(bestContrarreloj / 60);
         int secs = (int)(bestContrarreloj % 60);
         graphics.drawTextCentered("Best Record: " + min + ":" + secs, LOGIC_WIDTH / 2, LOGIC_HEIGHT * 5/6, testFont);
@@ -113,10 +141,18 @@ public class StartMenuLogic extends AbstractState {
             button.handleInput(proccesedX, proccesedY, inputEvent.type);
             //EXAMEN EJER 3
             buttonContrarreloj.handleInput(proccesedX, proccesedY, inputEvent.type);
+            //EXAMEN EJER 2
+            lastLevelButton.handleInput(proccesedX, proccesedY, inputEvent.type);
 
 
             if (pointer != null)
                 pointer.handleInput(proccesedX, proccesedY, inputEvent.type);
         }
+    }
+
+    //EJER 2 ==================
+    @Override
+    public void saveState(){
+
     }
 }

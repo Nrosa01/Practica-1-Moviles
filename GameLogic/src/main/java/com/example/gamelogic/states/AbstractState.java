@@ -20,6 +20,8 @@ public abstract class AbstractState implements IState {
     protected static String[] contrarrelojLevels = {"2x2", "2x3", "3x3", "3x4", "4x4"};
     protected static int currentContrarrelojLevel = 0;
 
+    public static IState lastLevel = null;
+
     protected AbstractState(IEngine engine)
     {
         this.engine = engine;
@@ -27,6 +29,11 @@ public abstract class AbstractState implements IState {
         this.audio = engine.getAudio();
 
         graphics.setLogicSize(LOGIC_WIDTH, LOGIC_HEIGHT);
+    }
+
+    //EJER 2 ==> CREO QUE NO HACE FALTA
+    public void saveState(){
+        //this.engine.setNameState((StatesNames.valueOf( this.getClass().getSimpleName())).ordinal());
     }
 
 }
