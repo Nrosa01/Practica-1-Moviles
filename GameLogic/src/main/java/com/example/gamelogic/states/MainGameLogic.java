@@ -418,8 +418,11 @@ public class MainGameLogic extends AbstractState implements Listener {
             // ACTUALIZAMOS LA PUNTUACION EN ESE TIPO
             if (!random && !end) //Modo Historia
             {
-                puntuaciones[type.ordinal()] += board.getPuntuacion();
+                int world = type.ordinal();
+                puntuaciones[world] += board.getPuntuacion();
                 end = true; // solo se suma la puntuacion 1 vez
+                //Actualizo DataToAccess
+                DataToAccess.getInstance().setInt("Puntuacion" + type.toString(), puntuaciones[world]);
             }
 
         }

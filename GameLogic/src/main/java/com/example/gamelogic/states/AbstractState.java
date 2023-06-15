@@ -31,7 +31,7 @@ public abstract class AbstractState implements IState {
     protected int NUM_THEMES = 5;
     static protected boolean[] unlockedThemes = {true, false, false, false, false}; //el primero esta desbloqueado por defecto
 
-    static protected int[] puntuaciones = {0,0,0,0};
+    static protected int[] puntuaciones = {0,0,0,0, 0, 0};
 
     protected Color[][] themes = {
             //DEFUALT

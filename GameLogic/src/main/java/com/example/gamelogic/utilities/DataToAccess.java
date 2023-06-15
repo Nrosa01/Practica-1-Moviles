@@ -58,6 +58,14 @@ public class DataToAccess {
             levelData.put("CurrentColor", Integer.class.cast(dat.get("CurrentColor")));
         }
 
+        //PUNTUACION
+        for (String world: keysOfLevelData  ) {
+            String key = "Puntuacion" + world;
+            if(!dat.containsKey(key))
+                levelData.put(key,0);
+            else
+                levelData.put(key, Integer.class.cast(dat.get(key)));
+        }
     }
 
     public static DataToAccess getInstance() {

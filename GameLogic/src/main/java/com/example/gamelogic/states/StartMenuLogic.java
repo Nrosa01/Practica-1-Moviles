@@ -107,6 +107,12 @@ public class StartMenuLogic extends AbstractState {
             sound.play(); //It only plays if it's not alrady playing
             engine.setMusic(sound);
 
+            //PUNTUACION: ACCEDO A LOS DATOS GUARDADOS
+            for (int i = 0; i < WorldLevelType.values().length; i++){
+                String world = WorldLevelType.values()[i].toString();
+                puntuaciones[i] = data.getInt("Puntuacion" + world);
+            }
+
             return true;
         } catch (Exception e) {
             e.printStackTrace();
