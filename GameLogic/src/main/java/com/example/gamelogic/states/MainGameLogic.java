@@ -81,7 +81,10 @@ public class MainGameLogic extends AbstractState {
                 @Override
                 public void onInteractionOccur() {
                     try {
-                        saveState(); // EJER 2
+                        // EJER 2
+                        saveState();
+                        lastLevel = new MainGameLogic(engine, level, savedBoardMatrix, savedBoardMatrixSol);
+                        //
                         engine.setState(new SelectLevelLogic(engine));
 
                     } catch (Exception e) {
