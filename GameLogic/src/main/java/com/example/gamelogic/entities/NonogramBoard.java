@@ -51,6 +51,18 @@ public class NonogramBoard extends Board {
     // PUNTUACION
     int level_puntuacion = 0;
 
+    // PISTA
+    boolean pista = false;
+    float timer = 0;
+
+    public boolean getPista(){
+        return pista;
+    }
+    public void setPista(boolean p){
+        pista = p;
+        timer = 0;
+    }
+
     public void setColors(Color c, Color c1, Color c2, Color c3) {
         backgroundColor = c;
         defaultColor = c1;
@@ -349,10 +361,19 @@ public class NonogramBoard extends Board {
 
     //DEVUELVE TRUE SI NO ES SOLUCION
     @Override
-    protected boolean OnCellRender(int row, int col) {
+    protected int OnCellRender(int row, int col) {
 
         setColorGivenState(board[row][col]);
-        return solvedPuzzle[row][col] == 0;
+        int alpha = 0;
+        if(solvedPuzzle[row][col] == 0 && pista){
+            // GRADIENTE ASCENDENTE
+            if(timer < 1)
+                alpha = (int)(timer * 255);
+            // GRADIENTE DESCENDENTE
+            else alpha = (int)((2 - timer) * 255);
+        }
+
+        return alpha;
     }
 
     // Updates board state, update missingCells and badCells, also returns true if win is satisfied
@@ -413,6 +434,16 @@ public class NonogramBoard extends Board {
 
     @Override
     public void update(double deltaTime) {
+
+        // PISTA=====================================================
+        if(pista){
+            timer += deltaTime;
+            if(timer > 2){
+                timer = 0;
+                pista = false;
+            }
+        }
+        //============================================================
         if (isWin) {
             if (!endTransitionLerper.isFinished()) {
                 this.endTransitionLerper.update(deltaTime);
@@ -471,7 +502,12 @@ public class NonogramBoard extends Board {
         return solvedPuzzle;
     }
 
+    // PUNTUACION ====================================================0
     public int getPuntuacion() {
         return level_puntuacion;
+    }
+
+    public void losePuntuacion(){
+        level_puntuacion -= 50;
     }
 }

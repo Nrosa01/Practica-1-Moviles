@@ -52,13 +52,15 @@ public abstract class Board extends Entity {
 
         for (int row = 0; row < rows; row++) {
             for (int col = 0; col < cols; col++) {
-                boolean circle = this.OnCellRender(row, col); //pone el color
+                int alpha_circle = this.OnCellRender(row, col); //pone el color
                 graphics.fillRectangle(getCellPosX(col), getCellPosY(row), cellWidth, cellHeight);
                 drawImageInCell(getCellPosX(col), getCellPosY(row), cellWidth, cellHeight);
                 //PROBANDO
-                if(circle){
+                if(alpha_circle >= 0 && alpha_circle <= 255 ){
+                    graphics.setGraphicsAlpha(alpha_circle);
                     graphics.setColor(255, 0, 0);
                     graphics.drawCircle(getCellPosX(col), getCellPosY(row), cellWidth);
+                    graphics.setGraphicsAlpha(255);
                 }
             }
         }
@@ -93,8 +95,8 @@ public abstract class Board extends Entity {
     protected abstract void OnCellClicked(int row, int col);
     protected abstract void OnCellReleased(int row, int col) ;
 
-    // LO HAGO BOOLEAN PARA SABER SI ES CIRCULO O NO
-    protected abstract boolean OnCellRender(int row, int col);
+    // LO HAGO double PARA SABER SI ES CIRCULO O NO
+    protected abstract int OnCellRender(int row, int col);
 
     int getCellPosX(int col) {
         return posX - widthArea / 2 + col * (cellWidth + gapSize) + cellWidth / 2 + paddingHorizontal;

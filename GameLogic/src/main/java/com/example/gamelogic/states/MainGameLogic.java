@@ -27,7 +27,10 @@ import java.util.List;
 
 
 public class MainGameLogic extends AbstractState implements Listener {
-
+    //PISTA==============================
+    Button pistaButton;
+    IInteractableCallback pistaCallback;
+    //
     String level;
     NonogramBoard board;
     Button returnButton;
@@ -306,6 +309,39 @@ public class MainGameLogic extends AbstractState implements Listener {
             nextLevelButton.setHoverColor(205, 205, 205);
             nextLevelButton.setCallback(nextLevelCallback);
 
+            // PISTA==============================================================================================================================
+            pistaCallback = new IInteractableCallback() {
+                @Override
+                public void onInteractionOccur() {
+                    try {
+                        // SOLO LO PONE A TRUE SI NO ESTABA ACTIVO
+                        if(!board.getPista()){
+                            board.setPista(true);
+
+                            // TE CUESTA UN CORAZON
+                            livesPanel.takeLive(); //PIERDE CORAZON
+                            if (!livesPanel.isAlive()) {
+                                board.clear();
+                                livesPanel.restoreLives();
+                            }
+
+                            //PIERDES PUNTUACION
+                            board.losePuntuacion();
+                        }
+
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            };
+
+            pistaButton = new Button(LOGIC_WIDTH / 2, LOGIC_HEIGHT - 35, 100, 50, engine);
+            pistaButton.setText("Pista", font);
+            pistaButton.setBackgroundColor(0, 0, 0, 0);
+            pistaButton.setBorderSize(0);
+            pistaButton.setHoverColor(205, 205, 205);
+            pistaButton.setCallback(pistaCallback);
 
             int[][] level;
             if (random) {
@@ -409,6 +445,8 @@ public class MainGameLogic extends AbstractState implements Listener {
 
         if (!board.getIsWin()) {
             returnButton.update(deltaTime);
+            //PISTA
+            pistaButton.update(deltaTime);
         } else {
             if (!graphics.isPortrait()) {
                 int boardWidth = Math.min(LOGIC_WIDTH, LOGIC_HEIGHT) / 2 - 20;
@@ -445,6 +483,9 @@ public class MainGameLogic extends AbstractState implements Listener {
             graphics.setAnchorPoint(AnchorPoint.None);
 
             returnButton.render();
+            //PISTA
+            pistaButton.render();
+            //
             watchVid.render();
             livesPanel.render();
         } else {
@@ -470,6 +511,8 @@ public class MainGameLogic extends AbstractState implements Listener {
             if (!board.getIsWin()) {
                 watchVid.handleInput(proccesedX, proccesedY, inputEvent.type);
                 returnButton.handleInput(proccesedX, proccesedY, inputEvent.type);
+                //PISTA
+                pistaButton.handleInput(proccesedX, proccesedY, inputEvent.type);
             } else {
                 if (winReturnButton != null)
                     winReturnButton.handleInput(proccesedX, proccesedY, inputEvent.type);
