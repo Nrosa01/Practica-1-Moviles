@@ -30,6 +30,8 @@ public class MainGameLogic extends AbstractState {
     IImage arrow;
     IImage search;
     boolean gameWin = false;
+    //CIEGO
+    Button ciegoButton;
 
     public MainGameLogic(IEngine engine, String level) {
         super(engine);
@@ -112,6 +114,24 @@ public class MainGameLogic extends AbstractState {
             board = new NonogramBoard(engine, level, LOGIC_WIDTH - 20, 2, boardFont);
             board.setPosX(LOGIC_WIDTH / 2);
             board.setPosY(LOGIC_HEIGHT / 2);
+
+            ciegoButton = new Button(LOGIC_WIDTH / 2, LOGIC_HEIGHT - 50, 100, 50, engine);
+            ciegoButton.setText("Pista", font);
+            ciegoButton.setBackgroundColor(0, 0, 0, 0);
+            ciegoButton.setBorderSize(0);
+            ciegoButton.setHoverColor(205, 205, 205);
+            ciegoButton.setPressedColor(150, 150, 150);
+            ciegoButton.setCallback(new IInteractableCallback() {
+                @Override
+                public void onInteractionOccur() {
+                    try {
+                        board.setCiego(false);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+
             return true;
         } catch (Exception e) {
             e.printStackTrace();
@@ -128,6 +148,8 @@ public class MainGameLogic extends AbstractState {
 
         if (!board.getIsWin()) {
             returnButton.update(deltaTime);
+            //CIEGO
+            ciegoButton.update(deltaTime);
         } else
             winReturnButton.update(deltaTime);
     }
@@ -143,6 +165,8 @@ public class MainGameLogic extends AbstractState {
 
             returnButton.render();
             checkButton.render();
+            //CIEGO
+            ciegoButton.render();
         } else {
             graphics.drawTextCentered("¡Enhorabuena!", LOGIC_WIDTH / 2, 50, congratsFont);
             winReturnButton.render();
@@ -165,7 +189,8 @@ public class MainGameLogic extends AbstractState {
 
             if (!board.getIsWin()) {
                 checkButton.handleInput(proccesedX, proccesedY, inputEvent.type);
-
+                //CIEGO
+                ciegoButton.handleInput(proccesedX, proccesedY, inputEvent.type);
                 returnButton.handleInput(proccesedX, proccesedY, inputEvent.type);
             } else
                 winReturnButton.handleInput(proccesedX, proccesedY, inputEvent.type);

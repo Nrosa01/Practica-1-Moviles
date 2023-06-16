@@ -29,6 +29,9 @@ public class NonogramBoard extends Board {
     ISound winSound;
     ISound selectCell;
 
+    // A CIEGAS
+    boolean ciego = true;
+
     public NonogramBoard(IEngine engine, int[][] solvedPuzzle, int width, int gapSize, IFont font) {
         super(engine, solvedPuzzle.length, solvedPuzzle[0].length, width, gapSize);
 
@@ -194,31 +197,40 @@ public class NonogramBoard extends Board {
     private void setColorGivenState(int state) {
         setCellImg(null);
 
-        switch (state) {
-            case 0:
-                if (!isWin)
-                    graphics.setColor(123, 123, 123);
-                else
-                    graphics.setColor(255, 255, 255);
-                break;
-            case 1:
-                graphics.setColor(123, 123, 255);
-                break;
-            case 2:
-                if (!isWin)
-                {
-                    graphics.setColor(23, 23, 23);
-                    setCellImg(blockedCell);
-                }
-                else
-                    graphics.setColor(255, 255, 255);
-                break;
-            case 3:
-                if (!isWin)
-                    graphics.setColor(255, 123, 123);
-                else
-                    graphics.setColor(255, 255, 255);
+        //EDFAULT CIEGO
+        if(ciego && !isWin)
+            graphics.setColor(123, 123, 123);
+        //NORMAL, PUEDE VER
+        else{
+            //System.out.println("BBBBBBBBBBBBBBBBBBBBBB");
+            switch (state) {
+                case 0:
+                    if (!isWin)
+                        graphics.setColor(123, 123, 123);
+                    else
+                        graphics.setColor(255, 255, 255);
+                    break;
+                case 1:
+                    graphics.setColor(123, 123, 255);
+                    break;
+                case 2:
+                    if (!isWin)
+                    {
+                        graphics.setColor(23, 23, 23);
+                        setCellImg(blockedCell);
+                    }
+                    else
+                        graphics.setColor(255, 255, 255);
+                    break;
+                case 3:
+                    if (!isWin)
+                        graphics.setColor(255, 123, 123);
+                    else
+                        graphics.setColor(255, 255, 255);
+            }
         }
+
+
     }
 
     public void setBorderColor(int r, int g, int b) {
@@ -229,8 +241,9 @@ public class NonogramBoard extends Board {
     }
 
     @Override
-    protected void OnCellRender(int row, int col) {
+    protected boolean OnCellRender(int row, int col) {
         setColorGivenState(nonogramCellStates[row][col]);
+        return (solvedPuzzle[row][col] == 1) && isWin;
     }
 
     // Updates board state, update missingCells and badCells, also returns true if win is satisfied
@@ -331,5 +344,10 @@ public class NonogramBoard extends Board {
 
         this.posX -= borderBoardSize / 2;
         this.posY -= borderBoardSize / 2;
+    }
+
+    public void setCiego(boolean b) {
+        ciego = b;
+        //System.out.println("AAAAAAAAAAAA");
     }
 }

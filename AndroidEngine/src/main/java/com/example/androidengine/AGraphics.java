@@ -285,8 +285,13 @@ public class AGraphics extends AbstractGraphics {
 
     @Override
     public void drawCircle(int xPos, int yPos, int radius) {
+        //ARREGLO
+        int x = logicXPositionToWindowsXPosition(xPos);
+        int y = logicXPositionToWindowsXPosition(yPos);
+        radius *= scaleX;
+        //
         Canvas canvas = engine.getCurrentCanvas();
-        canvas.drawCircle(xPos, yPos, radius, paint);
+        canvas.drawCircle(x, y + radius, radius, paint);
     }
 
 

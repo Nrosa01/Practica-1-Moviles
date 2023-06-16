@@ -50,9 +50,16 @@ public abstract class Board extends Entity {
 
         for (int row = 0; row < rows; row++) {
             for (int col = 0; col < cols; col++) {
-                this.OnCellRender(row, col);
-                graphics.fillRectangle(getCellPosX(col), getCellPosY(row), cellWidth, cellHeight);
-                drawImageInCell(getCellPosX(col), getCellPosY(row), cellWidth, cellHeight);
+                boolean is_sol = this.OnCellRender(row, col);
+
+
+                //
+                if(is_sol)
+                    graphics.drawCircle(getCellPosX(col), getCellPosY(row), cellWidth);
+                else{
+                    graphics.fillRectangle(getCellPosX(col), getCellPosY(row), cellWidth, cellHeight);
+                    drawImageInCell(getCellPosX(col), getCellPosY(row), cellWidth, cellHeight);
+                }
             }
         }
     }
@@ -85,7 +92,7 @@ public abstract class Board extends Entity {
 
     protected abstract void OnCellClicked(int row, int col);
 
-    protected abstract void OnCellRender(int row, int col);
+    protected abstract boolean OnCellRender(int row, int col);
 
     int getCellPosX(int col) {
         return posX - widthArea / 2 + col * (cellWidth + gapSize) + cellWidth / 2 + paddingHorizontal;

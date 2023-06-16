@@ -229,9 +229,10 @@ public class DesktopGraphics extends AbstractGraphics {
     // Dibujar un circulo centrado en px py de radio radius teniendo en cuenta la escala
     @Override
     public void drawCircle(int px, int py, int radius) {
-        int processedX = logicXPositionToWindowsXPosition(px - radius);
-        int processedY = logicYPositionToWindowsYPosition(py - radius);
-        graphics2D.fillOval(processedX, processedY, radius * 2, radius * 2);
+        radius *= scaleX;
+        int processedX = logicXPositionToWindowsXPosition(px - radius) + radius / 2; //*scaleX
+        int processedY = logicYPositionToWindowsYPosition(py - radius) + radius / 2;
+        graphics2D.fillOval(processedX, processedY, radius, radius);
     }
 
     // Dibuja un texto teniendo en cuenta la escala con la parte izquierda como pivote del texto
