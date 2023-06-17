@@ -270,17 +270,15 @@ public class AGraphics extends AbstractGraphics {
         //current canvas displayed
         Canvas canvas = engine.getCurrentCanvas();
 
-        //EN VEZ DE DIBUJAR UN TRIANGULO, DIBUJO SOLO 1 ARISTA
-        Point a = new Point(fromX, fromY);
-        Point b = new Point(toX, toY);
+        int uLx = logicXPositionToWindowsXPosition(fromX);
+        int uLy = logicYPositionToWindowsYPosition(fromY);
+        int lRx = logicXPositionToWindowsXPosition(toX);
+        int lRy = logicYPositionToWindowsYPosition(toY);
 
-        Path path = new Path();
-        path.setFillType(Path.FillType.EVEN_ODD);
-        path.lineTo(a.x, a.y);
-        path.lineTo(b.x, b.y);
-        path.close();
-
-        canvas.drawPath(path, paint);
+        paint.setStyle(Paint.Style.STROKE); //FILL IS DEFAULT VALUE
+        paint.setStrokeWidth((float)(10 * scaleX));
+        canvas.drawLine(uLx, uLy, lRx, lRy, paint);
+        paint.setStyle(Paint.Style.FILL); //FILL IS DEFAULT VALUE
     }
 
     @Override

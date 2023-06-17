@@ -223,7 +223,12 @@ public class DesktopGraphics extends AbstractGraphics {
 
     @Override
     public void drawLine(int fromX, int fromY, int toX, int toY) {
-
+        int processedX = logicXPositionToWindowsXPosition(fromX);
+        int processedY = logicYPositionToWindowsYPosition(fromY);
+        int processedX2 = logicXPositionToWindowsXPosition(toX);
+        int processedY2 = logicYPositionToWindowsYPosition(toY);
+        graphics2D.setStroke(new BasicStroke(10));
+        graphics2D.drawLine(processedX, processedY, processedX2, processedY2);
     }
 
     // Dibujar un circulo centrado en px py de radio radius teniendo en cuenta la escala

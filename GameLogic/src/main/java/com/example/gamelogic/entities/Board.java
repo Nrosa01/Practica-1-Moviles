@@ -51,17 +51,27 @@ public abstract class Board extends Entity {
         for (int row = 0; row < rows; row++) {
             for (int col = 0; col < cols; col++) {
                 boolean is_sol = this.OnCellRender(row, col);
-
-
                 //
                 if(is_sol)
                     graphics.drawCircle(getCellPosX(col), getCellPosY(row), cellWidth);
                 else{
                     graphics.fillRectangle(getCellPosX(col), getCellPosY(row), cellWidth, cellHeight);
                     drawImageInCell(getCellPosX(col), getCellPosY(row), cellWidth, cellHeight);
+
+                    //CRUZ
+                    graphics.setColor(255, 0, 0);
+                    //ARRIBA IZ
+                    graphics.drawLine(getCellPosX(col) - cellWidth / 2, getCellPosY(row) - cellHeight/2,
+                            getCellPosY(col) - cellWidth, getCellPosY(row) + cellHeight / 2);
+                    // ABAJO DR
+                    graphics.drawLine(getCellPosX(col) - cellWidth / 2, getCellPosY(row) + cellHeight/2,
+                            getCellPosY(col) - cellWidth, getCellPosY(row) - cellHeight / 2);
+
                 }
             }
         }
+
+
     }
 
     private void drawImageInCell(int row, int col, int cellWidth, int cellHeight)
