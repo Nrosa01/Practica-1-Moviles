@@ -8,4 +8,10 @@ public interface IState {
     void update(double deltaTime);
     void render();
     void handleInput(List<InputEvent> events);
+    void SaveData();
+
+    // EXAMEN EJER 2
+    DataState getDataStateInstance();
+    void setDataState(DataState d);
+
 }

@@ -22,6 +22,9 @@ public class StartMenuLogic extends AbstractState {
     //EXAMEN EJER 3
     Button buttonContrarreloj;
 
+    //EXAMEN EJER 2
+    Button buttonContinuar;
+
     public StartMenuLogic(IEngine engine) {
         super(engine);
     }
@@ -32,7 +35,7 @@ public class StartMenuLogic extends AbstractState {
             if (!engine.supportsTouch())
                 pointer = new Pointer(engine);
             testFont = graphics.newFont(engine.getAssetsPath() + "fonts/Antihero.ttf", 24, false);
-            button = new Button(LOGIC_WIDTH / 2, LOGIC_HEIGHT / 2, 100, 35, engine);
+            button = new Button(LOGIC_WIDTH / 2, LOGIC_HEIGHT * 1 / 4, 100, 35, engine);
             button.setText("Jugar", testFont);
             button.setBackgroundColor(0, 0, 0, 0);
             button.setBorderSize(0);
@@ -53,7 +56,7 @@ public class StartMenuLogic extends AbstractState {
             sound.play(); //It only plays if it's not alrady playing
 
             //EXAMEN EJER 3==============================================================
-            buttonContrarreloj = new Button(LOGIC_WIDTH / 2, LOGIC_HEIGHT * 2/3, 100, 35, engine);
+            buttonContrarreloj = new Button(LOGIC_WIDTH / 2, LOGIC_HEIGHT / 2, 100, 35, engine);
             buttonContrarreloj.setText("Contrarreloj", testFont);
             buttonContrarreloj.setBackgroundColor(0, 0, 0, 0);
             buttonContrarreloj.setBorderSize(0);
@@ -62,10 +65,34 @@ public class StartMenuLogic extends AbstractState {
                 @Override
                 public void onInteractionOccur() {
                     try {
-                        engine.setState(new MainGameLogic(engine, "2x2"));
+                        engine.setState(new MainGameLogic(engine, "2x2", false));
                         timeLeftInContrarreloj = 15 * 60; //ms
                         contrarreloj = true;
                         currentContrarrelojLevel = 0;
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+
+            // EXAMEN EJER 2==========================================================
+            buttonContinuar = new Button(LOGIC_WIDTH / 2, LOGIC_HEIGHT * 2/3, 100, 35, engine);
+            buttonContinuar.setText("Continuar", testFont);
+            buttonContinuar.setBackgroundColor(0, 0, 0, 0);
+            buttonContinuar.setBorderSize(0);
+            buttonContinuar.setHoverColor(200, 200, 200);
+            buttonContinuar.setCallback(new IInteractableCallback() {
+                @Override
+                public void onInteractionOccur() {
+                    try {
+                        String level = getDataStateInstance().getSimpleData("SavedLevel");
+                        if(level != null){
+                            engine.setState(new MainGameLogic(engine, level, true));
+                        }
+                        else{
+                            System.out.println("ERROR EN CONTINUAR");
+                        }
+
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -84,6 +111,8 @@ public class StartMenuLogic extends AbstractState {
         button.update((float) deltaTime);
         //EXAMEN EJER 3
         buttonContrarreloj.update((float) deltaTime);
+        //EXAMEN EJER 2
+        buttonContinuar.update((float) deltaTime);
 
         if (pointer != null)
             pointer.update((float) deltaTime);
@@ -99,6 +128,9 @@ public class StartMenuLogic extends AbstractState {
 
         //EXAMEN EJER 3
         buttonContrarreloj.render();
+        //EXAMEN EJER 2
+        buttonContinuar.render();
+
         int min = (int)(bestContrarreloj / 60);
         int secs = (int)(bestContrarreloj % 60);
         graphics.drawTextCentered("Best Record: " + min + ":" + secs, LOGIC_WIDTH / 2, LOGIC_HEIGHT * 5/6, testFont);
@@ -114,9 +146,16 @@ public class StartMenuLogic extends AbstractState {
             //EXAMEN EJER 3
             buttonContrarreloj.handleInput(proccesedX, proccesedY, inputEvent.type);
 
+            //EXAMEN EJER 2
+            buttonContinuar.handleInput(proccesedX, proccesedY, inputEvent.type);
 
             if (pointer != null)
                 pointer.handleInput(proccesedX, proccesedY, inputEvent.type);
         }
+    }
+
+    @Override
+    public void SaveData() {
+
     }
 }

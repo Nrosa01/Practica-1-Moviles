@@ -54,6 +54,41 @@ public class NonogramBoard extends Board {
         selectCell = audio.newSound(engine.getAssetsPath() + "audio/selectSound.wav", "selectSound");
     }
 
+    // EJER 2==================================================
+    public NonogramBoard(IEngine engine, Integer[][] solvedPuzzle, Integer[][] cellStates, int width, int gapSize, IFont font) {
+        super(engine, solvedPuzzle.length, solvedPuzzle[0].length, width, gapSize);
+
+        this.initialWidth = width;
+
+        this.solvedPuzzle = new int[rows][cols];
+        for (int i = 0; i < rows; i++)
+            for (int j = 0; j < cols; j++)
+                this.solvedPuzzle[i][j] = solvedPuzzle[i][j];
+        //this.solvedPuzzle = solvedPuzzle;
+
+        init();
+
+        nonogramCellStates = new int[rows][cols];
+        for (int i = 0; i < rows; i++)
+            for (int j = 0; j < cols; j++)
+                this.nonogramCellStates[i][j] = cellStates[i][j];
+
+        borderColor = new Color();
+
+        generateRowsText();
+        generateColsText();
+
+        this.font = font;
+        endTransitionLerper = new FloatLerper(borderBoardRatio, 0, 0.55f, LerpType.EaseOut);
+        wrongTilesTimer = new FloatLerper(0, 5, 10, LerpType.Linear); // Voy a usar esto como un timer
+        wrongTilesTimer.setPaused(true);
+        textColor = new Color();
+
+        blockedCell = graphics.newImage(engine.getAssetsPath() + "images/blockedTile.png");
+        winSound = audio.newSound(engine.getAssetsPath() + "audio/winSound.wav", "winSound");
+        selectCell = audio.newSound(engine.getAssetsPath() + "audio/selectSound.wav", "selectSound");
+    }
+
     public boolean getIsWin() {
         return isWin;
     }
@@ -358,5 +393,23 @@ en azul.*/
             }
         }
 
+    }
+
+    // EJER 2========================================================
+    public Integer[][] getSolvedPuzzle() {
+        Integer[][] aux = new Integer[rows][cols];
+        for (int i = 0; i < rows; i++)
+            for(int j = 0; j < cols; j++)
+                aux[i][j] = solvedPuzzle[i][j];
+        return aux;
+    }
+
+    // EJER 2========================================================
+    public Integer[][] getCellStates() {
+        Integer[][] aux = new Integer[rows][cols];
+        for (int i = 0; i < rows; i++)
+            for(int j = 0; j < cols; j++)
+                aux[i][j] = nonogramCellStates[i][j];
+        return aux;
     }
 }

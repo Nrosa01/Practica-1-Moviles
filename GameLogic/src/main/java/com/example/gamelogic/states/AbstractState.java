@@ -1,5 +1,6 @@
 package com.example.gamelogic.states;
 
+import com.example.engine.DataState;
 import com.example.engine.IAudio;
 import com.example.engine.IEngine;
 import com.example.engine.IGraphics;
@@ -20,6 +21,21 @@ public abstract class AbstractState implements IState {
     protected static String[] contrarrelojLevels = {"2x2", "2x3", "3x3", "3x4", "4x4"};
     protected static int currentContrarrelojLevel = 0;
 
+    //EXAMEN EJER 2
+    static DataState dataState = null;
+
+    @Override
+    public DataState getDataStateInstance(){
+        if(dataState == null)
+            dataState = new DataState();
+        return dataState;
+    }
+    @Override
+    public void setDataState(DataState d){
+        dataState = d;
+    }
+
+    //=====================================================================
     protected AbstractState(IEngine engine)
     {
         this.engine = engine;

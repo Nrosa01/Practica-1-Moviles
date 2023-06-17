@@ -37,9 +37,14 @@ public class MainGameLogic extends AbstractState {
     double currentComprobarTime = 0;
     final int COMPROBAR_TIME_LIMIT = 1; //limite de tiempo
 
-    public MainGameLogic(IEngine engine, String level) {
+    // EXAMEN EJER 2
+    boolean saved = false;
+
+    public MainGameLogic(IEngine engine, String level, boolean saved) {
         super(engine);
         this.level = level;
+        //EJER 2
+        this.saved = saved;
 
         if(!engine.supportsTouch())
             pointer = new Pointer(engine);
@@ -65,6 +70,8 @@ public class MainGameLogic extends AbstractState {
                 public void onInteractionOccur() {
                     try {
                         engine.setState(new SelectLevelLogic(engine));
+                        //EJER 2=============
+                        SaveData();
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -120,21 +127,36 @@ public class MainGameLogic extends AbstractState {
                 }
             });
 
-            int rows = Integer.parseInt(level.split("x")[0]);
-            int cols = Integer.parseInt(level.split("x")[1]);
+            if (!saved){
+                int rows = Integer.parseInt(level.split("x")[0]);
+                int cols = Integer.parseInt(level.split("x")[1]);
 
-            // Nivel de prueba para tests
-            int[][] level =
-                    {
-                            {1, 0, 1, 1},
-                            {0, 1, 0, 1},
-                            {1, 0, 1, 0},
-                            {1, 1, 0, 0}
-                    };
-            level = NonogramGenerator.GenerateLevel(rows, cols);
+                // Nivel de prueba para tests
+                int[][] level =
+                        {
+                                {1, 0, 1, 1},
+                                {0, 1, 0, 1},
+                                {1, 0, 1, 0},
+                                {1, 1, 0, 0}
+                        };
+                level = NonogramGenerator.GenerateLevel(rows, cols);
 
 
-            board = new NonogramBoard(engine, level, LOGIC_WIDTH - 20, 2, boardFont);
+                board = new NonogramBoard(engine, level, LOGIC_WIDTH - 20, 2, boardFont);
+            }
+            //EJER 2=================================================================================
+            else{
+                this.level = getDataStateInstance().getSimpleData("SavedLevel");
+                int rows = Integer.parseInt(level.split("x")[0]);
+                int cols = Integer.parseInt(level.split("x")[1]);
+
+                // Nivel de prueba para tests
+                Integer[][] savedSolvedPuzzle = getDataStateInstance().get2DArrayData("SavedSolvedPuzzle");
+                Integer[][] savedBoard = getDataStateInstance().get2DArrayData("SavedBoard");
+
+                board = new NonogramBoard(engine, savedSolvedPuzzle, savedBoard, LOGIC_WIDTH - 20, 2, boardFont);
+            }
+
             board.setPosX(LOGIC_WIDTH / 2);
             board.setPosY(LOGIC_HEIGHT / 2);
             return true;
@@ -161,7 +183,7 @@ public class MainGameLogic extends AbstractState {
             // PASAMOS AL SIGUIENTE NIVEL
             if(currentContrarrelojLevel < contrarrelojLevels.length){
                 try {
-                    engine.setState(new MainGameLogic(engine, contrarrelojLevels[currentContrarrelojLevel]));
+                    engine.setState(new MainGameLogic(engine, contrarrelojLevels[currentContrarrelojLevel], false));
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -234,5 +256,12 @@ public class MainGameLogic extends AbstractState {
                 winReturnButton.handleInput(proccesedX, proccesedY, inputEvent.type);
 
         }
+    }
+
+    public void SaveData(){
+        System.out.println("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA11111");
+        getDataStateInstance().addSimpleData("SavedLevel", level);
+        getDataStateInstance().add2DArrayData("SavedSolvedPuzzle", board.getSolvedPuzzle());
+        getDataStateInstance().add2DArrayData("SavedBoard", board.getCellStates());
     }
 }

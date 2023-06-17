@@ -56,7 +56,7 @@ public class SelectLevelLogic extends AbstractState {
                         @Override
                         public void onInteractionOccur() {
                             try {
-                                engine.setState(new MainGameLogic(engine, texts[finalRow][finalCol]));
+                                engine.setState(new MainGameLogic(engine, texts[finalRow][finalCol], false));
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
@@ -122,5 +122,10 @@ public class SelectLevelLogic extends AbstractState {
             for (Entity entity : entities)
                 entity.handleInput(proccesedX, proccesedY, inputEvent.type);
         }
+    }
+
+    @Override
+    public void SaveData() {
+
     }
 }

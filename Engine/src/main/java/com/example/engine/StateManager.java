@@ -55,6 +55,24 @@ public class StateManager implements IState {
         currentState.handleInput(events);
     }
 
+    //EXAMEN EJER 2=========================================================
+    @Override
+    public void SaveData() {
+        currentState.SaveData();
+    }
+
+    @Override
+    public DataState getDataStateInstance() {
+        return currentState.getDataStateInstance();
+    }
+
+    @Override
+    public void setDataState(DataState d) {
+        currentState.setDataState(d);
+    }
+
+    //=========================================================
+
     public void setState(IState state) throws Exception {
         if (state.init()) {
             this.oldState = currentState;
@@ -64,4 +82,6 @@ public class StateManager implements IState {
         } else
             throw new Exception("State didn't init correctly");
     }
+
+
 }
