@@ -33,15 +33,9 @@ public class AEngine extends SurfaceView implements IEngine, Runnable {
     private AInput inputManager;
     AAudio audio;
 
-    //EXAMEN EJER 2:
-    private DataState dataState;
-
     public AEngine(Context context, AssetManager assetManager) {
         super(context); //constructora de SurfaceView
 
-        // EJER 2
-        dataState = new DataState();
-        //
         this.paint = new Paint();
         this.paint.setColor(0xFF000000);
 
@@ -68,8 +62,6 @@ public class AEngine extends SurfaceView implements IEngine, Runnable {
 
         this.stateManager.setState(state);
         inputManager.clear();
-        //EJER 2
-        dataState.flushStateData();
     }
 
     public void resume() {
@@ -205,24 +197,6 @@ public class AEngine extends SurfaceView implements IEngine, Runnable {
         return "";
     }
 
-    //EJER 2===============================================================
-    public DataState getDataState() {
-        this.stateManager.getState().saveState();
-        //dataState.addSimpleData("musica", actualMusic.getPos());
-        return dataState;
-    }
-
-    public <T> void addSimpleData(String key, T variable){
-        dataState.addSimpleData(key, variable);
-    }
-
-    public <T> void addArrayData(String key, T[] array){
-        dataState.addArrayData(key,array);
-    }
-
-    public <T> void add2DArrayData(String key, T[][] array){
-        dataState.add2DArrayData(key,array);
-    }
 
 
 }

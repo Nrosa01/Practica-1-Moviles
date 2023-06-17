@@ -27,13 +27,7 @@ public class DesktopEngine implements IEngine, Runnable, MouseInputListener {
     Cursor blankCursor;
     Cursor defaultCursor;
 
-    //EXAMEN EJER 2:
-    private DataState dataState;
-
     public DesktopEngine(int wWidth, int wHeight, String wTittle) {
-        // EJER 2
-        dataState = new DataState();
-        //
         mView = new JFrame(wTittle);
         graphics = new DesktopGraphics(mView, wWidth, wHeight);
         inputManager = new DesktopInput();
@@ -155,8 +149,6 @@ public class DesktopEngine implements IEngine, Runnable, MouseInputListener {
     @Override
     public void setState(IState state) throws Exception {
         this.stateManager.setState(state);
-        //EJER 2
-        dataState.flushStateData();
     }
 
     @Override
@@ -201,24 +193,5 @@ public class DesktopEngine implements IEngine, Runnable, MouseInputListener {
             inputManager.addEvent(mouseEvent);
         } else
             mView.setCursor(defaultCursor);
-    }
-
-    //EJER 2===============================================================
-    public DataState getDataState() {
-        this.stateManager.getState().saveState();
-        //dataState.addSimpleData("musica", actualMusic.getPos());
-        return dataState;
-    }
-
-    public <T> void addSimpleData(String key, T variable){
-        dataState.addSimpleData(key, variable);
-    }
-
-    public <T> void addArrayData(String key, T[] array){
-        dataState.addArrayData(key,array);
-    }
-
-    public <T> void add2DArrayData(String key, T[][] array){
-        dataState.add2DArrayData(key,array);
     }
 }

@@ -123,10 +123,4 @@ public class SelectLevelLogic extends AbstractState {
                 entity.handleInput(proccesedX, proccesedY, inputEvent.type);
         }
     }
-
-    //EJER 2 ==================
-    @Override
-    public void saveState(){
-
-    }
 }
