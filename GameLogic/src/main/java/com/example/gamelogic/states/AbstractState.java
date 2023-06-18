@@ -28,10 +28,14 @@ public abstract class AbstractState implements IState {
     public DataState getDataStateInstance(){
         if(dataState == null)
             dataState = new DataState();
+        else{
+            //System.out.println("DataState existe");
+        }
         return dataState;
     }
     @Override
     public void setDataState(DataState d){
+        //System.out.println("Holaaaa bb");
         dataState = d;
     }
 

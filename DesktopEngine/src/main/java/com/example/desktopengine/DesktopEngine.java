@@ -194,4 +194,8 @@ public class DesktopEngine implements IEngine, Runnable, MouseInputListener {
         } else
             mView.setCursor(defaultCursor);
     }
+
+    public JFrame getJFrame() {
+        return mView;
+    }
 }

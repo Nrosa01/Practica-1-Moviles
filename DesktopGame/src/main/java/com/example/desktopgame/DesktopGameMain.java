@@ -47,7 +47,7 @@ public class DesktopGameMain {
 
         //============================================
         //Evento PC al cerrar ventana:
-        JFrame view = new JFrame("Nonograma");
+        JFrame view = desktopEngine.getJFrame();
         view.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         view.addWindowListener(new java.awt.event.WindowAdapter() {
             @Override

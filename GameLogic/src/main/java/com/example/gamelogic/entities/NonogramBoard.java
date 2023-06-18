@@ -59,6 +59,7 @@ public class NonogramBoard extends Board {
         super(engine, solvedPuzzle.length, solvedPuzzle[0].length, width, gapSize);
 
         this.initialWidth = width;
+        setWidth(width);
 
         this.solvedPuzzle = new int[rows][cols];
         for (int i = 0; i < rows; i++)
